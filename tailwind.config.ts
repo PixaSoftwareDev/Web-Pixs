@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: ["class", '[data-theme="dark"]'],
   content: [
     "./src/app/**/*.{ts,tsx}",
     "./src/components/**/*.{ts,tsx}",
@@ -9,19 +10,20 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#05060a",
-          soft: "#0a0d14",
+          DEFAULT: "rgb(var(--c-bg) / <alpha-value>)",
+          soft: "rgb(var(--c-bg-soft) / <alpha-value>)",
         },
         neon: {
-          cyan: "#00f0ff",
-          magenta: "#ff00d4",
-          violet: "#8b5cf6",
-          lime: "#aaff00",
+          cyan: "rgb(var(--c-neon-cyan) / <alpha-value>)",
+          magenta: "rgb(var(--c-neon-magenta) / <alpha-value>)",
+          violet: "rgb(var(--c-neon-violet) / <alpha-value>)",
+          lime: "rgb(var(--c-neon-lime) / <alpha-value>)",
         },
         ink: {
-          DEFAULT: "#e6e9ef",
-          dim: "#8a92a6",
+          DEFAULT: "rgb(var(--c-ink) / <alpha-value>)",
+          dim: "rgb(var(--c-ink-dim) / <alpha-value>)",
         },
+        line: "rgb(var(--c-line) / <alpha-value>)",
       },
       fontFamily: {
         mono: ["var(--font-jetbrains)", "ui-monospace", "monospace"],
@@ -32,7 +34,10 @@ const config: Config = {
         "glitch-2": "glitch2 3s infinite linear alternate-reverse",
         scan: "scan 8s linear infinite",
         float: "float 6s ease-in-out infinite",
+        "float-slow": "float 9s ease-in-out infinite",
         "pulse-neon": "pulseNeon 2s ease-in-out infinite",
+        "spin-slow": "spin 10s linear infinite",
+        "spin-slower": "spin 18s linear infinite",
       },
       keyframes: {
         glitch1: {

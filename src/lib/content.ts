@@ -89,6 +89,30 @@ export const process = [
   },
 ] as const;
 
+export const team = [
+  {
+    name: "Enzo Batistelli",
+    role: "Co-founder & Head of Sales",
+    image:
+      "https://res.cloudinary.com/dukv3ov6t/image/upload/v1778943815/WhatsApp_Image_2026-05-12_at_17.28.59_uka6bf.png",
+    accent: "magenta",
+  },
+  {
+    name: "Guillermo Fernandez",
+    role: "Co-founder & Lead Developer",
+    image:
+      "https://res.cloudinary.com/dukv3ov6t/image/upload/v1778945805/WhatsApp_Image_2026-05-16_at_12.32.20_p0rhft.png",
+    accent: "violet",
+  },
+  {
+    name: "Alejo Maros",
+    role: "Co-founder & Lead Developer",
+    image:
+      "https://res.cloudinary.com/dukv3ov6t/image/upload/v1778943927/alejoperfil_mbqj1a.png",
+    accent: "cyan",
+  },
+] as const;
+
 export const portfolio = [
   {
     title: "Proyecto Uno",
