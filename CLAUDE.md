@@ -21,8 +21,8 @@ Landing page para **Pixs**, un estudio/desarrolladora de software. La idea es tr
 |---|---|
 | Framework | Next.js 14 (App Router) + TypeScript |
 | Estilos | Tailwind CSS |
-| Animación 3D | Three.js + `@react-three/fiber` + `@react-three/drei` |
-| Animación 2D/scroll | GSAP + ScrollTrigger |
+| Background hero | CSS — aurora blobs + spotlight cursor-reactive (sin 3D) |
+| Animación / scroll | GSAP + ScrollTrigger |
 | Iconos | lucide-react |
 | Deploy | Vercel (recomendado) |
 
@@ -61,13 +61,14 @@ Landing page para **Pixs**, un estudio/desarrolladora de software. La idea es tr
 Orden de secciones (de arriba abajo):
 
 1. **Navbar** — fijo, transparente al inicio, blur al scrollear.
-2. **Hero** — titular grande + escena 3D (esfera wireframe o mesh distorsionado) + 2 CTAs.
-3. **Servicios** — qué hacemos (4–6 cards: web apps, mobile, MVPs, integraciones, IA, e-commerce).
-4. **Stack tecnológico** — grilla con logos de tecnologías que usamos.
-5. **Proceso** — timeline horizontal/vertical con los pasos de cómo trabajamos.
-6. **Portfolio** — grid de proyectos hechos (imagen, título, stack, link).
-7. **Contacto** — CTA final + formulario simple o mailto.
-8. **Footer** — links, redes, copyright.
+2. **Hero** — titular grande + background animado (aurora blobs + spotlight al cursor) + 2 CTAs.
+3. **Servicios** — qué hacemos (cards: web apps, mobile, MVPs, integraciones, IA, e-commerce).
+4. **Stack tecnológico** — grilla de tecnologías que usamos.
+5. **Proceso** — timeline vertical con los pasos de cómo trabajamos.
+6. **Nosotros** — equipo: 3 founders con retratos animados.
+7. **Contacto** — CTA final + mailto.
+8. **Footer** — CTA "hablemos" + columnas (brand, navegar, contacto, redes).
+9. **FAB WhatsApp** — botón flotante bottom-right, presente en toda la página.
 
 ---
 
@@ -86,9 +87,7 @@ web- pixs/
 ├── .env.example
 ├── public/
 │   └── assets/
-│       ├── logo/                  <- CARGAR LOGO ACÁ (svg/png)
-│       ├── portfolio/             <- CARGAR FOTOS DE PROYECTOS ACÁ
-│       └── models/                <- modelos .glb si querés reemplazar la escena 3D
+│       └── logo/                  <- README (el logo real se sirve desde Cloudinary)
 └── src/
     ├── app/
     │   ├── layout.tsx             <- fonts, metadata, html shell
@@ -100,17 +99,19 @@ web- pixs/
     │   │   ├── Services.tsx
     │   │   ├── TechStack.tsx
     │   │   ├── Process.tsx
-    │   │   ├── Portfolio.tsx
+    │   │   ├── Team.tsx
     │   │   └── Contact.tsx
-    │   ├── three/
-    │   │   └── HeroScene.tsx      <- escena Three.js del hero
     │   └── ui/
     │       ├── Navbar.tsx
     │       ├── Footer.tsx
-    │       └── GlitchText.tsx
+    │       ├── ThemeToggle.tsx
+    │       ├── GlitchText.tsx
+    │       ├── WhatsAppFab.tsx     <- botón flotante de WhatsApp
+    │       └── WhatsAppIcon.tsx
     └── lib/
-        ├── site.ts                <- datos de la marca (nombre, email, redes)
-        └── content.ts             <- contenido editable (servicios, proyectos, stack)
+        ├── site.ts                <- marca: nombre, email, WhatsApp, redes, logos
+        ├── content.ts             <- contenido editable (servicios, stack, proceso, team)
+        └── theme.ts               <- script inline anti-flash de tema dark/light
 ```
 
 ---
@@ -135,10 +136,9 @@ npm run type-check
 
 ## 7. Qué tiene que cargar Alejo
 
-1. **Logo** → `public/assets/logo/logo.svg` (ideal SVG). También `logo-mark.svg` (solo isotipo) y `logo-wordmark.svg` (solo texto) si los tenés separados.
+1. **Logo** → ya cargado vía Cloudinary en `src/lib/site.ts` (variantes dark/light con transformaciones `e_trim,c_lpad`).
 2. **Favicon** → `src/app/favicon.ico` (32x32 o 48x48).
-3. **Fotos de proyectos** → `public/assets/portfolio/proyecto-1.webp`, `proyecto-2.webp`, etc. Recomendado 1600x1000, WebP.
-4. **(Opcional)** modelo 3D `.glb` → `public/assets/models/hero.glb` si queremos reemplazar la geometría procedural del hero por un modelo propio.
+3. **Fotos del equipo** → ya cargadas vía Cloudinary en `src/lib/content.ts → team`.
 
 Cuando los tengas cargados, abrí Claude Code en esta carpeta y decí: *"ya cargué el logo y las fotos en public/assets, integralos en el sitio"*.
 
@@ -159,7 +159,7 @@ Cuando los tengas cargados, abrí Claude Code en esta carpeta y decí: *"ya carg
 - **No instales librerías** sin avisar primero qué y para qué.
 - **No agregues frameworks de UI** (shadcn, MUI, etc.) sin pedir. Tailwind + componentes propios es suficiente.
 - **Mantené la estética cyber** — no metas estilos light o flat sin justificar.
-- **Performance es prioridad**: la escena 3D del hero debe usar `Suspense`, lazy load, y degradar a CSS en mobile si es muy pesada.
+- **Performance es prioridad**: animaciones siempre con GPU transforms (transform/opacity), nunca animar propiedades que disparen reflow.
 - **Todo el contenido editable** vive en `src/lib/content.ts` y `src/lib/site.ts`. No hardcodear textos largos en los componentes.
 - **Animaciones GSAP** siempre con `useGSAP` o cleanup en `useEffect`. Nunca dejar listeners colgados.
 - **Imágenes** siempre con `next/image` y `alt` descriptivo.

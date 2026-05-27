@@ -113,33 +113,3 @@ export const team = [
   },
 ] as const;
 
-export const portfolio = [
-  {
-    title: "Proyecto Uno",
-    description: "Plataforma SaaS para gestión de equipos.",
-    stack: ["Next.js", "Postgres", "Stripe"],
-    image: "/assets/portfolio/proyecto-1.webp",
-    link: "#",
-  },
-  {
-    title: "Proyecto Dos",
-    description: "App mobile de fitness con IA.",
-    stack: ["React Native", "OpenAI", "Supabase"],
-    image: "/assets/portfolio/proyecto-2.webp",
-    link: "#",
-  },
-  {
-    title: "Proyecto Tres",
-    description: "E-commerce headless con catálogo dinámico.",
-    stack: ["Next.js", "Shopify", "Sanity"],
-    image: "/assets/portfolio/proyecto-3.webp",
-    link: "#",
-  },
-  {
-    title: "Proyecto Cuatro",
-    description: "Dashboard de analytics con visualizaciones 3D.",
-    stack: ["React", "Three.js", "D3"],
-    image: "/assets/portfolio/proyecto-4.webp",
-    link: "#",
-  },
-] as const;

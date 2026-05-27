@@ -30,8 +30,6 @@ const config: Config = {
         display: ["var(--font-space)", "system-ui", "sans-serif"],
       },
       animation: {
-        "glitch-1": "glitch1 2.5s infinite linear alternate-reverse",
-        "glitch-2": "glitch2 3s infinite linear alternate-reverse",
         scan: "scan 8s linear infinite",
         float: "float 6s ease-in-out infinite",
         "float-slow": "float 9s ease-in-out infinite",
@@ -40,20 +38,6 @@ const config: Config = {
         "spin-slower": "spin 18s linear infinite",
       },
       keyframes: {
-        glitch1: {
-          "0%, 100%": { clipPath: "inset(0 0 0 0)" },
-          "20%": { clipPath: "inset(20% 0 60% 0)" },
-          "40%": { clipPath: "inset(50% 0 20% 0)" },
-          "60%": { clipPath: "inset(10% 0 80% 0)" },
-          "80%": { clipPath: "inset(70% 0 5% 0)" },
-        },
-        glitch2: {
-          "0%, 100%": { transform: "translate(0)" },
-          "20%": { transform: "translate(-2px, 1px)" },
-          "40%": { transform: "translate(2px, -1px)" },
-          "60%": { transform: "translate(-1px, -2px)" },
-          "80%": { transform: "translate(1px, 2px)" },
-        },
         scan: {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(100vh)" },

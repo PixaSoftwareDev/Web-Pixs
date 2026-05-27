@@ -5,7 +5,6 @@ import Services from "@/components/sections/Services";
 import TechStack from "@/components/sections/TechStack";
 import Process from "@/components/sections/Process";
 import Team from "@/components/sections/Team";
-import Portfolio from "@/components/sections/Portfolio";
 import Contact from "@/components/sections/Contact";
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
       <TechStack />
       <Process />
       <Team />
-      <Portfolio />
       <Contact />
       <Footer />
     </main>

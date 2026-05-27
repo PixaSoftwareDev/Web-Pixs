@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { services } from "@/lib/content";
+import GhostNumber from "@/components/ui/GhostNumber";
 
 const iconMap: Record<string, LucideIcon> = {
   Globe,
@@ -30,29 +31,37 @@ export default function Services() {
     if (!root.current) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      gsap.from(".service-card", {
-        y: 40,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".services-grid",
-          start: "top 80%",
+      gsap.fromTo(
+        ".service-card",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".services-grid",
+            start: "top 80%",
+            once: true,
+            toggleActions: "play none none none",
+          },
         },
-      });
+      );
     }, root);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={root} id="services" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section
+      ref={root}
+      id="services"
+      className="relative overflow-hidden py-24 md:py-32"
+    >
+      <GhostNumber number="01" side="right" />
+      <div className="relative mx-auto max-w-7xl px-6">
         <header className="mb-16 max-w-2xl">
-          <p className="font-mono text-xs uppercase tracking-widest text-neon-cyan">
-            // 01 — Servicios
-          </p>
-          <h2 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-6xl">
+          <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
             Qué hacemos
           </h2>
           <p className="mt-4 font-mono text-sm text-ink-dim md:text-base">
@@ -67,7 +76,7 @@ export default function Services() {
             return (
               <article
                 key={s.title}
-                className="service-card group relative overflow-hidden rounded-xl border border-white/5 bg-bg-soft/60 p-6 backdrop-blur transition-all hover:border-neon-cyan/40 hover:bg-bg-soft"
+                className="service-card group relative overflow-hidden rounded-xl border border-line/10 bg-bg-soft/60 p-6 backdrop-blur transition-all hover:border-neon-cyan/40 hover:bg-bg-soft"
               >
                 <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-neon-violet/10 blur-3xl transition-opacity group-hover:opacity-80" />
                 <Icon className="h-8 w-8 text-neon-cyan" strokeWidth={1.5} />

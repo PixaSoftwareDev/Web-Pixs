@@ -9,16 +9,26 @@ export const site = {
   url: "https://pixs.dev",
   email: "hola@pixs.dev",
   location: "Argentina",
+  // Formato internacional sin '+', sin espacios. Argentina móvil = 549 + área + número.
+  whatsapp: "5492477509003",
   logo: {
-    // Logo blanco — para fondo oscuro (tema dark)
-    dark: "https://res.cloudinary.com/dukv3ov6t/image/upload/v1778943933/Log_Sin_Fondo_wqravr.png",
-    // Logo negro — para fondo claro (tema light)
+    // Logo blanco — para fondo oscuro (tema dark).
+    // Transformaciones Cloudinary: recorta whitespace (e_trim) y normaliza a canvas
+    // cuadrado 512x512 transparente (c_lpad) para que ambos logos midan igual.
+    dark: "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_512,h_512,b_transparent/v1778943933/Log_Sin_Fondo_wqravr.png",
+    // Logo negro — para fondo claro (tema light). Mismas transformaciones.
     light:
-      "https://res.cloudinary.com/dukv3ov6t/image/upload/v1778945740/WhatsApp_Image_2026-05-05_at_22.55.33_1_gyeiul.png",
+      "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_512,h_512,b_transparent/v1778945740/WhatsApp_Image_2026-05-05_at_22.55.33_1_gyeiul.png",
   },
   socials: {
-    linkedin: "https://linkedin.com/company/pixs",
+    linkedin: "https://www.linkedin.com/company/pixstech/",
     instagram: "https://instagram.com/pixs",
     github: "https://github.com/pixs",
   },
 } as const;
+
+/** Construye un link a wa.me con un mensaje opcional pre-cargado. */
+export function whatsappUrl(message?: string): string {
+  const base = `https://wa.me/${site.whatsapp}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}

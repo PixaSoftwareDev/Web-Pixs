@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
+import WhatsAppFab from "@/components/ui/WhatsAppFab";
+import Preloader from "@/components/ui/Preloader";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -28,6 +30,9 @@ export const metadata: Metadata = {
     locale: "es_AR",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
   themeColor: "#05060a",
 };
 
@@ -47,7 +52,9 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="bg-bg text-ink font-display antialiased selection:bg-neon-cyan/30 selection:text-white">
+        <Preloader />
         {children}
+        <WhatsAppFab />
       </body>
     </html>
   );

@@ -10,7 +10,6 @@ const links = [
   { href: "#stack", label: "Stack" },
   { href: "#process", label: "Proceso" },
   { href: "#team", label: "Nosotros" },
-  { href: "#portfolio", label: "Portfolio" },
   { href: "#contact", label: "Contacto" },
 ];
 
@@ -28,7 +27,7 @@ export default function Navbar() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-md bg-bg/70 border-b border-white/5"
+          ? "backdrop-blur-md bg-bg/70 border-b border-line/10"
           : "bg-transparent"
       }`}
     >
@@ -41,18 +40,18 @@ export default function Navbar() {
           <Image
             src={site.logo.dark}
             alt={`${site.name} logo`}
-            width={72}
-            height={72}
+            width={88}
+            height={88}
             priority
-            className="logo-on-dark absolute -inset-4 h-[72px] w-[72px] max-w-none object-contain transition-all duration-300 group-hover:scale-110 group-hover:[filter:drop-shadow(0_0_10px_rgb(var(--c-neon-cyan)/0.7))]"
+            className="logo-on-dark absolute -inset-6 h-[88px] w-[88px] max-w-none object-contain transition-all duration-300 group-hover:scale-110 group-hover:[filter:drop-shadow(0_0_10px_rgb(var(--c-neon-cyan)/0.7))]"
           />
           <Image
             src={site.logo.light}
             alt={`${site.name} logo`}
-            width={72}
-            height={72}
+            width={88}
+            height={88}
             priority
-            className="logo-on-light absolute -inset-4 h-[72px] w-[72px] max-w-none object-contain transition-all duration-300 group-hover:scale-110 group-hover:[filter:drop-shadow(0_0_10px_rgb(var(--c-neon-cyan)/0.6))]"
+            className="logo-on-light absolute -inset-6 h-[88px] w-[88px] max-w-none object-contain transition-all duration-300 group-hover:scale-110 group-hover:[filter:drop-shadow(0_0_10px_rgb(var(--c-neon-cyan)/0.6))]"
           />
         </a>
 

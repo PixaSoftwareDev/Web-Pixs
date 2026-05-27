@@ -12,7 +12,7 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ["lucide-react", "@react-three/drei"],
+    optimizePackageImports: ["lucide-react"],
   },
 };
 

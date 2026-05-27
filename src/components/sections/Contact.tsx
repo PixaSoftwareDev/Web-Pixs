@@ -12,17 +12,23 @@ export default function Contact() {
     if (!root.current) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      gsap.from(".contact-inner > *", {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".contact-inner",
-          start: "top 80%",
+      gsap.fromTo(
+        ".contact-inner > *",
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".contact-inner",
+            start: "top 80%",
+            once: true,
+            toggleActions: "play none none none",
+          },
         },
-      });
+      );
     }, root);
     return () => ctx.revert();
   }, []);

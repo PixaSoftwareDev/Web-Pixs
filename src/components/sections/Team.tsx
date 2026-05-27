@@ -5,44 +5,48 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { team } from "@/lib/content";
-import GlitchText from "@/components/ui/GlitchText";
+import ScrambleText from "@/components/ui/ScrambleText";
+import GhostNumber from "@/components/ui/GhostNumber";
 
 type Accent = "cyan" | "violet" | "magenta";
 
+/**
+ * Mapa de colores de acento por miembro. Cada card usa el color para:
+ *  - barra de accent superior de la foto
+ *  - dot de estado
+ *  - separator debajo del nombre
+ *  - color del border y glow al hover
+ */
 const accentMap: Record<
   Accent,
   {
-    ring: string;
-    halo: string;
     text: string;
+    dot: string;
     bar: string;
     border: string;
-    dot: string;
+    glow: string;
   }
 > = {
   cyan: {
-    ring: "conic-gradient(from 0deg, rgb(var(--c-neon-cyan)) 0%, rgb(var(--c-neon-violet)) 35%, transparent 55%, rgb(var(--c-neon-cyan)) 100%)",
-    halo: "rgb(var(--c-neon-cyan) / 0.45)",
     text: "text-neon-cyan",
-    bar: "from-neon-cyan via-neon-violet to-transparent",
-    border: "border-neon-cyan/40",
     dot: "bg-neon-cyan",
+    bar: "from-neon-cyan to-transparent",
+    border: "group-hover:border-neon-cyan/50",
+    glow: "group-hover:shadow-[0_24px_64px_-12px_rgb(var(--c-neon-cyan)/0.25)]",
   },
   violet: {
-    ring: "conic-gradient(from 120deg, rgb(var(--c-neon-violet)) 0%, rgb(var(--c-neon-magenta)) 35%, transparent 55%, rgb(var(--c-neon-violet)) 100%)",
-    halo: "rgb(var(--c-neon-violet) / 0.45)",
     text: "text-neon-violet",
-    bar: "from-neon-violet via-neon-magenta to-transparent",
-    border: "border-neon-violet/40",
     dot: "bg-neon-violet",
+    bar: "from-neon-violet to-transparent",
+    border: "group-hover:border-neon-violet/50",
+    glow: "group-hover:shadow-[0_24px_64px_-12px_rgb(var(--c-neon-violet)/0.25)]",
   },
   magenta: {
-    ring: "conic-gradient(from 240deg, rgb(var(--c-neon-magenta)) 0%, rgb(var(--c-neon-cyan)) 35%, transparent 55%, rgb(var(--c-neon-magenta)) 100%)",
-    halo: "rgb(var(--c-neon-magenta) / 0.45)",
     text: "text-neon-magenta",
-    bar: "from-neon-magenta via-neon-cyan to-transparent",
-    border: "border-neon-magenta/40",
     dot: "bg-neon-magenta",
+    bar: "from-neon-magenta to-transparent",
+    border: "group-hover:border-neon-magenta/50",
+    glow: "group-hover:shadow-[0_24px_64px_-12px_rgb(var(--c-neon-magenta)/0.25)]",
   },
 };
 
@@ -53,88 +57,84 @@ export default function Team() {
     if (!root.current) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      gsap.from(".team-eyebrow", {
-        y: 20,
-        opacity: 0,
-        duration: 0.7,
-        scrollTrigger: { trigger: ".team-eyebrow", start: "top 85%" },
-      });
-      gsap.from(".team-title", {
-        y: 30,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".team-title", start: "top 85%" },
-      });
-
-      // Entrada dramática: cada card con su propio timeline encadenado.
-      const cards = gsap.utils.toArray<HTMLElement>(".team-card");
-      const master = gsap.timeline({
-        scrollTrigger: { trigger: ".team-grid", start: "top 78%" },
-      });
-
-      cards.forEach((card, i) => {
-        const tl = gsap.timeline();
-        tl.from(card, {
-          y: 100,
-          opacity: 0,
-          scale: 0.6,
-          rotateY: -45,
-          rotateX: 12,
-          transformPerspective: 900,
-          transformOrigin: "center center",
+      gsap.fromTo(
+        ".team-title",
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
           duration: 0.9,
           ease: "power3.out",
-        })
-          .from(
-            card.querySelector(".tc-ring"),
-            {
-              opacity: 0,
-              scale: 0.3,
-              rotate: -180,
-              duration: 0.8,
-              ease: "power2.out",
-            },
-            "-=0.6"
-          )
-          .from(
-            card.querySelector(".tc-halo"),
-            { opacity: 0, scale: 0.4, duration: 0.7, ease: "power2.out" },
-            "-=0.7"
-          )
-          .from(
-            card.querySelector(".tc-portrait"),
-            {
-              opacity: 0,
-              scale: 1.3,
-              filter: "blur(14px)",
-              duration: 0.7,
-              ease: "power2.out",
-            },
-            "-=0.5"
-          )
-          .from(
-            card.querySelector(".tc-tag"),
-            { y: 14, opacity: 0, duration: 0.4, ease: "power2.out" },
-            "-=0.2"
-          )
-          .from(
-            card.querySelector(".tc-name"),
-            { y: 24, opacity: 0, duration: 0.5, ease: "power2.out" },
-            "-=0.3"
-          )
-          .from(
-            card.querySelector(".tc-bar"),
-            { width: 0, duration: 0.45, ease: "power2.inOut" },
-            "-=0.25"
-          )
-          .from(
-            card.querySelector(".tc-role"),
-            { y: 10, opacity: 0, duration: 0.4, ease: "power2.out" },
-            "-=0.2"
-          );
-        master.add(tl, i * 0.25);
-      });
+          scrollTrigger: {
+            trigger: ".team-title",
+            start: "top 85%",
+            once: true,
+            toggleActions: "play none none none",
+          },
+        },
+      );
+      gsap.fromTo(
+        ".team-meta",
+        { x: -24, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.8,
+          delay: 0.15,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".team-meta",
+            start: "top 85%",
+            once: true,
+            toggleActions: "play none none none",
+          },
+        },
+      );
+      // Cards: clip-path reveal de arriba hacia abajo + slide + fade.
+      // El conjunto se "destapa" como cortina cayendo, no como un simple fade.
+      gsap.fromTo(
+        ".team-card",
+        {
+          clipPath: "inset(0% 0% 100% 0%)",
+          y: 40,
+          opacity: 0,
+        },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          y: 0,
+          opacity: 1,
+          duration: 1.15,
+          stagger: 0.18,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".team-grid",
+            start: "top 80%",
+            once: true,
+            toggleActions: "play none none none",
+          },
+        },
+      );
+
+      // Foto interior con zoom-out (1.25 → 1) mientras el card se destapa.
+      // Da sensación de que la imagen "se asienta" en su lugar.
+      gsap.fromTo(
+        ".team-card-photo",
+        { scale: 1.25 },
+        {
+          scale: 1,
+          duration: 1.4,
+          stagger: 0.18,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".team-grid",
+            start: "top 80%",
+            once: true,
+            toggleActions: "play none none none",
+          },
+          onComplete: () =>
+            gsap.set(".team-card-photo", { clearProps: "transform" }),
+        },
+      );
     }, root);
     return () => ctx.revert();
   }, []);
@@ -143,109 +143,99 @@ export default function Team() {
     <section
       ref={root}
       id="team"
-      className="relative overflow-hidden py-24 md:py-32"
+      className="relative overflow-hidden bg-bg-soft/50 py-24 md:py-32"
     >
-      {/* fondo: grid + halos radiales */}
-      <div className="absolute inset-0 bg-tech-grid opacity-40" />
-      <div className="pointer-events-none absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-neon-violet/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-32 bottom-1/4 h-96 w-96 rounded-full bg-neon-cyan/10 blur-3xl" />
+      {/* Grid de fondo */}
+      <div className="pointer-events-none absolute inset-0 bg-tech-grid opacity-25" />
+
+      <GhostNumber number="04" side="left" />
+
+      {/* Halos centradas */}
+      <div className="pointer-events-none absolute left-[10%] top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-neon-violet/[0.08] blur-3xl" />
+      <div className="pointer-events-none absolute right-[10%] top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-neon-cyan/[0.08] blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <header className="mb-20 max-w-2xl">
-          <p className="team-eyebrow font-mono text-xs uppercase tracking-widest text-neon-cyan">
-            // 04 — Nosotros
-          </p>
-          <h2 className="team-title mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-            El equipo detrás de{" "}
-            <GlitchText className="text-glow-cyan">Pixs</GlitchText>
-          </h2>
-          <p className="mt-4 font-mono text-sm text-ink-dim md:text-base">
-            {"// "} Tres founders, un objetivo: software que mueve la aguja.
-          </p>
+        <header className="mb-20 grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
+          <div className="team-meta md:col-span-5 md:flex md:items-end md:pb-3">
+            <div>
+              <div className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim">
+                <span className="h-1.5 w-1.5 rounded-full bg-neon-lime animate-pulse-neon" />
+                Founders · 03 · Pixs
+              </div>
+              <p className="mt-6 max-w-sm font-mono text-sm leading-relaxed text-ink-dim">
+                Tres founders. Una misma visión: software que mueve la aguja.
+              </p>
+            </div>
+          </div>
+
+          <div className="md:col-span-7">
+            <h2 className="team-title font-display text-5xl font-bold leading-[0.95] tracking-tight md:text-7xl lg:text-[5.5rem]">
+              Las mentes
+              <br />
+              detrás del{" "}
+              <ScrambleText className="bg-gradient-to-r from-ink to-neon-cyan bg-clip-text font-mono text-transparent">
+                código
+              </ScrambleText>
+              .
+            </h2>
+          </div>
         </header>
 
-        <div className="team-grid grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-8">
+        {/* Grid de cards — 1 col mobile, 3 cols desktop, max ancho razonable */}
+        <div className="team-grid mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 md:gap-6 lg:gap-8">
           {team.map((member, i) => {
             const a = accentMap[member.accent as Accent];
+            const index = String(i + 1).padStart(2, "0");
             return (
               <article
                 key={member.name}
-                className="team-card group relative flex flex-col items-center text-center [transform-style:preserve-3d]"
+                className={`team-card group relative flex flex-col overflow-hidden rounded-2xl border border-line/15 bg-bg/40 backdrop-blur-sm transition-all duration-500 ${a.border} ${a.glow}`}
               >
-                {/* Wrapper del retrato */}
-                <div className="relative">
-                  {/* Halo externo pulsante */}
+                {/* Bloque foto — cuadrada (1:1) para que el card no sea tan alto */}
+                <div className="relative aspect-square overflow-hidden bg-bg-soft">
+                  {/* Barra de accent en el top de la foto */}
                   <div
-                    className="tc-halo pointer-events-none absolute inset-0 -m-8 rounded-full opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-                    style={{ background: a.halo }}
+                    className={`absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r ${a.bar}`}
                   />
 
-                  {/* Anillo rotatorio (conic gradient) */}
-                  <div
-                    className="tc-ring absolute inset-0 -m-1 rounded-full animate-spin-slow"
-                    style={{ background: a.ring }}
-                  />
-
-                  {/* Anillo exterior contra-rotatorio, fino */}
-                  <div className="absolute inset-0 -m-5 rounded-full border border-dashed border-white/10 animate-spin-slower" />
-
-                  {/* Contenedor del retrato (clip circular) */}
-                  <div
-                    className={`tc-portrait relative h-56 w-56 overflow-hidden rounded-full border ${a.border} bg-bg-soft transition-transform duration-500 group-hover:scale-[1.03] md:h-60 md:w-60`}
-                  >
-                    {/* halo interno radial detrás de la foto */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: `radial-gradient(ellipse at 50% 60%, ${a.halo}, transparent 70%)`,
-                      }}
+                  {/* Index + status en el top */}
+                  <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between p-5">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim/80">
+                      {index} / {String(team.length).padStart(2, "0")}
+                    </span>
+                    <span
+                      className={`inline-block h-1.5 w-1.5 rounded-full ${a.dot} animate-pulse-neon`}
                     />
-
-                    {/* scan line sutil */}
-                    <div className="scanline pointer-events-none absolute inset-0 opacity-50" />
-
-                    {/* Foto (transparente, levemente flotando) */}
-                    <div className="animate-float-slow absolute inset-0 flex items-end justify-center">
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        width={480}
-                        height={480}
-                        className="h-[110%] w-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.55)] transition-all duration-500 group-hover:scale-110"
-                        sizes="(max-width: 768px) 60vw, 240px"
-                      />
-                    </div>
                   </div>
 
-                  {/* Tag con índice cyber */}
-                  <div
-                    className={`tc-tag absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full border ${a.border} bg-bg px-3 py-1 font-mono text-[10px] uppercase tracking-[0.25em] ${a.text}`}
-                  >
-                    0{i + 1} / {team.length}
-                  </div>
+                  {/* Foto — la clase team-card-photo es el target del GSAP scale-out */}
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="team-card-photo object-cover object-top"
+                  />
+
+                  {/* Vignette inferior para que el texto del card abajo
+                      respire desde la foto sin un corte duro */}
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg/95 via-bg/30 to-transparent" />
                 </div>
 
-                {/* Nombre con glitch al hover */}
-                <h3 className="tc-name mt-10 font-display text-2xl font-semibold tracking-tight md:text-3xl">
-                  <span
-                    data-text={member.name}
-                    className="relative inline-block transition-all duration-300 group-hover:before:absolute group-hover:before:inset-0 group-hover:before:content-[attr(data-text)] group-hover:before:text-neon-cyan group-hover:before:translate-x-[2px] group-hover:before:-translate-y-[1px] group-hover:before:opacity-70 group-hover:after:absolute group-hover:after:inset-0 group-hover:after:content-[attr(data-text)] group-hover:after:text-neon-magenta group-hover:after:-translate-x-[2px] group-hover:after:translate-y-[1px] group-hover:after:opacity-70"
-                  >
+                {/* Bloque info */}
+                <div className="relative flex flex-col gap-3 p-6 md:p-7">
+                  <h3 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
                     {member.name}
-                  </span>
-                </h3>
-
-                {/* Barra de acento + rol */}
-                <div
-                  className={`tc-bar mt-3 h-px w-16 bg-gradient-to-r ${a.bar}`}
-                />
-                <p className="tc-role mt-3 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-ink-dim">
-                  <span
-                    className={`inline-block h-1.5 w-1.5 rounded-full ${a.dot} animate-pulse-neon`}
-                    style={{ color: a.halo }}
+                  </h3>
+                  <div
+                    className={`h-px w-12 bg-gradient-to-r ${a.bar}`}
                   />
-                  {member.role}
-                </p>
+                  <p
+                    className={`font-mono text-xs uppercase tracking-[0.2em] text-ink-dim`}
+                  >
+                    {member.role}
+                  </p>
+                </div>
               </article>
             );
           })}

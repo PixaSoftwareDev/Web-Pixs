@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { process } from "@/lib/content";
+import GhostNumber from "@/components/ui/GhostNumber";
 
 export default function Process() {
   const root = useRef<HTMLElement>(null);
@@ -12,39 +13,53 @@ export default function Process() {
     if (!root.current) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      gsap.from(".process-step", {
-        x: -40,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.12,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".process-list",
-          start: "top 80%",
+      gsap.fromTo(
+        ".process-step",
+        { x: -40, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".process-list",
+            start: "top 80%",
+            once: true,
+            toggleActions: "play none none none",
+          },
         },
-      });
-      gsap.from(".process-line", {
-        scaleY: 0,
-        transformOrigin: "top",
-        duration: 1.2,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".process-list",
-          start: "top 80%",
+      );
+      gsap.fromTo(
+        ".process-line",
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          transformOrigin: "top",
+          duration: 1.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".process-list",
+            start: "top 80%",
+            once: true,
+            toggleActions: "play none none none",
+          },
         },
-      });
+      );
     }, root);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={root} id="process" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section
+      ref={root}
+      id="process"
+      className="relative overflow-hidden py-24 md:py-32"
+    >
+      <GhostNumber number="03" side="right" />
+      <div className="relative mx-auto max-w-7xl px-6">
         <header className="mb-16 max-w-2xl">
-          <p className="font-mono text-xs uppercase tracking-widest text-neon-cyan">
-            // 03 — Proceso
-          </p>
-          <h2 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-6xl">
+          <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
             Cómo trabajamos
           </h2>
           <p className="mt-4 font-mono text-sm text-ink-dim md:text-base">
@@ -52,7 +67,7 @@ export default function Process() {
           </p>
         </header>
 
-        <ol className="process-list relative ml-4 space-y-10 border-l border-white/5 pl-8 md:ml-8">
+        <ol className="process-list relative ml-4 space-y-10 border-l border-line/10 pl-8 md:ml-8">
           <span className="process-line absolute left-0 top-0 h-full w-px bg-gradient-to-b from-neon-cyan via-neon-violet to-transparent" />
           {process.map((p) => (
             <li key={p.step} className="process-step relative">
