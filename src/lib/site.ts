@@ -19,10 +19,12 @@ export const site = {
     // Logo negro — para fondo claro (tema light). Mismas transformaciones.
     light:
       "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_512,h_512,b_transparent/v1778945740/WhatsApp_Image_2026-05-05_at_22.55.33_1_gyeiul.png",
+    // Isotipo "P" a color (gradiente azul/violeta con </>) — sirve en ambos temas.
+    // También se usa como favicon vía src/app/icon.png.
+    icon: "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_pad,w_256,h_256,b_transparent/v1780008842/WhatsApp_Image_2026-05-05_at_20.17.36_2_ntlyrg.png",
   },
   socials: {
     linkedin: "https://www.linkedin.com/company/pixstech/",
-    instagram: "https://instagram.com/pixs",
     github: "https://github.com/pixs",
   },
 } as const;

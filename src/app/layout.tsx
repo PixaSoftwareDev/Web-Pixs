@@ -19,11 +19,11 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${site.name} — ${site.tagline}`,
+  title: `${site.name} — Software studio`,
   description: site.description,
   metadataBase: new URL(site.url),
   openGraph: {
-    title: `${site.name} — ${site.tagline}`,
+    title: `${site.name} — Software studio`,
     description: site.description,
     url: site.url,
     siteName: site.name,

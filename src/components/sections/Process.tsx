@@ -67,7 +67,7 @@ export default function Process() {
           </p>
         </header>
 
-        <ol className="process-list relative ml-4 space-y-10 border-l border-line/10 pl-8 md:ml-8">
+        <ol className="process-list relative ml-12 space-y-10 border-l border-line/10 pl-8 md:ml-8">
           <span className="process-line absolute left-0 top-0 h-full w-px bg-gradient-to-b from-neon-cyan via-neon-violet to-transparent" />
           {process.map((p) => (
             <li key={p.step} className="process-step relative">

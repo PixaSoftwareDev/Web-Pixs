@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrambleText from "@/components/ui/ScrambleText";
 import HeroTerminal from "@/components/ui/HeroTerminal";
+import HeroParticles from "@/components/ui/HeroParticles";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -134,6 +135,9 @@ export default function Hero() {
         <div className="aurora-blob aurora-blob--magenta" />
         <div className="aurora-blob aurora-blob--violet" />
       </div>
+
+      {/* Partículas / motas de data ascendiendo */}
+      <HeroParticles />
 
       {/* Spotlight que sigue el cursor */}
       <div

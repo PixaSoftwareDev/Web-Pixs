@@ -59,28 +59,20 @@ export default function Preloader() {
     >
       {/* Aurora muy sutil de fondo para que no sea un negro plano */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 h-[60vw] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-cyan/[0.04] blur-3xl" />
-        <div className="absolute left-1/2 top-1/2 h-[40vw] w-[40vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-violet/[0.05] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[42vw] w-[42vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-cyan/[0.015] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[28vw] w-[28vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-violet/[0.02] blur-3xl" />
       </div>
 
       <div className="relative flex flex-col items-center gap-7">
-        {/* Logo con leve respiración */}
+        {/* Isotipo con leve respiración */}
         <div className="relative h-24 w-24 animate-pulse-neon md:h-28 md:w-28">
           <Image
-            src={site.logo.dark}
+            src={site.logo.icon}
             alt={`${site.name} logo`}
             width={112}
             height={112}
             priority
-            className="logo-on-dark h-24 w-24 object-contain md:h-28 md:w-28"
-          />
-          <Image
-            src={site.logo.light}
-            alt={`${site.name} logo`}
-            width={112}
-            height={112}
-            priority
-            className="logo-on-light absolute inset-0 h-24 w-24 object-contain md:h-28 md:w-28"
+            className="h-24 w-24 object-contain md:h-28 md:w-28"
           />
         </div>
 

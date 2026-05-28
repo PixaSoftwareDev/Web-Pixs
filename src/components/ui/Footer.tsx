@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Linkedin, Instagram, Github, Mail, MapPin } from "lucide-react";
+import { Linkedin, Github, Mail, MapPin } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import WhatsAppIcon from "./WhatsAppIcon";
 
@@ -23,7 +23,7 @@ export default function Footer() {
 
       {/* Banda CTA */}
       <div className="relative">
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-6 pb-12 pt-20 md:flex-row md:items-center md:justify-between md:pb-16 md:pt-24">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-6 pb-12 pt-20 md:pb-16 md:pt-24">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-neon-cyan">
               // Hablemos
@@ -32,18 +32,6 @@ export default function Footer() {
               ¿Tenés un proyecto en mente?
             </h3>
           </div>
-          <a
-            href="#contact"
-            className="group inline-flex items-center gap-2 rounded-md border border-neon-cyan/50 bg-neon-cyan/10 px-6 py-3 font-mono text-xs uppercase tracking-widest text-neon-cyan transition-all hover:bg-neon-cyan/20 hover:glow-cyan"
-          >
-            Iniciar proyecto
-            <span
-              aria-hidden
-              className="transition-transform group-hover:translate-x-1"
-            >
-              →
-            </span>
-          </a>
         </div>
       </div>
 
@@ -73,10 +61,6 @@ export default function Footer() {
           <p className="mt-5 max-w-sm font-mono text-sm leading-relaxed text-ink-dim">
             {site.description}
           </p>
-          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-neon-lime/30 bg-neon-lime/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-neon-lime">
-            <span className="h-1.5 w-1.5 rounded-full bg-neon-lime animate-pulse-neon" />
-            Disponible para proyectos
-          </div>
         </div>
 
         {/* Navegación */}
@@ -136,9 +120,6 @@ export default function Footer() {
           <div className="mt-3 flex items-center gap-2">
             <SocialIcon href={site.socials.linkedin} label="LinkedIn">
               <Linkedin className="h-4 w-4" />
-            </SocialIcon>
-            <SocialIcon href={site.socials.instagram} label="Instagram">
-              <Instagram className="h-4 w-4" />
             </SocialIcon>
             <SocialIcon href={site.socials.github} label="GitHub">
               <Github className="h-4 w-4" />

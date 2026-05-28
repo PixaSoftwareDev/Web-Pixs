@@ -201,6 +201,32 @@ body {
   opacity: 0.35;
 }
 
+/* === Hero: partículas / "motas de data" ascendiendo === */
+.hero-particle {
+  position: absolute;
+  bottom: -12px;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+  animation: particle-rise var(--p-dur, 18s) linear infinite;
+  animation-delay: var(--p-delay, 0s);
+}
+@keyframes particle-rise {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--p-opacity, 0.5);
+  }
+  88% {
+    opacity: var(--p-opacity, 0.5);
+  }
+  100% {
+    transform: translate3d(var(--p-drift, 0px), calc(-100vh - 24px), 0);
+    opacity: 0;
+  }
+}
+
 /* === Hero: spotlight reactivo al cursor === */
 .hero-spotlight {
   background: radial-gradient(
