@@ -56,7 +56,6 @@ export default function Footer() {
                 className="logo-on-light absolute inset-0 h-10 w-10 object-contain"
               />
             </div>
-            <p className="font-display text-xl font-semibold">{site.name}</p>
           </div>
           <p className="mt-5 max-w-sm font-mono text-sm leading-relaxed text-ink-dim">
             {site.description}

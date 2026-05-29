@@ -27,7 +27,10 @@ export default function GhostNumber({ number, side = "right" }: Props) {
     const el = ref.current;
     if (!el) return;
     const isRight = side === "right";
-    const ctx = gsap.context(() => {
+    // Solo en desktop (≥768px): en móvil el número se oculta y NO creamos el
+    // ScrollTrigger, para evitar el jank de recalcular el parallax en cada scroll.
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
       // Movimiento diagonal con scrub: el número se desplaza HACIA ABAJO dentro
       // de la sección y a la vez se drifta horizontalmente HACIA EL CENTRO.
       // El cerebro lee ese movimiento diagonal como contramovimiento al scroll
@@ -54,14 +57,14 @@ export default function GhostNumber({ number, side = "right" }: Props) {
         },
       );
     });
-    return () => ctx.revert();
+    return () => mm.revert();
   }, [side]);
 
   return (
     <span
       ref={ref}
       aria-hidden="true"
-      className={`pointer-events-none absolute bottom-0 select-none font-display text-[16rem] font-bold leading-none text-ink/[0.12] md:text-[22rem] lg:text-[28rem] ${
+      className={`pointer-events-none absolute bottom-0 hidden select-none font-display text-[16rem] font-bold leading-none text-ink/[0.12] md:block md:text-[22rem] lg:text-[28rem] ${
         side === "right" ? "-right-8 md:-right-16" : "-left-8 md:-left-16"
       }`}
     >
