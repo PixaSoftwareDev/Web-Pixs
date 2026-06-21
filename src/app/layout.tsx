@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
@@ -55,6 +56,14 @@ export default function RootLayout({
         <Preloader />
         {children}
         <WhatsAppFab />
+        <Script
+          src="https://intellix.com.ar/widget/widget.js"
+          strategy="afterInteractive"
+          data-api-url="https://intellix.com.ar"
+          data-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOiJpbnRlbGxpeCIsInNjb3BlIjoid2lkZ2V0IiwiaWF0IjoxNzgyMDg0MzIxLCJleHAiOjE3ODk4NjAzMjF9.JnqThGIoQoezxr22UlWtJBqoVmr-K2CrQ66kZwqcc5c"
+          data-title="PixsBot"
+          data-placeholder="Hacé tu consulta..."
+        />
       </body>
     </html>
   );
