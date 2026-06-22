@@ -4,7 +4,7 @@ import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
-import WhatsAppFab from "@/components/ui/WhatsAppFab";
+// import WhatsAppFab from "@/components/ui/WhatsAppFab"; // temporalmente desactivado para probar widget Intellix
 import Preloader from "@/components/ui/Preloader";
 
 const spaceGrotesk = Space_Grotesk({
@@ -55,7 +55,8 @@ export default function RootLayout({
       <body className="bg-bg text-ink font-display antialiased selection:bg-neon-cyan/30 selection:text-white">
         <Preloader />
         {children}
-        <WhatsAppFab />
+        {/* Temporalmente comentado para probar el widget de Intellix (evitar dos widgets) */}
+        {/* <WhatsAppFab /> */}
         <Script
           src="https://intellix.com.ar/widget/widget.js"
           strategy="afterInteractive"
