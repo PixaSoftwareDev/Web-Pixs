@@ -61,7 +61,7 @@ export default function RootLayout({
           src="https://intellix.com.ar/widget/widget.js"
           strategy="afterInteractive"
           data-api-url="https://intellix.com.ar"
-          data-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOiJpbnRlbGxpeCIsInNjb3BlIjoid2lkZ2V0IiwiaWF0IjoxNzgyMDg0MzIxLCJleHAiOjE3ODk4NjAzMjF9.JnqThGIoQoezxr22UlWtJBqoVmr-K2CrQ66kZwqcc5c"
+          data-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOiJpbnRlbGxpeCIsInNjb3BlIjoid2lkZ2V0IiwiaWF0IjoxNzgyMTMzODA3LCJleHAiOjE3ODk5MDk4MDd9.mXy_gW7npA__1zSXFW-ynlZddTStpoKEYcfkGMEBDzc"
           data-title="PixsBot"
           data-placeholder="Hacé tu consulta..."
         />
