@@ -232,6 +232,11 @@ configurar Ferozo (pisa el A) → verificar Resend → crear casillas
 El correo igual queda operativo antes de publicar, que era la condición.
 
 - [x] Bloque 0 terminado, `app.intellix.com.ar` responde
+- [x] **TTL bajado a 900** en el `A` del raíz y de `www` (2026-08-08). El mínimo que
+      ofrece el panel de DonWeb; pasa la ventana de rollback de 4 horas a 15 minutos.
+      Los caches viejos tardan hasta 4 hs en expirar — recién después el TTL nuevo rige
+      en todos los resolvers.
+- [x] **Respaldo del DKIM y demás registros de Resend** en `docs/dns-backup-resend.txt`
 - [ ] Hosting #4729877 → Dominios configurados → Configurar → `intellix.com.ar`
 - [ ] **Verificar el `A` del raíz inmediatamente después.** Si DonWeb lo apuntó al hosting
       (`200.58.111.113`), devolverlo a donde corresponda según en qué punto del plan estemos
@@ -325,7 +330,64 @@ Nada de esto se ve en producción. Es donde va la mayor parte del tiempo.
 
 El único bloque con impacto visible. **Nunca un viernes ni un fin de semana.**
 
-- [ ] 24–48 hs antes: bajar el TTL del `A` de raíz y `www` de `14400` → `300`
+#### Los `301` — listos para pegar
+
+Van en el `server` 443 de `intellix.com.ar www.intellix.com.ar`, **antes** del
+`location /`. nginx elige el `location` más específico, así que estos ganan sobre el
+catch-all sin tocar nada más.
+
+```nginx
+        # ── Mudanza a app.intellix.com.ar ────────────────────────────────────
+        # Solo rutas de NAVEGACIÓN. El link viejo sigue funcionando: el
+        # navegador sigue el 301 solo y lo cachea, así que el salto se paga
+        # una vez y después va directo.
+        location = /login             { return 301 https://app.intellix.com.ar$request_uri; }
+        location = /loginSuperadmin   { return 301 https://app.intellix.com.ar$request_uri; }
+        location = /forgot-password   { return 301 https://app.intellix.com.ar$request_uri; }
+        location = /reset-password    { return 301 https://app.intellix.com.ar$request_uri; }
+        location = /chat              { return 301 https://app.intellix.com.ar$request_uri; }
+        location /auth/               { return 301 https://app.intellix.com.ar$request_uri; }
+        location /admin               { return 301 https://app.intellix.com.ar$request_uri; }
+        location /operator            { return 301 https://app.intellix.com.ar$request_uri; }
+        location /superadmin          { return 301 https://app.intellix.com.ar$request_uri; }
+```
+
+#### 🚨 Los widgets de clientes viven en el dominio raíz
+
+Hay **tres tenants con widget habilitado**: `galo`, `intellix`, `mutualyf` (verificado en
+la base, 2026-08-08). El widget se carga así desde el sitio del cliente:
+
+```html
+<script src="https://intellix.com.ar/widget/widget.js" data-api-url="https://intellix.com.ar">
+```
+
+**Cuando el `A` del raíz apunte a Vercel, esos sitios dejan de tener widget.** No alcanza
+con un `301`: el dominio ya no resuelve al VPS, así que el nginx ni se entera del pedido.
+Y no controlamos los sitios de los clientes para cambiarles la URL.
+
+Opciones, a decidir antes del Bloque 3:
+
+1. **Rewrites en Vercel** para `/widget/*` y `/api/*` hacia el VPS. Mantiene todo
+   funcionando sin tocar el sitio de ningún cliente. Costo: Vercel queda en el camino del
+   widget (no de la app, que vive en `app.`).
+2. **Migrar a los clientes** a `app.intellix.com.ar/widget/widget.js`. Más limpio, pero
+   hay que coordinar con cada uno y no todos van a responder.
+3. **Dejar `www` en el VPS** y publicar la landing solo en el raíz. Parcial: solo salva a
+   quien haya embebido con `www`.
+
+Sin resolver esto, el Bloque 3 rompe los widgets de clientes en producción.
+
+⚠️ **`/api/`, `/uploads/`, `/health` y `/metrics` NO se redirigen.** Dos motivos:
+
+1. Un `301` sobre un `POST` hace que varios clientes lo reintenten como `GET` y
+   pierdan el body. Rompería el login y cualquier escritura.
+2. Puede haber **widgets de clientes** embebidos apuntando a `intellix.com.ar/api`.
+   Esos tienen que seguir funcionando contra el host viejo indefinidamente.
+
+Por eso la mudanza es solo de navegación: las personas van al host nuevo, las
+integraciones siguen donde están.
+
+- [x] ~~24–48 hs antes: bajar el TTL~~ — hecho 2026-08-08, quedó en `900`
 - [ ] Avisar a la mutual: "les va a pedir la contraseña una vez"
 - [ ] nginx del VPS: agregar los `301` del raíz hacia `app.intellix.com.ar` para
       `/login`, `/admin`, `/operator`, `/superadmin`, `/chat`, `/forgot-password`,

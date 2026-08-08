@@ -1,0 +1,23 @@
+﻿RESPALDO DNS - correo transaccional de la app (Resend)
+Capturado del NS autoritativo ns1.donweb.com el 2026-08-08
+
+Si DonWeb reescribe la zona al configurar el dominio en el hosting,
+estos son los valores exactos a recrear. El DKIM es el critico:
+sin el, los mails de reset de contrasena y OTP caen en spam.
+
+--- MX ---
+Nombre: send.intellix.com.ar
+Valor:  feedback-smtp.sa-east-1.amazonses.com
+Prio:   10
+
+--- SPF ---
+Nombre: send.intellix.com.ar
+Valor:  v=spf1 include:amazonses.com ~all
+
+--- DKIM (el critico) ---
+Nombre: resend._domainkey.intellix.com.ar
+Valor:  p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCv4kqpTIx0yD2dxOeH0OE8wi+IAWAlXOdivzW/EFyJPQSiDhE4m4NImIcj08RjCrS0TMqkOAb1lP+psLbJUSe1Ic7QYdmU5il+hWVLX4O+ekoP0IqHl87bFg7kv0HPalKPh7iGc6IkT93lsx5GzejFtFhG/PvtByqJsIjC5UzWNwIDAQAB
+
+--- DMARC ---
+Nombre: _dmarc.intellix.com.ar
+Valor:  v=DMARC1; p=none;
