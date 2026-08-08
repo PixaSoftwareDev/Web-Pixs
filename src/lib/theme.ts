@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 
 export type Theme = "dark" | "light";
 
-export const THEME_STORAGE_KEY = "pixs-theme";
+// Clave propia del sitio (el panel de la app Intellix usa "intellix-theme" en localhost).
+export const THEME_STORAGE_KEY = "intellix-web-theme";
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const initial = (document.documentElement.dataset.theme as Theme) || "dark";
+    const initial = (document.documentElement.dataset.theme as Theme) || "light";
     setThemeState(initial);
     setMounted(true);
   }, []);
@@ -34,10 +35,10 @@ export const themeInitScript = `
 (function(){
   try {
     var s = localStorage.getItem('${THEME_STORAGE_KEY}');
-    var t = (s === 'light' || s === 'dark') ? s : 'dark';
+    var t = (s === 'light' || s === 'dark') ? s : 'light';
     document.documentElement.dataset.theme = t;
   } catch (e) {
-    document.documentElement.dataset.theme = 'dark';
+    document.documentElement.dataset.theme = 'light';
   }
 })();
 `;

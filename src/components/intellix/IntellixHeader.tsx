@@ -19,7 +19,7 @@ export default function IntellixHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
         scrolled
           ? "border-b border-line/10 bg-bg/70 backdrop-blur-md"
           : "bg-transparent"
@@ -28,7 +28,7 @@ export default function IntellixHeader() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo Intellix (swap por tema) */}
         <Link
-          href="/intellix"
+          href="/"
           aria-label={intellix.name}
           className="flex items-center transition-opacity hover:opacity-80"
         >
@@ -56,7 +56,7 @@ export default function IntellixHeader() {
             className="hidden items-center gap-2 font-mono text-xs uppercase tracking-widest text-ink-dim transition-colors hover:text-neon-cyan sm:inline-flex"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            por Pixs
+            Volver al inicio
           </Link>
           <ThemeToggle />
         </div>

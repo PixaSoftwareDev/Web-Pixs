@@ -1,27 +1,35 @@
 /**
  * Datos centrales de la marca. Editar acá y se actualiza en todo el sitio.
+ * El sitio es 100% Intellix; Pixs queda solo como firma en el footer.
  */
 export const site = {
-  name: "Pixs",
-  tagline: "Construimos el software que tu negocio necesita",
+  name: "Intellix",
+  // Va en el título de la pestaña: corto (el navegador recorta); el SEO largo vive en description.
+  tagline: "Chatbot IA",
   description:
-    "Pixs es un estudio de desarrollo de software. Diseñamos y construimos web apps, mobile apps, MVPs e integraciones a medida.",
-  url: "https://pixs.dev",
+    "Intellix convierte los documentos de tu empresa en un asistente que responde consultas de clientes y empleados al instante, 24/7 — y deriva a tu equipo cuando hace falta una persona.",
+  url: "https://www.intellix.com.ar",
+  // TODO(Alejo): confirmar casilla definitiva de la marca Intellix.
   email: "hola@pixs.dev",
   location: "Argentina",
+  // Firma discreta en el footer.
+  byline: "Un producto de Pixs",
   // Formato internacional sin '+', sin espacios. Argentina móvil = 549 + área + número.
   whatsapp: "5492477509003",
   logo: {
-    // Logo blanco — para fondo oscuro (tema dark).
-    // Transformaciones Cloudinary: recorta whitespace (e_trim) y normaliza a canvas
-    // cuadrado 512x512 transparente (c_lpad) para que ambos logos midan igual.
-    dark: "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_512,h_512,b_transparent/v1778943933/Log_Sin_Fondo_wqravr.png",
-    // Logo negro — para fondo claro (tema light). Mismas transformaciones.
+    // Wordmark letra blanca + isotipo color → fondo oscuro (tema dark).
+    dark: "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_1500,h_470,b_transparent/v1780009423/INTELLIX_BLACk_1_eka1bo.png",
+    // Wordmark letra negra + isotipo color → fondo claro (tema light).
     light:
-      "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_512,h_512,b_transparent/v1778945740/WhatsApp_Image_2026-05-05_at_22.55.33_1_gyeiul.png",
-    // Isotipo "P" a color (gradiente azul/violeta con </>) — sirve en ambos temas.
-    // También se usa como favicon vía src/app/icon.png.
-    icon: "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_pad,w_256,h_256,b_transparent/v1780008842/WhatsApp_Image_2026-05-05_at_20.17.36_2_ntlyrg.png",
+      "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_1500,h_470,b_transparent/v1780009528/INTELLIX_WHITE_1_s9gvxw.png",
+    // Isotipo hexagonal a color (degradé cyan→azul→violeta) — sirve en ambos temas.
+    icon: "https://res.cloudinary.com/dukv3ov6t/image/upload/c_pad,w_400,h_400,b_transparent/v1780009417/IMG_0131_df525n.png",
+    // Solo las letras "INTELLIX_" (recorte del wordmark oficial) — para el navbar.
+    wordmark: {
+      dark: "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_1500,h_470,b_transparent/c_crop,w_1500,h_152,g_south/e_trim/v1780009423/INTELLIX_BLACk_1_eka1bo.png",
+      light:
+        "https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_1500,h_470,b_transparent/c_crop,w_1500,h_152,g_south/e_trim/v1780009528/INTELLIX_WHITE_1_s9gvxw.png",
+    },
   },
   socials: {
     linkedin: "https://www.linkedin.com/company/pixstech/",

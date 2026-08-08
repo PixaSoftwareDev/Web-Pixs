@@ -1,25 +1,41 @@
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
+import BottomDock from "@/components/ui/BottomDock";
 import Hero from "@/components/sections/Hero";
-import Services from "@/components/sections/Services";
-import Product from "@/components/sections/Product";
-import TechStack from "@/components/sections/TechStack";
-import Process from "@/components/sections/Process";
+import Journey from "@/components/sections/Journey";
+import Scenarios from "@/components/sections/Scenarios";
+import Trust from "@/components/sections/Trust";
+import Control from "@/components/sections/Control";
+import Calculator from "@/components/sections/Calculator";
+import Pricing from "@/components/sections/Pricing";
 import Team from "@/components/sections/Team";
-import Contact from "@/components/sections/Contact";
+import Faq from "@/components/sections/Faq";
+import IntellixCTA from "@/components/intellix/IntellixCTA";
 
+/*
+ * Historia de venta, en orden:
+ * promesa (Hero) → identificación (Escenarios) → solución (HowItWorks)
+ * → objeción "¿inventa?" (Trust) → objeción "¿pierdo control?" (Control)
+ * → dónde vive (Channels) → cuánto (Pricing) → sin riesgo (Launch)
+ * → cercanía (Team) → cierre (CTA).
+ * "Probalo" (TryIt) está fuera hasta reactivar el widget embebido.
+ */
 export default function Home() {
   return (
     <main className="relative">
       <Navbar />
       <Hero />
-      <Services />
-      <Product />
-      <TechStack />
-      <Process />
+      <Journey />
+      <Scenarios />
+      <Trust />
+      <Control />
+      <Calculator />
+      <Pricing />
       <Team />
-      <Contact />
+      <Faq />
+      <IntellixCTA />
       <Footer />
+      <BottomDock />
     </main>
   );
 }

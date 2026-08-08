@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <title>04 derivacion</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-500.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-700.woff2") format("woff2");
+        }
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1440px;
+          height: 900px;
+          overflow: hidden;
+          background: #fcfcfd;
+          font-family: "Space Grotesk", system-ui, sans-serif;
+          color: #1e2434;
+        }
+        .d-glow {
+          position: absolute;
+          border-radius: 999px;
+          filter: blur(90px);
+          will-change: transform;
+        }
+        .d-glow-a {
+          top: -160px;
+          left: 30%;
+          width: 560px;
+          height: 560px;
+          background: rgba(124, 77, 234, 0.1);
+        }
+
+        /* Mundo 2600×900: chat a la izquierda, bandeja a la derecha */
+        .d-world {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 2600px;
+          height: 900px;
+          will-change: transform;
+        }
+
+        .d-chat {
+          position: absolute;
+          left: 300px;
+          top: 150px;
+          width: 760px;
+          height: 560px;
+          background: #ffffff;
+          border: 1px solid rgba(30, 36, 52, 0.08);
+          border-radius: 22px;
+          box-shadow: 0 40px 80px -32px rgba(30, 36, 52, 0.26);
+          padding: 26px 28px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+        .d-bubble {
+          max-width: 520px;
+          padding: 14px 20px;
+          border-radius: 18px;
+          font-size: 21px;
+          line-height: 1.45;
+          font-weight: 500;
+          will-change: transform;
+        }
+        .d-user {
+          align-self: flex-end;
+          background: linear-gradient(115deg, #2f6bf0, #4c5fe8);
+          color: #ffffff;
+          border-bottom-right-radius: 6px;
+        }
+        .d-bot {
+          align-self: flex-start;
+          background: #f2f4f9;
+          border-bottom-left-radius: 6px;
+        }
+        .d-chip {
+          align-self: flex-start;
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          margin-left: 4px;
+          padding: 9px 16px;
+          background: rgba(124, 77, 234, 0.09);
+          border: 1px solid rgba(124, 77, 234, 0.35);
+          border-radius: 999px;
+          font-size: 15px;
+          font-weight: 700;
+          color: #7c4dea;
+          opacity: 0;
+          will-change: transform;
+        }
+        .d-chip .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: #7c4dea;
+        }
+
+        /* Bandeja del operador */
+        .d-inbox {
+          position: absolute;
+          left: 1420px;
+          top: 190px;
+          width: 880px;
+          height: 500px;
+          background: #ffffff;
+          border: 1px solid rgba(30, 36, 52, 0.08);
+          border-radius: 22px;
+          box-shadow: 0 40px 80px -32px rgba(30, 36, 52, 0.26);
+          overflow: hidden;
+        }
+        .d-inbox-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 20px 26px;
+          border-bottom: 1px solid rgba(30, 36, 52, 0.07);
+        }
+        .d-inbox-title {
+          font-size: 21px;
+          font-weight: 700;
+        }
+        .d-inbox-sub {
+          font-size: 14px;
+          color: #656e82;
+          margin-top: 2px;
+        }
+        .d-bell {
+          position: relative;
+          width: 44px;
+          height: 44px;
+          border-radius: 999px;
+          background: #f2f4f9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .d-bell-dot {
+          position: absolute;
+          right: 6px;
+          top: 6px;
+          width: 12px;
+          height: 12px;
+          border-radius: 999px;
+          background: #7c4dea;
+          border: 2.5px solid #ffffff;
+          opacity: 0;
+        }
+        .d-notif {
+          position: absolute;
+          left: 50%;
+          top: 16px;
+          transform: translateX(-50%);
+          display: flex;
+          align-items: center;
+          gap: 11px;
+          padding: 13px 22px;
+          background: #1e2434;
+          color: #ffffff;
+          border-radius: 999px;
+          font-size: 16.5px;
+          font-weight: 500;
+          box-shadow: 0 18px 44px -14px rgba(30, 36, 52, 0.5);
+          opacity: 0;
+          will-change: transform;
+          white-space: nowrap;
+          z-index: 3;
+        }
+        .d-notif .dot {
+          width: 9px;
+          height: 9px;
+          border-radius: 999px;
+          background: #a78bfa;
+        }
+        .d-rows {
+          padding: 14px 18px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .d-row {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 15px 18px;
+          border-radius: 15px;
+          background: #fafbfd;
+          border: 1px solid rgba(30, 36, 52, 0.05);
+          will-change: transform;
+        }
+        .d-row-hot {
+          background: rgba(124, 77, 234, 0.05);
+          border-color: rgba(124, 77, 234, 0.28);
+          opacity: 0;
+        }
+        .d-row-ava {
+          width: 44px;
+          height: 44px;
+          flex: none;
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          font-weight: 700;
+          color: #ffffff;
+        }
+        .d-row-name {
+          font-size: 17px;
+          font-weight: 700;
+        }
+        .d-row-prev {
+          font-size: 14.5px;
+          color: #656e82;
+          margin-top: 3px;
+          max-width: 470px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .d-badge {
+          margin-left: auto;
+          position: relative;
+          width: 118px;
+          height: 34px;
+          flex: none;
+        }
+        .d-badge span {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          font-size: 13.5px;
+          font-weight: 700;
+        }
+        .d-wait {
+          background: rgba(124, 77, 234, 0.12);
+          color: #7c4dea;
+        }
+        .d-active {
+          background: rgba(47, 107, 240, 0.12);
+          color: #2f6bf0;
+          opacity: 0;
+        }
+        .d-ring {
+          position: absolute;
+          left: -10px;
+          top: -10px;
+          right: -10px;
+          bottom: -10px;
+          border-radius: 20px;
+          border: 2.5px solid rgba(124, 77, 234, 0.55);
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        .d-phrase {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 790px;
+          text-align: center;
+          font-size: 42px;
+          font-weight: 700;
+          letter-spacing: -0.01em;
+          z-index: 5;
+        }
+        .d-mask {
+          display: inline-block;
+          overflow: hidden;
+          padding-bottom: 0.12em;
+          margin-right: 0.24em;
+          vertical-align: bottom;
+        }
+        .d-word {
+          display: inline-block;
+          will-change: transform;
+        }
+        .d-violet {
+          background: linear-gradient(100deg, #7c4dea, #2f6bf0);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+      </style>
+
+      <div data-hf-id="hf-2ekj" id="root" data-composition-id="04-derivacion" data-width="1440" data-height="900">
+        <div data-hf-id="hf-o0fb" class="d-glow d-glow-a" id="dGlow"></div>
+
+        <div data-hf-id="hf-uikn" class="d-world" id="world">
+          <!-- Chat del cliente -->
+          <div data-hf-id="hf-eiaf" class="d-chat">
+            <div data-hf-id="hf-4s3l" class="d-bubble d-bot">
+              Puedo ayudarte con eso, pero veo que es un caso particular.
+            </div>
+            <div data-hf-id="hf-e00n" class="d-bubble d-user" id="dUser" style="opacity: 0">
+              Prefiero hablar con una persona 🙏
+            </div>
+            <div data-hf-id="hf-8rhp" class="d-bubble d-bot" id="dBot" style="opacity: 0">
+              ¡Claro! Te derivo con nuestro equipo. Ya tienen todo el contexto de tu consulta 👤
+            </div>
+            <div data-hf-id="hf-xf95" class="d-chip" id="dChip"><span data-hf-id="hf-9gry" class="dot"></span> Derivado a un operador</div>
+          </div>
+
+          <!-- Bandeja del operador -->
+          <div data-hf-id="hf-rkab" class="d-inbox">
+            <div data-hf-id="hf-16dm" class="d-inbox-head">
+              <div data-hf-id="hf-yeow">
+                <div data-hf-id="hf-m8a0" class="d-inbox-title">Bandeja del operador</div>
+                <div data-hf-id="hf-hc3z" class="d-inbox-sub">Conversaciones · Hoy</div>
+              </div>
+              <div data-hf-id="hf-exym" class="d-bell">
+                <svg data-hf-id="hf-771a" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#656e82" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path data-hf-id="hf-25fy" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path data-hf-id="hf-5p06" d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                <span data-hf-id="hf-va19" class="d-bell-dot" id="bellDot"></span>
+              </div>
+            </div>
+            <div data-hf-id="hf-pa0f" class="d-notif" id="notif"><span data-hf-id="hf-zcc2" class="dot"></span> Nueva derivación entrante</div>
+            <div data-hf-id="hf-7p2a" class="d-rows">
+              <div data-hf-id="hf-cg47" class="d-row d-row-hot" id="hotRow">
+                <span data-hf-id="hf-7x33" class="d-ring" id="hotRing"></span>
+                <div data-hf-id="hf-62dm" class="d-row-ava" style="background: linear-gradient(135deg, #7c4dea, #2f6bf0)">MA</div>
+                <div data-hf-id="hf-y7yw">
+                  <div data-hf-id="hf-no44" class="d-row-name">Martina A.</div>
+                  <div data-hf-id="hf-jti4" class="d-row-prev">Prefiero hablar con una persona 🙏 · derivada por PixsBot</div>
+                </div>
+                <div data-hf-id="hf-yy7a" class="d-badge">
+                  <span data-hf-id="hf-076z" class="d-wait" id="bWait">Esperando</span>
+                  <span data-hf-id="hf-3p3i" class="d-active" id="bActive">Activa</span>
+                </div>
+              </div>
+              <div data-hf-id="hf-tk37" class="d-row">
+                <div data-hf-id="hf-eywv" class="d-row-ava" style="background: #0891b2">JL</div>
+                <div data-hf-id="hf-x11t">
+                  <div data-hf-id="hf-qlm2" class="d-row-name">Jorge L.</div>
+                  <div data-hf-id="hf-hvla" class="d-row-prev">Gracias! Quedó resuelto 🙌</div>
+                </div>
+                <div data-hf-id="hf-ylnu" class="d-badge"><span data-hf-id="hf-y9ux" style="background: rgba(22,163,74,0.12); color: #16a34a">Resuelta</span></div>
+              </div>
+              <div data-hf-id="hf-hzrn" class="d-row">
+                <div data-hf-id="hf-mqpq" class="d-row-ava" style="background: #656e82">CP</div>
+                <div data-hf-id="hf-xfcu">
+                  <div data-hf-id="hf-4rlo" class="d-row-name">Carla P.</div>
+                  <div data-hf-id="hf-5bm2" class="d-row-prev">¿Tienen stock del modelo nuevo?</div>
+                </div>
+                <div data-hf-id="hf-yzyv" class="d-badge"><span data-hf-id="hf-i03n" style="background: rgba(22,163,74,0.12); color: #16a34a">Bot</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-hf-id="hf-jzpv" class="d-phrase" id="dPhrase">
+          <span data-hf-id="hf-0mos" class="d-mask"><span data-hf-id="hf-2fh6" class="d-word dw">Y</span></span>
+          <span data-hf-id="hf-xf4k" class="d-mask"><span data-hf-id="hf-nsft" class="d-word dw">cuando</span></span>
+          <span data-hf-id="hf-w87h" class="d-mask"><span data-hf-id="hf-awz4" class="d-word dw">hace</span></span>
+          <span data-hf-id="hf-wmii" class="d-mask"><span data-hf-id="hf-9gir" class="d-word dw">falta,</span></span>
+          <span data-hf-id="hf-ym1n" class="d-mask"><span data-hf-id="hf-xv6q" class="d-word dw d-violet">tu</span></span>
+          <span data-hf-id="hf-z0co" class="d-mask"><span data-hf-id="hf-xwry" class="d-word dw d-violet">equipo.</span></span>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+
+          // Cámara: un solo estado, un solo escritor.
+          // Encuadre A: chat centrado → world x = 720 - (300+760/2)= centrar 680 en 720 → x = 40
+          // Encuadre B: bandeja centrada → centro bandeja = 1860 → x = 720 - 1860 = -1140
+          const cam = { x: 40, y: 0, s: 1.06 };
+          const apply = function () {
+            const w = document.getElementById("world");
+            if (w) w.style.transform = "translate(" + cam.x + "px," + cam.y + "px) scale(" + cam.s + ")";
+          };
+          apply();
+
+          tl.fromTo("#dGlow", { x: 0 }, { x: -60, duration: 6, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+
+          // Acto 1: en el chat
+          tl.fromTo("#dUser", { opacity: 0, y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 0.5);
+          tl.fromTo("#dBot", { opacity: 0, y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 1.5);
+          tl.fromTo("#dChip", { opacity: 0, y: 12, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 2.5);
+
+          // Viaje: swoop del mundo hacia la bandeja (leg motivado por la derivación)
+          tl.fromTo(cam, { x: 40, s: 1.06 }, { x: -1140, s: 1.0, duration: 1.5, ease: "power3.inOut", immediateRender: false, onUpdate: apply }, 3.6);
+
+          // La bandeja reacciona: notificación + campanita + fila nueva
+          tl.fromTo("#notif", { opacity: 0, y: -18, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, 5.3);
+          tl.fromTo("#bellDot", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, 5.4);
+          tl.fromTo("#hotRow", { opacity: 0, y: -22, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" }, 5.9);
+          // Ring pulse alrededor de la fila (dos pulsos finitos)
+          tl.fromTo("#hotRing", { opacity: 0.9, scale: 1 }, { opacity: 0, scale: 1.04, duration: 0.9, ease: "power2.out", repeat: 1 }, 6.2);
+          tl.to("#notif", { opacity: 0, y: -14, duration: 0.4, ease: "power2.in" }, 7.6);
+
+          // El operador la toma: Esperando → Activa
+          tl.fromTo("#bWait", { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.9, duration: 0.3, ease: "power2.in" }, 8.6);
+          tl.fromTo("#bActive", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 8.8);
+
+          // Frase
+          tl.fromTo(".dw", { yPercent: 115 }, { yPercent: 0, duration: 0.6, ease: "power4.out", stagger: 0.07 }, 9.2);
+
+          // Micro push-in final para que el hold no muera
+          tl.fromTo(cam, { s: 1.0 }, { s: 1.03, duration: 2.0, ease: "sine.inOut", immediateRender: false, onUpdate: apply }, 9.8);
+
+          window.__timelines["04-derivacion"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+{
+  "category": "webpage",
+  "category_note": "Hand-authored UI recreation (WhatsApp chat area), NOT a captured page — user-supplied content, no sourcing. No catalog block covers a chat conversation; closest kin is the social-overlay card family. Builder hand-authors per this plan using motion-vocabulary primitives.",
+  "duration_s": 10,
+  "fps": 30,
+  "canvas": { "w": 720, "h": 900, "aspect": "4:5" },
+  "style": "Pixel-faithful WhatsApp light theme. Calm, real-feeling chat rhythm — the motion IS the product demo. Soft springs, no flash, no glitch. Embedded inside an iPhone mockup on a landing hero: the video is ONLY the message area (header + input bar are static HTML outside the video). Must loop perfectly: frame 0 and the last frame are both the empty chat background.",
+  "palette": [
+    "#efeae2",
+    "#d9fdd3",
+    "#ffffff",
+    "#27272a",
+    "#53bdeb",
+    "#8a8a8a",
+    "#7c4dea"
+  ],
+  "font": "system-ui / -apple-system native stack (deliberate: WhatsApp mimicry — do NOT load an HF webfont)",
+  "beats": [0.3, 2.4, 3.6, 5.4, 6.1, 8.9],
+  "export": "mp4",
+  "asset_needs": [],
+  "block": null,
+  "customize": {
+    "hand_author": true,
+    "borrow_primitives": [
+      "scale_punch (back.out(2.2), softened to back.out(1.7) for bubble pops)",
+      "slide_bottom (bubbles enter from y:+24 with the pop)",
+      "slide_left (chips slide in from x:-16 under their bubble)",
+      "scale_pulse (derivation chip accent)",
+      "fade_out (global exit, power2.in)"
+    ],
+    "loop": "seamless — last rendered frame must equal frame 0 (empty #efeae2 background); no crossfade needed if both ends are empty"
+  },
+  "content": {
+    "kind": "chat-ui",
+    "chat_background": "#efeae2 (optionally a very faint WhatsApp-style doodle pattern at <4% opacity — skip if it risks banding in the render)",
+    "layout": {
+      "container": "single column, padding 24px horizontal, 20px bottom; messages anchored to the BOTTOM of the canvas and stacked upward, like a real chat",
+      "stack_behavior": "one wrapper element holds the whole message stack; each new bubble is measured, then the wrapper translates up by that height with a soft spring (y-only, back.out(1.4), ~0.45s) at the same moment the new bubble pops in from below — GPU transform only, never animate layout properties",
+      "bubble_max_width": "78% of canvas width",
+      "bubble_gap": "10px vertical between messages, 6px between a bubble and its chip"
+    },
+    "bubble_specs": {
+      "outgoing": {
+        "align": "right",
+        "bg": "#d9fdd3",
+        "radius": "12px, top-right corner 2px (flat)",
+        "text": "#27272a, 13px, line-height 1.45",
+        "meta": "time 9px #8a8a8a + CheckCheck icon 12px, inline at bottom-right of the bubble; check color animates #8a8a8a -> #53bdeb",
+        "shadow": "0 1px 1px rgba(0,0,0,0.06)"
+      },
+      "incoming": {
+        "align": "left",
+        "bg": "#ffffff",
+        "radius": "12px, top-left corner 2px (flat)",
+        "text": "#27272a, 13px, line-height 1.45",
+        "meta": "time 9px #8a8a8a bottom-right, no checks",
+        "shadow": "0 1px 2px rgba(0,0,0,0.08)"
+      },
+      "source_chip": {
+        "style": "pill, background rgba(255,255,255,0.7), border 1px rgba(0,0,0,0.05), text #6b7280 10px, padding 4px 10px, aligned left under its incoming bubble"
+      },
+      "handoff_chip": {
+        "style": "pill, background rgba(124,77,234,0.15), text #7c4dea 10px, padding 4px 10px, aligned left under its incoming bubble"
+      },
+      "typing_indicator": {
+        "style": "small incoming bubble (#ffffff, same radius) containing 3 dots 5px #9ca3af; dots loop a stagger y-bounce/opacity pulse (each 0.15s apart, ~0.9s cycle); the whole bubble pops in with scale_grow and pops out (scale to 0.85 + fade, 0.18s) right before the real message replaces it in the same slot"
+      }
+    },
+    "messages": [
+      {
+        "id": "m1",
+        "side": "outgoing",
+        "text": "Hola! ¿Qué necesito para cambiar mi plan?",
+        "time": "23:41",
+        "checks": "double, animates gray->blue"
+      },
+      {
+        "id": "m2",
+        "side": "incoming",
+        "text": "¡Hola! Para cambiar de plan solo necesitás tu número de cliente. El cambio se hace sin costo y aplica desde el mes siguiente.",
+        "time": "23:41",
+        "chip": { "type": "source", "text": "📄 Manual de servicios · pág. 4" }
+      },
+      {
+        "id": "m3",
+        "side": "outgoing",
+        "text": "¿Y puedo hacerlo ahora?",
+        "time": "23:42",
+        "checks": "double, animates gray->blue"
+      },
+      {
+        "id": "m4",
+        "side": "incoming",
+        "text": "Sí. Te paso con alguien del equipo de Atención para dejarlo listo, ¿te parece? Ya le comparto tu consulta así no repetís nada.",
+        "time": "23:42",
+        "chip": { "type": "handoff", "text": "👤 Derivando a una persona de tu equipo…" }
+      }
+    ],
+    "timeline": [
+      { "t": 0.0, "action": "empty chat background (this exact frame is also the loop's final frame)" },
+      { "t": 0.3, "action": "m1 pops in: slide_bottom(+24px) + scale_punch from 0.85, back.out(1.7), 0.35s; NO typing indicator for the user side" },
+      { "t": 0.8, "action": "m1 checks color-shift #8a8a8a -> #53bdeb over 0.25s (≈400ms after appear, anticipated ~0.1s)" },
+      { "t": 1.2, "action": "typing indicator (incoming) pops in; dots pulse" },
+      { "t": 2.3, "action": "typing indicator pops out (0.18s)" },
+      { "t": 2.4, "action": "m2 pops in (same recipe as m1, left-anchored); stack springs up to make room" },
+      { "t": 2.75, "action": "source chip slides in under m2: slide_left(-16px) + fade, power3.out, 0.3s" },
+      { "t": 3.6, "action": "m3 pops in (outgoing); stack springs up" },
+      { "t": 4.1, "action": "m3 checks gray -> blue, 0.25s" },
+      { "t": 4.5, "action": "typing indicator (incoming) pops in; dots pulse" },
+      { "t": 5.3, "action": "typing indicator pops out" },
+      { "t": 5.4, "action": "m4 pops in (incoming); stack springs up" },
+      { "t": 5.8, "action": "handoff chip slides in under m4 (slide_left + fade, 0.3s)" },
+      { "t": 6.1, "action": "handoff chip scale_pulse to 1.06, yoyo, sine.inOut, 0.5s total — the single accent beat of the piece" },
+      { "t": 6.1, "action": "HOLD: full conversation readable, completely still (legibility >= 1.5s guaranteed)" },
+      { "t": 8.9, "action": "global exit: whole stack fade_out (opacity -> 0) + drift y:-14px, power2.in, 0.8s" },
+      { "t": 9.7, "action": "empty background held to 10.0 -> cuts seamlessly back to t=0 (perfect loop)" }
+    ]
+  },
+  "shot_brief": "A silent 10s loop that lives inside the message area of an iPhone mockup: a WhatsApp support conversation writes itself in real time. The dominant motion idea is the chat spring — every bubble pops up from the bottom with a soft back-eased spring while the existing stack glides upward to receive it, exactly like a live chat. Micro-payoffs punctuate the rhythm: read-checks tick from gray to blue, a typing indicator breathes before each reply, a source-citation chip and a violet human-handoff chip slide in as proof points, the handoff chip giving the piece its single pulse accent. After a long readable hold, everything fades up and away, returning to the empty canvas so the loop restarts without a visible seam."
+}

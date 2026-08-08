@@ -1,168 +1,88 @@
 import Image from "next/image";
-import { Linkedin, Github, Mail, MapPin } from "lucide-react";
+import Link from "next/link";
+import { Linkedin, Mail } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import WhatsAppIcon from "./WhatsAppIcon";
 
 const navLinks = [
-  { href: "#services", label: "Servicios" },
-  { href: "#stack", label: "Stack" },
-  { href: "#process", label: "Proceso" },
-  { href: "#team", label: "Nosotros" },
-  { href: "#contact", label: "Contacto" },
+  { href: "/#viaje", label: "Cómo funciona" },
+  { href: "/#confianza", label: "Confianza" },
+  { href: "/#planes", label: "Planes" },
+  { href: "/tecnologia", label: "Tecnología" },
 ];
 
+/* Footer oscuro — continúa el acto final que abre el CTA de cierre. */
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden bg-bg-soft/40">
-      {/* Accent line neon arriba — corte único de marca, no un border gris */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon-cyan/40 to-transparent" />
-      {/* Fade superior para transición suave desde Contact */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-bg to-transparent" />
+    <footer className="relative overflow-hidden bg-[#0b0f1e] text-white">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-violet/40 to-transparent" />
 
-      {/* Banda CTA */}
-      <div className="relative">
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-6 pb-12 pt-20 md:pb-16 md:pt-24">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-neon-cyan">
-              // Hablemos
-            </p>
-            <h3 className="mt-2 max-w-2xl font-display text-3xl font-bold leading-tight tracking-tight md:text-5xl">
-              ¿Tenés un proyecto en mente?
-            </h3>
-          </div>
+      {/* Franja principal: marca + navegación + contacto en una sola fila */}
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 py-12 lg:flex-row lg:justify-between">
+        <Link href="/#hero" aria-label={site.name} className="transition-opacity hover:opacity-80">
+          {/* Wordmark en su variante para fondo oscuro (letras blancas) */}
+          <Image
+            src={site.logo.wordmark.dark}
+            alt={`${site.name} logo`}
+            width={1500}
+            height={152}
+            className="h-3.5 w-auto object-contain"
+          />
+        </Link>
+
+        <nav className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
+          {navLinks.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="text-sm text-white/50 transition-colors hover:text-white"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <a
+            href={`mailto:${site.email}`}
+            aria-label="Email"
+            title={site.email}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 transition-colors hover:border-white/25 hover:text-white"
+          >
+            <Mail className="h-4 w-4" />
+          </a>
+          <a
+            href={whatsappUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 transition-colors hover:border-white/25 hover:text-white"
+          >
+            <WhatsAppIcon className="h-4 w-4" />
+          </a>
+          <a
+            href={site.socials.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 transition-colors hover:border-white/25 hover:text-white"
+          >
+            <Linkedin className="h-4 w-4" />
+          </a>
         </div>
       </div>
 
-      {/* Columnas */}
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 pb-16 md:grid-cols-12 md:gap-8">
-        {/* Brand */}
-        <div className="md:col-span-5">
-          <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10">
-              <Image
-                src={site.logo.dark}
-                alt={`${site.name} logo`}
-                width={40}
-                height={40}
-                className="logo-on-dark absolute inset-0 h-10 w-10 object-contain"
-              />
-              <Image
-                src={site.logo.light}
-                alt={`${site.name} logo`}
-                width={40}
-                height={40}
-                className="logo-on-light absolute inset-0 h-10 w-10 object-contain"
-              />
-            </div>
-          </div>
-          <p className="mt-5 max-w-sm font-mono text-sm leading-relaxed text-ink-dim">
-            {site.description}
-          </p>
-        </div>
-
-        {/* Navegación */}
-        <div className="md:col-span-3">
-          <p className="font-mono text-xs uppercase tracking-widest text-ink-dim">
-            // Navegar
-          </p>
-          <ul className="mt-4 space-y-2.5">
-            {navLinks.map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  className="font-mono text-sm text-ink transition-colors hover:text-neon-cyan"
-                >
-                  {l.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Contacto + redes */}
-        <div className="md:col-span-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-ink-dim">
-            // Contacto
-          </p>
-          <ul className="mt-4 space-y-3 font-mono text-sm">
-            <li>
-              <a
-                href={`mailto:${site.email}`}
-                className="group inline-flex items-center gap-2 text-ink transition-colors hover:text-neon-cyan"
-              >
-                <Mail className="h-4 w-4 text-neon-cyan/70 transition-colors group-hover:text-neon-cyan" />
-                {site.email}
-              </a>
-            </li>
-            <li>
-              <a
-                href={whatsappUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 text-ink transition-colors hover:text-neon-cyan"
-              >
-                <WhatsAppIcon className="h-4 w-4 text-neon-cyan/70 transition-colors group-hover:text-neon-cyan" />
-                WhatsApp
-              </a>
-            </li>
-            <li className="inline-flex items-center gap-2 text-ink-dim">
-              <MapPin className="h-4 w-4 text-ink-dim/70" />
-              {site.location}
-            </li>
-          </ul>
-
-          <p className="mt-8 font-mono text-xs uppercase tracking-widest text-ink-dim">
-            // Redes
-          </p>
-          <div className="mt-3 flex items-center gap-2">
-            <SocialIcon href={site.socials.linkedin} label="LinkedIn">
-              <Linkedin className="h-4 w-4" />
-            </SocialIcon>
-            <SocialIcon href={site.socials.github} label="GitHub">
-              <Github className="h-4 w-4" />
-            </SocialIcon>
-          </div>
-        </div>
-      </div>
-
-      {/* Línea inferior — sin border, separada por spacing y un divider sutil con neon */}
+      {/* Microlínea legal */}
       <div className="relative">
-        <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-line/20 to-transparent" />
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 md:flex-row">
-          <p className="font-mono text-xs text-ink-dim">
-            © {year} {site.name}. Todos los derechos reservados.
-          </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim">
-            v1.0.0 · built with care
+        <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="mx-auto flex max-w-7xl justify-center px-6 py-5">
+          <p className="text-xs text-white/40">
+            © {year} {site.name} · {site.location}
           </p>
         </div>
       </div>
     </footer>
-  );
-}
-
-function SocialIcon({
-  href,
-  label,
-  children,
-}: {
-  href: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="group inline-flex h-9 w-9 items-center justify-center rounded-md border border-line/15 text-ink-dim transition-all hover:border-neon-cyan/60 hover:text-neon-cyan hover:glow-cyan"
-    >
-      <span className="transition-transform group-hover:scale-110">
-        {children}
-      </span>
-    </a>
   );
 }

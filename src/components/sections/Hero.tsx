@@ -1,208 +1,226 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import ScrambleText from "@/components/ui/ScrambleText";
-import HeroTerminal from "@/components/ui/HeroTerminal";
-import HeroParticles from "@/components/ui/HeroParticles";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { Check, ChevronDown } from "lucide-react";
+import { intellix } from "@/lib/intellix";
+import { whatsappUrl } from "@/lib/site";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+const easeOut = [0.16, 1, 0.3, 1] as const;
+
+/* Título: cada palabra sube desde su propia máscara, en secuencia. */
+function MaskedWords({
+  text,
+  className,
+  baseDelay = 0.15,
+}: {
+  text: string;
+  className?: string;
+  baseDelay?: number;
+}) {
+  return (
+    <span>
+      {text.split(" ").map((word, i) => (
+        <span
+          key={i}
+          className="mr-[0.28em] inline-block overflow-hidden pb-[0.08em] align-bottom last:mr-0"
+        >
+          <motion.span
+            initial={{ y: "110%" }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: baseDelay + i * 0.06 }}
+            className={`inline-block ${className ?? ""}`}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/* El producto en video: el widget real sobre un sitio, con su propio chrome. */
+function VideoCard({ autoplay, rounded }: { autoplay: boolean; rounded: string }) {
+  return (
+    <div className={`relative overflow-hidden border border-line/10 bg-bg shadow-[var(--shadow-window)] ${rounded}`}>
+      <video
+        src="/media/hero-widget-loop.mp4"
+        poster="/media/hero-widget-loop-poster.jpg"
+        autoPlay={autoplay}
+        muted
+        loop
+        playsInline
+        aria-label="El widget de Intellix respondiendo y derivando a una persona en un sitio real"
+        className="aspect-[1440/900] w-full bg-white object-cover"
+      />
+    </div>
+  );
 }
 
 export default function Hero() {
-  const root = useRef<HTMLElement>(null);
-  const spotlight = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
+  const reducedMotion = useReducedMotion();
+  const { hero } = intellix;
 
-  // Spotlight reactivo al cursor — actualiza CSS vars directo, sin re-renders.
-  useEffect(() => {
-    const el = spotlight.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-      el.style.setProperty("--my", `${e.clientY - rect.top}px`);
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
-
-  useEffect(() => {
-    if (!root.current) return;
-    const ctx = gsap.context(() => {
-      // Entrada
-      gsap.from(".hero-eyebrow", {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-      gsap.from(".hero-title", {
-        y: 40,
-        opacity: 0,
-        duration: 1.1,
-        delay: 0.15,
-        ease: "power3.out",
-      });
-      gsap.from(".hero-sub", {
-        y: 24,
-        opacity: 0,
-        duration: 0.9,
-        delay: 0.45,
-        ease: "power2.out",
-      });
-      gsap.from(".hero-cta", {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-        delay: 0.7,
-        stagger: 0.1,
-        ease: "power2.out",
-      });
-      gsap.from(".hero-terminal", {
-        x: 30,
-        opacity: 0,
-        duration: 1.1,
-        delay: 0.4,
-        ease: "power3.out",
-      });
-
-      // Scroll: el contenido se aleja (fade + scale + lift)
-      gsap.to(".hero-content", {
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-        y: -90,
-        opacity: 0.15,
-        scale: 0.96,
-        ease: "none",
-      });
-
-      // Parallax: la aurora drifta hacia abajo más lento que el scroll
-      gsap.to(".aurora-blob", {
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.4,
-        },
-        y: 140,
-        ease: "none",
-      });
-
-      // Parallax inverso: el grid se mueve hacia arriba — sensación de profundidad
-      gsap.to(".hero-grid", {
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-        y: -60,
-        opacity: 0.2,
-        ease: "none",
-      });
-
-      // Indicador de scroll desaparece apenas el usuario empieza a scrollear
-      gsap.to(".hero-scroll-indicator", {
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=200",
-          scrub: true,
-        },
-        opacity: 0,
-        y: 20,
-        ease: "none",
-      });
-    }, root);
-    return () => ctx.revert();
-  }, []);
+  const { scrollYProgress } = useScroll({
+    target: rootRef,
+    offset: ["start start", "end start"],
+  });
+  const cueOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const windowY = useTransform(scrollYProgress, [0, 1], [0, 50]);
 
   return (
     <section
-      ref={root}
       id="hero"
-      className="relative min-h-screen overflow-hidden pt-24"
+      ref={rootRef}
+      className="relative flex min-h-[100svh] items-center overflow-hidden pb-16 pt-24 lg:pb-10"
     >
-      {/* Aurora: blobs blureados drifteando lento */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="aurora-blob aurora-blob--cyan" />
-        <div className="aurora-blob aurora-blob--magenta" />
-        <div className="aurora-blob aurora-blob--violet" />
+      {/* ── Capa derecha (desktop): el video con su formato de navegador ── */}
+      <div className="absolute right-[max(1.5rem,calc((100vw-1360px)/2))] top-1/2 hidden w-[min(56vw,980px)] -translate-y-1/2 lg:block">
+        <motion.div style={{ y: windowY }} className="will-change-transform">
+        <motion.div
+          initial={{ opacity: 0, transform: "translateX(90px)" }}
+          animate={{ opacity: 1, transform: "translateX(0px)" }}
+          transition={{ duration: 1.1, ease: easeOut, delay: 1.1 }}
+          className="relative"
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-10 rounded-[3rem] bg-gradient-to-br from-brand-blue/10 via-transparent to-brand-violet/10 blur-2xl"
+          />
+          <VideoCard autoplay={!reducedMotion} rounded="rounded-2xl" />
+        </motion.div>
+        </motion.div>
       </div>
 
-      {/* Partículas / motas de data ascendiendo */}
-      <HeroParticles />
-
-      {/* Spotlight que sigue el cursor */}
+      {/* Velo base: suave, deja ver la barra del navegador arriba */}
       <div
-        ref={spotlight}
-        className="hero-spotlight pointer-events-none absolute inset-0 z-0"
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 z-[5] hidden w-[62%] bg-gradient-to-r from-bg from-[54%] via-bg/55 via-[78%] to-transparent [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.12),black_34%)] lg:block"
+      />
+      {/* Velo reforzado en la franja del texto (medio y abajo), con bordes fundidos */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-0 top-[24%] z-[5] hidden w-[72%] bg-gradient-to-r from-bg from-[60%] via-bg/60 via-[84%] to-transparent [mask-image:linear-gradient(to_bottom,transparent,black_22%,black_100%)] lg:block"
       />
 
-      {/* Grid técnico sutil */}
-      <div className="hero-grid pointer-events-none absolute inset-0 z-0 bg-tech-grid opacity-50" />
-
-      {/* Vignette para legibilidad del texto */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-transparent via-transparent to-bg" />
-
-      <div className="hero-content relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-12 md:gap-10 md:py-28 lg:gap-16">
-        {/* Columna texto + CTAs */}
-        <div className="flex flex-col items-start gap-6 md:col-span-7">
-          <span className="hero-eyebrow inline-flex items-center gap-2 rounded-full border border-neon-cyan/30 bg-neon-cyan/5 px-3 py-1 font-mono text-xs uppercase tracking-widest text-neon-cyan">
-            <span className="h-1.5 w-1.5 rounded-full bg-neon-cyan animate-pulse-neon" />
-            Software studio · Argentina
-          </span>
-
-          <h1 className="hero-title font-display text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
-            Construimos el{" "}
-            <ScrambleText className="bg-gradient-to-r from-ink to-neon-cyan bg-clip-text font-mono text-transparent">
-              software
-            </ScrambleText>{" "}
-            que tu negocio necesita.
+      {/* ── El copy, por encima del velo ── */}
+      <div className="relative z-10 mx-auto flex w-full max-w-[1360px] flex-col px-6 lg:px-14">
+        <motion.div
+          style={{ y: copyY }}
+          className="flex flex-col items-center text-center lg:max-w-[560px] lg:items-start lg:text-left"
+        >
+          <h1 className="font-display text-[2.6rem] font-bold leading-[1.05] tracking-tight md:text-5xl xl:text-[3.6rem]">
+            <MaskedWords text={hero.titleA} />
+            <span className="block">
+              <MaskedWords
+                text={hero.titleAccent}
+                className="text-gradient-animated"
+                baseDelay={0.4}
+              />
+            </span>
+            <span className="mt-3 block text-lg font-semibold text-ink-dim md:text-xl">
+              <MaskedWords text={hero.highlight} baseDelay={0.62} />
+            </span>
           </h1>
 
-          <p className="hero-sub max-w-xl font-mono text-sm leading-relaxed text-ink-dim md:text-base">
-            {"// "} Web apps, mobile, MVPs, integraciones y agentes IA.
-            <br />
-            De la idea a producción en semanas, no en trimestres.
-          </p>
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: 0.85 }}
+            className="mt-5 max-w-xl text-base leading-relaxed text-ink-dim"
+          >
+            {hero.description}
+          </motion.p>
 
-          <div className="flex flex-wrap gap-3">
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: 1.0 }}
+            className="mt-7 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+          >
             <a
-              href="#contact"
-              className="hero-cta group inline-flex items-center gap-2 rounded-md border border-neon-cyan/50 bg-neon-cyan/10 px-6 py-3 font-mono text-xs uppercase tracking-widest text-neon-cyan transition-all hover:bg-neon-cyan/20 hover:glow-cyan"
+              href={whatsappUrl(intellix.whatsapp.demo)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-brand group inline-flex items-center gap-2.5 rounded-full py-2 pl-7 pr-2 font-display text-base font-semibold"
             >
-              Iniciar proyecto
-              <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              {hero.primaryCta}
+              <span
+                aria-hidden
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5"
+              >
                 →
               </span>
             </a>
             <a
-              href="#services"
-              className="hero-cta inline-flex items-center gap-2 rounded-md border border-line/15 bg-line/5 px-6 py-3 font-mono text-xs uppercase tracking-widest text-ink transition-all hover:border-line/25 hover:bg-line/10"
+              href="#viaje"
+              className="glass-island btn-press inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-display text-base font-semibold text-ink hover:text-brand-blue"
             >
-              Ver servicios
+              {hero.secondaryCta}
             </a>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Columna terminal — identidad "somos código" */}
-        <div className="hero-terminal w-full md:col-span-5">
-          <HeroTerminal />
-        </div>
+          {/* Anti-objeciones: fricción cero */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.35 }}
+            className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-ink-dim lg:justify-start"
+          >
+            {hero.ticks.map((t) => (
+              <span key={t} className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-brand-green" strokeWidth={3} />
+                {t}
+              </span>
+            ))}
+          </motion.p>
+
+          {/* Prueba real, discreta */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.7 }}
+            className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-ink-dim lg:justify-start"
+          >
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
+              En producción
+            </span>
+            <span aria-hidden className="text-ink-dim/40">
+              ·
+            </span>
+            <span>{hero.chat.proof[0].text}</span>
+            <span aria-hidden className="text-ink-dim/40">
+              ·
+            </span>
+            <span>{hero.chat.proof[1].text}</span>
+          </motion.p>
+        </motion.div>
+
+        {/* Mobile: el video completo debajo del copy */}
+        <motion.div
+          initial={{ opacity: 0, transform: "translateY(40px)" }}
+          animate={{ opacity: 1, transform: "translateY(0px)" }}
+          transition={{ duration: 0.9, ease: easeOut, delay: 1.1 }}
+          className="mt-10 lg:hidden"
+        >
+          <VideoCard autoplay={!reducedMotion} rounded="rounded-2xl" />
+        </motion.div>
       </div>
 
       {/* Indicador de scroll */}
-      <div className="hero-scroll-indicator absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim">
-        <span>scroll</span>
-        <span className="block h-8 w-px bg-gradient-to-b from-neon-cyan/60 to-transparent" />
-      </div>
+      <motion.a
+        href="#viaje"
+        aria-label="Ver el viaje de una consulta"
+        style={{ opacity: cueOpacity }}
+        className="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 text-ink-dim/50 transition-colors hover:text-ink md:block"
+      >
+        <span className="animate-cue block">
+          <ChevronDown className="h-5 w-5" />
+        </span>
+      </motion.a>
     </section>
   );
 }

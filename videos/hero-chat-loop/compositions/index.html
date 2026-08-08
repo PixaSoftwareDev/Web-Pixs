@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>hero-chat-loop — WhatsApp chat loop</title>
+    <!-- head is metadata only; the runtime clones the <template> contents below -->
+  </head>
+  <body>
+    <template>
+      <style>
+        /* Palette — all colors live here (shot-plan palette) */
+        #root {
+          --hcl-bg: #efeae2;
+          --hcl-out: #d9fdd3;
+          --hcl-in: #ffffff;
+          --hcl-ink: #27272a;
+          --hcl-blue: #53bdeb;
+          --hcl-gray: #8a8a8a;
+          --hcl-violet: #7c4dea; /* handoff tint (background) */
+          --hcl-violet-ink: #613cb8; /* handoff text, darkened for WCAG AA */
+          --hcl-chip-ink: #565d69; /* source-chip text, darkened for WCAG AA */
+          --hcl-dot: #9ca3af;
+
+          position: relative;
+          width: 720px;
+          height: 900px;
+          overflow: hidden;
+          font-family:
+            -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .hcl-bg {
+          position: absolute;
+          inset: 0;
+          background: var(--hcl-bg);
+        }
+
+        .hcl-scene {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        /* Message stack — anchored to the bottom, translated by GSAP only */
+        .hcl-stack {
+          position: absolute;
+          left: 24px;
+          right: 24px;
+          bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .hcl-row {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          margin-top: 10px;
+        }
+        .hcl-row:first-child {
+          margin-top: 0;
+        }
+        .hcl-row.hcl-outgoing {
+          align-items: flex-end;
+          transform-origin: 100% 100%;
+        }
+        .hcl-row.hcl-incoming {
+          align-items: flex-start;
+          transform-origin: 0% 100%;
+        }
+
+        .hcl-bubble {
+          max-width: 562px; /* 78% of the 720px canvas */
+          padding: 7px 10px 7px 11px;
+          font-size: 13px;
+          line-height: 1.45;
+          color: var(--hcl-ink);
+        }
+        .hcl-outgoing .hcl-bubble {
+          background: var(--hcl-out);
+          border-radius: 12px;
+          border-top-right-radius: 2px;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+        }
+        .hcl-incoming .hcl-bubble {
+          background: var(--hcl-in);
+          border-radius: 12px;
+          border-top-left-radius: 2px;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .hcl-meta {
+          display: inline-block;
+          white-space: nowrap;
+          margin-left: 8px;
+          font-size: 9px;
+          color: var(--hcl-gray);
+          vertical-align: baseline;
+        }
+        .hcl-checks {
+          display: inline-block;
+          margin-left: 2px;
+          color: var(--hcl-gray);
+          vertical-align: -2px;
+        }
+        .hcl-checks svg {
+          display: block;
+          width: 12px;
+          height: 12px;
+        }
+
+        /* Chips under incoming bubbles */
+        .hcl-chip {
+          display: inline-block;
+          align-self: flex-start;
+          margin-top: 6px;
+          padding: 4px 10px;
+          font-size: 10px;
+          border-radius: 999px;
+          transform-origin: 0% 50%;
+        }
+        .hcl-chip-source {
+          background: rgba(255, 255, 255, 0.7);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          color: var(--hcl-chip-ink);
+        }
+        .hcl-chip-handoff {
+          background: rgba(124, 77, 234, 0.15);
+          color: var(--hcl-violet-ink);
+        }
+
+        /* Typing indicator — fixed slot at the bottom-left of the chat area */
+        .hcl-typing {
+          position: absolute;
+          left: 24px;
+          bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 10px 12px;
+          background: var(--hcl-in);
+          border-radius: 12px;
+          border-top-left-radius: 2px;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+          transform-origin: 0% 100%;
+        }
+        .hcl-dot {
+          display: block;
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: var(--hcl-dot);
+          opacity: 0.5;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="hero-chat-loop"
+        data-start="0"
+        data-duration="10"
+        data-fps="30"
+        data-width="720"
+        data-height="900"
+      >
+        <div
+          id="hero-chat-loop-scene"
+          class="clip hcl-scene"
+          data-start="0"
+          data-duration="10"
+          data-track-index="1"
+        >
+          <div id="hero-chat-loop-bg" class="hcl-bg"></div>
+
+          <div
+            id="hero-chat-loop-stack"
+            class="hcl-stack"
+            data-layout-allow-overflow="true"
+          >
+            <div id="hero-chat-loop-row-m1" class="hcl-row hcl-outgoing">
+              <div id="hero-chat-loop-m1" class="hcl-bubble">
+                Hola! &iquest;Qu&eacute; necesito para cambiar mi plan?<span
+                  class="hcl-meta" data-layout-ignore="true"
+                  >23:41</span
+                ><span id="hero-chat-loop-checks-m1" class="hcl-checks"
+                  ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5" /><path d="m22 10-7.5 7.5L13 16" /></svg></span
+                >
+              </div>
+            </div>
+
+            <div id="hero-chat-loop-row-m2" class="hcl-row hcl-incoming">
+              <div id="hero-chat-loop-m2" class="hcl-bubble">
+                &iexcl;Hola! Para cambiar de plan solo necesit&aacute;s tu
+                n&uacute;mero de cliente. El cambio se hace sin costo y aplica
+                desde el mes siguiente.<span class="hcl-meta" data-layout-ignore="true">23:41</span>
+              </div>
+              <div
+                id="hero-chat-loop-chip-m2"
+                class="hcl-chip hcl-chip-source"
+              >
+                &#128196; Manual de servicios &middot; p&aacute;g. 4
+              </div>
+            </div>
+
+            <div id="hero-chat-loop-row-m3" class="hcl-row hcl-outgoing">
+              <div id="hero-chat-loop-m3" class="hcl-bubble">
+                &iquest;Y puedo hacerlo ahora?<span class="hcl-meta" data-layout-ignore="true">23:42</span
+                ><span id="hero-chat-loop-checks-m3" class="hcl-checks"
+                  ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5" /><path d="m22 10-7.5 7.5L13 16" /></svg></span
+                >
+              </div>
+            </div>
+
+            <div id="hero-chat-loop-row-m4" class="hcl-row hcl-incoming">
+              <div id="hero-chat-loop-m4" class="hcl-bubble">
+                S&iacute;. Te paso con alguien del equipo de Atenci&oacute;n
+                para dejarlo listo, &iquest;te parece? Ya le comparto tu
+                consulta as&iacute; no repet&iacute;s nada.<span
+                  class="hcl-meta" data-layout-ignore="true"
+                  >23:42</span
+                >
+              </div>
+              <div
+                id="hero-chat-loop-chip-m4"
+                class="hcl-chip hcl-chip-handoff"
+              >
+                &#128100; Derivando a una persona de tu equipo&#8230;
+              </div>
+            </div>
+          </div>
+
+          <div id="hero-chat-loop-typing" class="hcl-typing">
+            <span id="hero-chat-loop-dot-1" class="hcl-dot"></span>
+            <span id="hero-chat-loop-dot-2" class="hcl-dot"></span>
+            <span id="hero-chat-loop-dot-3" class="hcl-dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var $ = function (id) {
+            return document.getElementById("hero-chat-loop-" + id);
+          };
+
+          var stack = $("stack");
+          var typing = $("typing");
+          var rows = [$("row-m1"), $("row-m2"), $("row-m3"), $("row-m4")];
+          var GAP = 10;
+
+          // Measure once, synchronously, from the static end-state layout.
+          // h[i] = each row's height contribution in the stack (top gap included).
+          var h = rows.map(function (el, i) {
+            return el.offsetHeight + (i === 0 ? 0 : GAP);
+          });
+          var hT = typing.offsetHeight + GAP; // room the typing bubble needs
+
+          // Wrapper y offsets (positive = pushed down below the frame).
+          var yAll = h[0] + h[1] + h[2] + h[3] + 40; // everything hidden (empty bg)
+          var yM1 = h[1] + h[2] + h[3]; // only m1 at the bottom
+          var yM2 = h[2] + h[3]; // m1 + m2 visible
+          var yM3 = h[3]; // m1..m3 visible
+          var yM4 = 0; // full conversation (CSS ground truth)
+
+          window.__timelines = window.__timelines || {};
+          var tl = gsap.timeline({ paused: true });
+
+          // ---- t=0 gates (seek-safe: frame 0 is the empty background) ----
+          tl.set(stack, { y: yAll }, 0);
+          tl.set(rows, { autoAlpha: 0 }, 0);
+          tl.set([$("chip-m2"), $("chip-m4"), typing], { autoAlpha: 0 }, 0);
+
+          // ---- motion recipes (shot-plan primitives) ----
+          // scale_punch + slide_bottom, softened to back.out(1.7)
+          function popIn(el, t) {
+            tl.fromTo(
+              el,
+              { autoAlpha: 0, y: 24, scale: 0.85 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.35,
+                ease: "back.out(1.7)",
+              },
+              t
+            );
+          }
+          // stack spring: y-only, soft back.out(1.4) — explicit endpoints (seek-safe)
+          function spring(fromY, toY, t) {
+            tl.fromTo(
+              stack,
+              { y: fromY },
+              { y: toY, duration: 0.45, ease: "back.out(1.4)" },
+              t
+            );
+          }
+          // chips: slide_left + fade
+          function chipIn(el, t) {
+            tl.fromTo(
+              el,
+              { autoAlpha: 0, x: -16 },
+              { autoAlpha: 1, x: 0, duration: 0.3, ease: "power3.out" },
+              t
+            );
+          }
+          // typing indicator in/out
+          function typingIn(t) {
+            tl.fromTo(
+              typing,
+              { autoAlpha: 0, scale: 0.6 },
+              { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.4)" },
+              t
+            );
+          }
+          function typingOut(t) {
+            tl.fromTo(
+              typing,
+              { autoAlpha: 1, scale: 1 },
+              { autoAlpha: 0, scale: 0.85, duration: 0.18, ease: "power2.in" },
+              t
+            );
+          }
+          // dots: staggered bounce/opacity pulse, finite yoyo repeats
+          function dotsPulse(t0) {
+            for (var i = 1; i <= 3; i++) {
+              tl.fromTo(
+                $("dot-" + i),
+                { y: 0, opacity: 0.5 },
+                {
+                  y: -4,
+                  opacity: 1,
+                  duration: 0.225,
+                  ease: "sine.inOut",
+                  yoyo: true,
+                  repeat: 3,
+                },
+                t0 + (i - 1) * 0.15
+              );
+            }
+          }
+          function checksToBlue(id, t) {
+            tl.fromTo(
+              $(id),
+              { color: "#8a8a8a" },
+              { color: "#53bdeb", duration: 0.25 },
+              t
+            );
+          }
+
+          // ---- shot-plan timeline ----
+          popIn(rows[0], 0.3); // m1 pops in
+          spring(yAll, yM1, 0.3);
+          checksToBlue("checks-m1", 0.8); // m1 checks gray -> blue
+
+          typingIn(1.2); // typing indicator #1
+          spring(yM1, yM1 - hT, 1.2);
+          dotsPulse(1.35);
+          typingOut(2.3);
+
+          popIn(rows[1], 2.4); // m2 pops in
+          spring(yM1 - hT, yM2, 2.4);
+          chipIn($("chip-m2"), 2.75); // source chip
+
+          popIn(rows[2], 3.6); // m3 pops in
+          spring(yM2, yM3, 3.6);
+          checksToBlue("checks-m3", 4.1); // m3 checks gray -> blue
+
+          typingIn(4.5); // typing indicator #2
+          spring(yM3, yM3 - hT, 4.5);
+          dotsPulse(4.65);
+          typingOut(5.3);
+
+          popIn(rows[3], 5.4); // m4 pops in
+          spring(yM3 - hT, yM4, 5.4);
+          chipIn($("chip-m4"), 5.8); // handoff chip
+
+          // single accent beat: handoff chip pulse
+          tl.fromTo(
+            $("chip-m4"),
+            { scale: 1 },
+            {
+              scale: 1.06,
+              duration: 0.25,
+              yoyo: true,
+              repeat: 1,
+              ease: "sine.inOut",
+            },
+            6.1
+          );
+
+          // HOLD 6.1 -> 8.9 (fully readable, still)
+
+          // global exit: fade + upward drift, back to the empty background
+          tl.fromTo(
+            stack,
+            { autoAlpha: 1, y: 0 },
+            { autoAlpha: 0, y: -14, duration: 0.8, ease: "power2.in" },
+            8.9
+          );
+
+          window.__timelines["hero-chat-loop"] = tl;
+          tl.seek(0);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

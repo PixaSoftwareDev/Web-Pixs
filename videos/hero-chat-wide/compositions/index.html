@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>hero-chat sub-composition</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          --c-white: #ffffff;
+          --c-panel-border: #f0f0f2;
+          --c-bubble-bot: #f4f4f5;
+          --c-ink: #27272a;
+          --c-ink-strong: #18181b;
+          --c-dim: #71717a;
+          --c-dim-2: #a1a1aa;
+          --c-violet: #a855f7;
+          --c-violet-2: #9333ea;
+          --c-violet-3: #7c3aed;
+          --c-violet-soft: #e9d5ff;
+          --c-green: #22c55e;
+          position: relative;
+          width: 1440px;
+          height: 900px;
+          overflow: hidden;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+        .hc-bg {
+          position: absolute;
+          inset: 0;
+          background: var(--c-white);
+        }
+
+        /* ---------- sidebar ---------- */
+        .hc-sidebar {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 260px;
+          height: 900px;
+          background: var(--c-white);
+          padding: 44px 32px;
+        }
+        .hc-sidebar-title {
+          font-size: 40px;
+          font-weight: 700;
+          color: var(--c-ink-strong);
+          line-height: 1.2;
+        }
+        .hc-sidebar-p {
+          margin-top: 16px;
+          max-width: 196px;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 1.6;
+          color: var(--c-dim);
+        }
+        .hc-sidebar-p strong {
+          color: var(--c-dim);
+          font-weight: 700;
+        }
+        .hc-sidebar-status {
+          position: absolute;
+          left: 32px;
+          bottom: 30px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 13px;
+          color: var(--c-dim);
+        }
+        .hc-dot {
+          border-radius: 999px;
+          background: var(--c-green);
+        }
+        .hc-dot-8 {
+          width: 8px;
+          height: 8px;
+        }
+        .hc-dot-6 {
+          width: 6px;
+          height: 6px;
+        }
+
+        /* ---------- main panel ---------- */
+        .hc-panel {
+          position: absolute;
+          left: 280px;
+          top: 12px;
+          width: 1146px;
+          height: 876px;
+          background: var(--c-white);
+          border: 1px solid var(--c-panel-border);
+          border-radius: 24px;
+        }
+
+        /* ---------- bot pill ---------- */
+        .hc-pill {
+          position: absolute;
+          left: 1130px;
+          top: 34px;
+          width: 160px;
+          height: 60px;
+          background: var(--c-white);
+          border-radius: 16px;
+          box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+        }
+        .hc-avatar {
+          position: relative;
+          flex: none;
+          border-radius: 999px;
+          background: linear-gradient(135deg, var(--c-violet), var(--c-violet-3));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .hc-avatar-40 {
+          width: 40px;
+          height: 40px;
+        }
+        .hc-avatar-34 {
+          width: 34px;
+          height: 34px;
+        }
+        .hc-avatar-status {
+          position: absolute;
+          right: -1px;
+          bottom: -1px;
+          border-radius: 999px;
+          background: var(--c-green);
+          border: 2px solid var(--c-white);
+        }
+        .hc-avatar-status-10 {
+          width: 10px;
+          height: 10px;
+        }
+        .hc-avatar-status-8 {
+          width: 8px;
+          height: 8px;
+        }
+        .hc-pill-name {
+          font-size: 15px;
+          font-weight: 700;
+          color: var(--c-ink-strong);
+          line-height: 1.3;
+        }
+        .hc-pill-status {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 12px;
+          color: var(--c-dim);
+          line-height: 1.3;
+        }
+
+        /* ---------- chat stack ---------- */
+        .hc-stack {
+          position: absolute;
+          z-index: 2;
+          left: 500px;
+          width: 720px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+        .hc-row {
+          display: flex;
+          align-items: flex-end;
+          gap: 10px;
+        }
+        .hc-row-user {
+          justify-content: flex-end;
+        }
+        .hc-hidden {
+          opacity: 0;
+          visibility: hidden;
+        }
+        .hc-bubble {
+          font-size: 16.5px;
+          font-weight: 400;
+          line-height: 1.5;
+          padding: 12px 16px;
+        }
+        .hc-bubble-bot {
+          background: var(--c-bubble-bot);
+          color: var(--c-ink);
+          border-radius: 18px 18px 18px 6px;
+          max-width: 470px;
+        }
+        .hc-bubble-user {
+          background: linear-gradient(135deg, var(--c-violet-2), var(--c-violet-3));
+          color: var(--c-white);
+          border-radius: 18px 18px 6px 18px;
+          max-width: 430px;
+          box-shadow: 0 2px 10px rgba(139, 61, 242, 0.22);
+        }
+
+        /* typing indicator (absolute overlay inside the stack) */
+        .hc-typing {
+          position: absolute;
+          left: 0;
+          display: flex;
+          align-items: flex-end;
+          gap: 10px;
+          opacity: 0;
+          visibility: hidden;
+        }
+        .hc-typing-bubble {
+          width: 78px;
+          height: 44px;
+          background: var(--c-bubble-bot);
+          border-radius: 18px 18px 18px 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+        }
+        .hc-typing-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: var(--c-dim-2);
+        }
+
+        /* ---------- input bar ---------- */
+        .hc-input {
+          position: absolute;
+          z-index: 1;
+          left: 500px;
+          top: 824px;
+          width: 720px;
+          height: 52px;
+          background: var(--c-white);
+          border: 1.5px solid var(--c-violet-soft);
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+        }
+        .hc-clip-icon {
+          flex: none;
+          margin-left: 18px;
+          width: 20px;
+          height: 20px;
+          color: var(--c-dim-2);
+        }
+        .hc-input-textzone {
+          position: relative;
+          flex: 1;
+          height: 100%;
+          margin-left: 12px;
+        }
+        .hc-placeholder {
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 15px;
+          color: var(--c-dim);
+          white-space: nowrap;
+        }
+        .hc-typed-group {
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          display: flex;
+          align-items: center;
+          opacity: 0;
+          visibility: hidden;
+        }
+        .hc-typed-text {
+          font-size: 15px;
+          color: var(--c-ink);
+          white-space: nowrap;
+        }
+        .hc-caret {
+          flex: none;
+          width: 1.5px;
+          height: 18px;
+          margin-left: 2px;
+          background: var(--c-violet);
+          opacity: 0;
+        }
+        .hc-send {
+          position: absolute;
+          right: 6px;
+          top: 50%;
+          margin-top: -20px;
+          width: 40px;
+          height: 40px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, var(--c-violet), var(--c-violet-3));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .hc-icon {
+          display: block;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="hero-chat"
+        data-width="1440"
+        data-height="900"
+      >
+        <div class="hc-bg"></div>
+
+        <!-- sidebar -->
+        <div class="hc-sidebar">
+          <div class="hc-sidebar-title">&iexcl;Hola!</div>
+          <div class="hc-sidebar-p">
+            Est&aacute;s en el chat de <strong>Intellix</strong>. Escribinos tu
+            consulta y PixsBot te responde al instante.
+          </div>
+          <div class="hc-sidebar-status">
+            <span class="hc-dot hc-dot-8"></span>
+            <span>En l&iacute;nea</span>
+          </div>
+        </div>
+
+        <!-- main panel -->
+        <div class="hc-panel"></div>
+
+        <!-- chat stack (bottom-anchored via measured top + translateY) -->
+        <div id="hc-stack" class="hc-stack" data-layout-allow-overflow="true">
+          <div id="hc-m1" class="hc-row hc-row-bot">
+            <div class="hc-avatar hc-avatar-34">
+              <svg class="hc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              <span class="hc-avatar-status hc-avatar-status-8"></span>
+            </div>
+            <div class="hc-bubble hc-bubble-bot">Hola! Soy tu asistente virtual de Pixs &#128075; &iquest;Decime en qu&eacute; puedo ayudarte?</div>
+          </div>
+
+          <div id="hc-m2" class="hc-row hc-row-user hc-hidden">
+            <div class="hc-bubble hc-bubble-user">Hola! &iquest;Qu&eacute; servicios ofrecen?</div>
+          </div>
+
+          <div id="hc-m3" class="hc-row hc-row-bot hc-hidden">
+            <div class="hc-avatar hc-avatar-34">
+              <svg class="hc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              <span class="hc-avatar-status hc-avatar-status-8"></span>
+            </div>
+            <div class="hc-bubble hc-bubble-bot">Pixs ofrece seis servicios: desarrollo web, apps mobile, MVPs, integraciones y APIs, soluciones de IA y e-commerce.</div>
+          </div>
+
+          <div id="hc-m4" class="hc-row hc-row-user hc-hidden">
+            <div class="hc-bubble hc-bubble-user">&iquest;Y c&oacute;mo puedo contactarlos?</div>
+          </div>
+
+          <div id="hc-m5" class="hc-row hc-row-bot hc-hidden">
+            <div class="hc-avatar hc-avatar-34">
+              <svg class="hc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              <span class="hc-avatar-status hc-avatar-status-8"></span>
+            </div>
+            <div class="hc-bubble hc-bubble-bot">Pod&eacute;s escribirnos por WhatsApp, email o LinkedIn. Y si quer&eacute;s, te paso con alguien del equipo ahora mismo. &#128075;</div>
+          </div>
+
+          <!-- typing indicators overlay the reply slots -->
+          <div id="hc-typing1" class="hc-typing">
+            <div class="hc-avatar hc-avatar-34">
+              <svg class="hc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              <span class="hc-avatar-status hc-avatar-status-8"></span>
+            </div>
+            <div class="hc-typing-bubble">
+              <span class="hc-typing-dot hc-t1-dot"></span>
+              <span class="hc-typing-dot hc-t1-dot"></span>
+              <span class="hc-typing-dot hc-t1-dot"></span>
+            </div>
+          </div>
+          <div id="hc-typing2" class="hc-typing">
+            <div class="hc-avatar hc-avatar-34">
+              <svg class="hc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              <span class="hc-avatar-status hc-avatar-status-8"></span>
+            </div>
+            <div class="hc-typing-bubble">
+              <span class="hc-typing-dot hc-t2-dot"></span>
+              <span class="hc-typing-dot hc-t2-dot"></span>
+              <span class="hc-typing-dot hc-t2-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- input bar (below the stack in z-order: bubbles pop over it) -->
+        <div class="hc-input">
+          <svg class="hc-clip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          <div class="hc-input-textzone">
+            <span id="hc-placeholder" class="hc-placeholder">Escrib&iacute; un mensaje...</span>
+            <span id="hc-typed-g1" class="hc-typed-group">
+              <span id="hc-typed-t1" class="hc-typed-text"></span>
+              <span id="hc-caret1" class="hc-caret"></span>
+            </span>
+            <span id="hc-typed-g2" class="hc-typed-group">
+              <span id="hc-typed-t2" class="hc-typed-text"></span>
+              <span id="hc-caret2" class="hc-caret"></span>
+            </span>
+          </div>
+          <div id="hc-send" class="hc-send">
+            <svg class="hc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </div>
+        </div>
+
+        <!-- floating bot pill -->
+        <div class="hc-pill">
+          <div class="hc-avatar hc-avatar-40">
+            <svg class="hc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            <span class="hc-avatar-status hc-avatar-status-10"></span>
+          </div>
+          <div>
+            <div class="hc-pill-name">PixsBot</div>
+            <div class="hc-pill-status">
+              <span class="hc-dot hc-dot-6"></span>
+              <span>En l&iacute;nea</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var q = function (sel) {
+            return document.querySelector(sel);
+          };
+          var stack = q("#hc-stack");
+          var rows = [q("#hc-m1"), q("#hc-m2"), q("#hc-m3"), q("#hc-m4"), q("#hc-m5")];
+          var ind1 = q("#hc-typing1");
+          var ind2 = q("#hc-typing2");
+          var GAP = 14;
+          var ANCHOR = 806; // bottom edge of the message stack (canvas y)
+          var H_IND = 44;
+
+          // ---- static layout (measured once, deterministic: system fonts, fixed canvas) ----
+          var H = stack.offsetHeight; // full conversation height (all rows in flow)
+          stack.style.top = ANCHOR - H + "px";
+          var h = rows.map(function (r) {
+            return r.offsetHeight;
+          });
+          // typing indicators overlay the reply slots (m3 / m5)
+          ind1.style.top = rows[2].offsetTop + "px";
+          ind2.style.top = rows[4].offsetTop + "px";
+
+          // translateY states of the stack (0 = full conversation, bottom = ANCHOR)
+          var yRest = H - h[0]; // only m1 visible
+          var yA = yRest - (GAP + h[1]); // + m2
+          var yB = yA - (GAP + H_IND); // + typing 1
+          var yC = yA - (GAP + h[2]); // + m3
+          var yD = yC - (GAP + h[3]); // + m4
+          var yE = yD - (GAP + H_IND); // + typing 2
+          var yF = 0; // + m5
+
+          gsap.set(stack, { y: yRest });
+
+          var tl = gsap.timeline({ paused: true });
+          var IR = { immediateRender: false };
+
+          // ---- helpers -------------------------------------------------------
+          var Q1 = "Hola! ¿Qué servicios ofrecen?"; // 29 chars
+          var Q2 = "¿Y cómo puedo contactarlos?"; // 27 chars
+
+          function typewriter(proxy, textEl, full, t0, dur) {
+            tl.fromTo(
+              proxy,
+              { n: 0 },
+              {
+                n: full.length,
+                duration: dur,
+                ease: "none",
+                immediateRender: false,
+                onUpdate: function () {
+                  textEl.textContent = full.slice(0, Math.round(proxy.n));
+                },
+              },
+              t0
+            );
+          }
+
+          function caretBlink(caret, t0, t1) {
+            var on = true;
+            for (var t = t0; t < t1 - 0.02; t += 0.265) {
+              tl.set(caret, { opacity: on ? 1 : 0 }, t);
+              on = !on;
+            }
+            tl.set(caret, { opacity: 0 }, t1);
+          }
+
+          function sendPulse(t0) {
+            var btn = "#hc-send";
+            tl.fromTo(btn, { scale: 1 }, { scale: 1.15, duration: 0.08, ease: "power2.out", immediateRender: false }, t0);
+            tl.fromTo(btn, { scale: 1.15 }, { scale: 1, duration: 0.3, ease: "back.out(2)", immediateRender: false }, t0 + 0.08);
+          }
+
+          function activatePulse(t0) {
+            var btn = "#hc-send";
+            tl.fromTo(btn, { scale: 1 }, { scale: 1.06, duration: 0.1, ease: "sine.out", immediateRender: false }, t0);
+            tl.fromTo(btn, { scale: 1.06 }, { scale: 1, duration: 0.1, ease: "sine.in", immediateRender: false }, t0 + 0.1);
+          }
+
+          function dotsBounce(sel, t0) {
+            var dots = document.querySelectorAll(sel);
+            for (var i = 0; i < dots.length; i++) {
+              tl.fromTo(
+                dots[i],
+                { y: 0 },
+                { y: -5, duration: 0.2, ease: "sine.inOut", yoyo: true, repeat: 3, immediateRender: false },
+                t0 + i * 0.14
+              );
+            }
+          }
+
+          // ---- beat: type-q1 (0.6 - 1.7) ------------------------------------
+          tl.fromTo("#hc-placeholder", { opacity: 1 }, { opacity: 0, duration: 0.15, ease: "power1.out", immediateRender: false }, 0.6);
+          tl.fromTo("#hc-typed-g1", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.05, ease: "none", immediateRender: false }, 0.58);
+          typewriter({ n: 0 }, q("#hc-typed-t1"), Q1, 0.6, 1.1);
+          caretBlink("#hc-caret1", 0.6, 1.7);
+          activatePulse(1.5);
+
+          // ---- beat: send-q1 (1.7 - 2.1) ------------------------------------
+          tl.fromTo("#hc-typed-g1", { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.12, ease: "power1.in", immediateRender: false }, 1.7);
+          sendPulse(1.7);
+          tl.fromTo(
+            "#hc-m2",
+            { autoAlpha: 0, scale: 0.7, y: 26 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.8)", transformOrigin: "bottom right", immediateRender: false },
+            1.7
+          );
+          tl.fromTo(stack, { y: yRest }, { y: yA, duration: 0.35, ease: "power2.out", immediateRender: false }, 1.7);
+          tl.fromTo("#hc-placeholder", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out", immediateRender: false }, 1.95);
+
+          // ---- beat: typing-1 (2.2 - 3.4) -----------------------------------
+          tl.fromTo(
+            ind1,
+            { autoAlpha: 0, scale: 0.5 },
+            { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)", transformOrigin: "bottom left", immediateRender: false },
+            2.2
+          );
+          tl.fromTo(stack, { y: yA }, { y: yB, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.2);
+          dotsBounce(".hc-t1-dot", 2.3);
+
+          // ---- beat: reply-1 (3.4 - 3.85) -----------------------------------
+          tl.fromTo(ind1, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: 0.9, duration: 0.18, ease: "power2.in", transformOrigin: "bottom left", immediateRender: false }, 3.4);
+          tl.fromTo(
+            "#hc-m3",
+            { autoAlpha: 0, scale: 0.85, y: 14 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(1.4)", transformOrigin: "bottom left", immediateRender: false },
+            3.4
+          );
+          tl.fromTo(stack, { y: yB }, { y: yC, duration: 0.35, ease: "power2.out", immediateRender: false }, 3.4);
+
+          // ---- beat: type-q2 (4.9 - 5.95) -----------------------------------
+          tl.fromTo("#hc-placeholder", { opacity: 1 }, { opacity: 0, duration: 0.15, ease: "power1.out", immediateRender: false }, 4.9);
+          tl.fromTo("#hc-typed-g2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.05, ease: "none", immediateRender: false }, 4.88);
+          typewriter({ n: 0 }, q("#hc-typed-t2"), Q2, 4.9, 1.05);
+          caretBlink("#hc-caret2", 4.9, 5.95);
+          activatePulse(5.72);
+
+          // ---- beat: send-q2 (5.95 - 6.35) ----------------------------------
+          tl.fromTo("#hc-typed-g2", { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.12, ease: "power1.in", immediateRender: false }, 5.95);
+          sendPulse(5.95);
+          tl.fromTo(
+            "#hc-m4",
+            { autoAlpha: 0, scale: 0.7, y: 26 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.8)", transformOrigin: "bottom right", immediateRender: false },
+            5.95
+          );
+          tl.fromTo(stack, { y: yC }, { y: yD, duration: 0.35, ease: "power2.out", immediateRender: false }, 5.95);
+          tl.fromTo("#hc-placeholder", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out", immediateRender: false }, 6.2);
+
+          // ---- beat: typing-2 (6.45 - 7.6) ----------------------------------
+          tl.fromTo(
+            ind2,
+            { autoAlpha: 0, scale: 0.5 },
+            { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)", transformOrigin: "bottom left", immediateRender: false },
+            6.45
+          );
+          tl.fromTo(stack, { y: yD }, { y: yE, duration: 0.3, ease: "power2.out", immediateRender: false }, 6.45);
+          dotsBounce(".hc-t2-dot", 6.55);
+
+          // ---- beat: reply-2 (7.6 - 8.05) -----------------------------------
+          tl.fromTo(ind2, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: 0.9, duration: 0.18, ease: "power2.in", transformOrigin: "bottom left", immediateRender: false }, 7.6);
+          tl.fromTo(
+            "#hc-m5",
+            { autoAlpha: 0, scale: 0.85, y: 14 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(1.4)", transformOrigin: "bottom left", immediateRender: false },
+            7.6
+          );
+          tl.fromTo(stack, { y: yE }, { y: yF, duration: 0.35, ease: "power2.out", immediateRender: false }, 7.6);
+
+          // ---- beat: reset-fade (10.4 - 11.3) -------------------------------
+          var fadeTargets = ["#hc-m2", "#hc-m3", "#hc-m4", "#hc-m5"];
+          for (var i = 0; i < fadeTargets.length; i++) {
+            tl.fromTo(
+              fadeTargets[i],
+              { autoAlpha: 1, y: 0 },
+              { autoAlpha: 0, y: -10, duration: 0.5, ease: "power2.in", immediateRender: false },
+              10.4 + i * 0.09
+            );
+          }
+          tl.fromTo(stack, { y: yF }, { y: yRest, duration: 0.8, ease: "power2.inOut", immediateRender: false }, 10.4);
+
+          window.__timelines["hero-chat"] = tl;
+          tl.seek(0);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

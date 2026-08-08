@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>operator-inbox sub-composition</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          --c-page: #fafafa;
+          --c-white: #ffffff;
+          --c-soft: #f3f4f6;
+          --c-border: #e5e7eb;
+          --c-ink: #111827;
+          --c-ink-2: #374151;
+          --c-dim: #6b7280;
+          --c-dim-2: #9ca3af;
+          --c-violet: #6d5ef0;
+          --c-violet-ink: #5c4de0;
+          --c-violet-soft: #efedfd;
+          --c-violet-border: #c7bffb;
+          --c-blue: #1d4ed8;
+          --c-blue-soft: #eff6ff;
+          --c-blue-border: #dbeafe;
+          --c-green-ink: #047857;
+          --c-green-soft: #ecfdf5;
+          --c-green-border: #d1fae5;
+          --c-green: #22c55e;
+          --c-wa: #25d366;
+          --c-wa-soft: #dcfce7;
+          --c-wa-ink: #15803d;
+          position: relative;
+          width: 1440px;
+          height: 760px;
+          overflow: hidden;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+        .oi-bg {
+          position: absolute;
+          inset: 0;
+          background: var(--c-page);
+        }
+
+        /* ---------- sidebar rail ---------- */
+        .oi-rail {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 64px;
+          height: 760px;
+          background: var(--c-white);
+          border-right: 1px solid var(--c-border);
+        }
+        .oi-rail-item {
+          position: absolute;
+          left: 12px;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--c-dim-2);
+        }
+        .oi-rail-active {
+          background: var(--c-violet-soft);
+          border-radius: 10px;
+          color: var(--c-violet);
+        }
+
+        /* ---------- header ---------- */
+        .oi-title {
+          position: absolute;
+          left: 112px;
+          top: 26px;
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--c-ink);
+          line-height: 1.3;
+        }
+        .oi-title-sep {
+          color: var(--c-dim-2);
+          font-weight: 400;
+        }
+        .oi-live {
+          position: absolute;
+          right: 48px;
+          top: 30px;
+          height: 28px;
+          padding: 0 12px;
+          border-radius: 999px;
+          background: var(--c-green-soft);
+          border: 1px solid var(--c-green-border);
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          z-index: 5;
+        }
+        .oi-live-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: var(--c-green);
+        }
+        .oi-live-label {
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--c-green-ink);
+          line-height: 1;
+        }
+
+        /* ---------- tabs ---------- */
+        .oi-tabs {
+          position: absolute;
+          left: 112px;
+          top: 84px;
+          height: 34px;
+          display: flex;
+          gap: 8px;
+          z-index: 4;
+        }
+        .oi-tab {
+          height: 34px;
+          padding: 0 14px;
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          font-size: 13.5px;
+          font-weight: 500;
+          background: var(--c-white);
+          border: 1px solid var(--c-border);
+          color: var(--c-dim);
+          font-variant-numeric: tabular-nums;
+          white-space: nowrap;
+        }
+        .oi-tab-active {
+          background: var(--c-violet-soft);
+          border: 1px solid var(--c-violet-soft);
+          color: var(--c-violet-ink);
+          font-weight: 600;
+        }
+        .oi-ctr {
+          position: relative;
+          display: inline-block;
+          width: 24px;
+          height: 18px;
+        }
+        .oi-ctr span {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 24px;
+          text-align: left;
+          line-height: 18px;
+        }
+        .oi-ctr-alt {
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        /* ---------- list rows ---------- */
+        .oi-row {
+          position: absolute;
+          left: 112px;
+          width: 1280px;
+          height: 76px;
+          background: var(--c-white);
+          border: 1px solid var(--c-border);
+          border-radius: 14px;
+          box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+        }
+        .oi-rows-shift {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 1440px;
+          height: 760px;
+          z-index: 2;
+        }
+        #oi-row-marina {
+          top: 142px;
+          z-index: 3;
+          opacity: 0;
+          visibility: hidden;
+        }
+        #oi-row-carlos {
+          top: 142px;
+        }
+        #oi-row-lucia {
+          top: 230px;
+        }
+        .oi-flash {
+          position: absolute;
+          inset: 0;
+          border-radius: 14px;
+          background: var(--c-violet-soft);
+          opacity: 0;
+        }
+        .oi-leftbar {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 3px;
+          height: 74px;
+          border-radius: 2px;
+          background: var(--c-violet);
+          opacity: 0;
+        }
+        .oi-avatar {
+          position: absolute;
+          left: 20px;
+          top: 15px;
+          width: 44px;
+          height: 44px;
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          font-weight: 600;
+        }
+        .oi-nameline {
+          position: absolute;
+          left: 84px;
+          top: 13px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .oi-name {
+          font-size: 15.5px;
+          font-weight: 600;
+          color: var(--c-ink);
+          line-height: 1.3;
+        }
+        .oi-chip-ch {
+          height: 22px;
+          padding: 0 8px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 13px;
+          font-weight: 600;
+          line-height: 1;
+        }
+        .oi-chip-web {
+          background: var(--c-soft);
+          color: #5d6572;
+        }
+        .oi-chip-wa {
+          background: var(--c-wa-soft);
+          color: var(--c-wa-ink);
+        }
+        .oi-topic {
+          position: absolute;
+          left: 84px;
+          top: 40px;
+          font-size: 13.5px;
+          font-weight: 400;
+          color: var(--c-dim);
+          line-height: 1.4;
+        }
+        .oi-status {
+          position: absolute;
+          right: 20px;
+          top: 23px;
+          height: 30px;
+          padding: 0 12px;
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 1;
+          white-space: nowrap;
+        }
+        .oi-status-blue {
+          background: var(--c-blue-soft);
+          border: 1px solid var(--c-blue-border);
+          color: var(--c-blue);
+        }
+        .oi-status-green {
+          background: var(--c-green-soft);
+          border: 1px solid var(--c-green-border);
+          color: var(--c-green-ink);
+        }
+
+        /* Marina status slot: button + chip overlapped, right aligned */
+        .oi-slot {
+          position: absolute;
+          right: 20px;
+          top: 21px;
+          width: 180px;
+          height: 34px;
+        }
+        .oi-take {
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: 84px;
+          height: 34px;
+          border-radius: 10px;
+          background: var(--c-violet);
+          color: var(--c-white);
+          font-size: 13.5px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 8px rgba(109, 94, 240, 0.3);
+        }
+        .oi-vos {
+          position: absolute;
+          right: 0;
+          top: 2px;
+          height: 30px;
+          padding: 0 12px;
+          border-radius: 999px;
+          background: var(--c-blue-soft);
+          border: 1px solid var(--c-blue-border);
+          color: var(--c-blue);
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        /* ---------- toast ---------- */
+        .oi-toast {
+          position: absolute;
+          right: 48px;
+          top: 30px;
+          width: 396px;
+          height: 56px;
+          border-radius: 14px;
+          background: var(--c-white);
+          border: 1.5px solid var(--c-violet-border);
+          box-shadow: 0 8px 24px rgba(109, 94, 240, 0.18);
+          display: flex;
+          align-items: center;
+          z-index: 20;
+          opacity: 0;
+          visibility: hidden;
+        }
+        .oi-toast-bell {
+          flex: none;
+          margin-left: 16px;
+          font-size: 18px;
+          line-height: 1;
+        }
+        .oi-toast-text {
+          margin-left: 12px;
+        }
+        .oi-toast-l1 {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--c-ink);
+          line-height: 1.3;
+        }
+        .oi-toast-l2 {
+          font-size: 13px;
+          font-weight: 400;
+          color: var(--c-dim);
+          line-height: 1.3;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+        .oi-toast-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 999px;
+          background: var(--c-wa);
+        }
+        .oi-icon {
+          display: block;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="operator-inbox"
+        data-width="1440"
+        data-height="760"
+      >
+        <div class="oi-bg"></div>
+
+        <!-- sidebar rail -->
+        <div class="oi-rail">
+          <div class="oi-rail-item oi-rail-active" style="top: 20px">
+            <svg class="oi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          </div>
+          <div class="oi-rail-item" style="top: 72px">
+            <svg class="oi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="oi-rail-item" style="top: 124px">
+            <svg class="oi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="oi-rail-item" style="top: 176px">
+            <svg class="oi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="oi-rail-item" style="top: 700px">
+            <svg class="oi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+        </div>
+
+        <!-- header -->
+        <div class="oi-title">Bandeja <span class="oi-title-sep">&middot;</span> Atenci&oacute;n</div>
+        <div class="oi-live">
+          <span id="oi-live-dot" class="oi-live-dot"></span>
+          <span class="oi-live-label" data-layout-allow-occlusion="true">en vivo</span>
+        </div>
+
+        <!-- tabs -->
+        <div class="oi-tabs">
+          <div class="oi-tab oi-tab-active">
+            <span>En espera&nbsp;</span>
+            <span class="oi-ctr">
+              <span id="oi-ctr1-a" data-layout-allow-overlap="true">(1)</span>
+              <span id="oi-ctr1-b" class="oi-ctr-alt" data-layout-allow-overlap="true">(0)</span>
+            </span>
+          </div>
+          <div class="oi-tab">
+            <span>En atenci&oacute;n&nbsp;</span>
+            <span class="oi-ctr">
+              <span id="oi-ctr2-a" data-layout-allow-overlap="true">(2)</span>
+              <span id="oi-ctr2-b" class="oi-ctr-alt" data-layout-allow-overlap="true">(3)</span>
+            </span>
+          </div>
+          <div class="oi-tab">Activas</div>
+        </div>
+
+        <!-- Marina row (slot superior, hidden at rest) -->
+        <div id="oi-row-marina" class="oi-row">
+          <div id="oi-flash" class="oi-flash"></div>
+          <div id="oi-leftbar" class="oi-leftbar"></div>
+          <div class="oi-avatar" style="background: #ede9fe; color: #5c4de0">MG</div>
+          <div class="oi-nameline">
+            <span class="oi-name">Marina G.</span>
+            <span class="oi-chip-ch oi-chip-wa">
+              <svg class="oi-icon" width="14" height="14" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+              <span>WhatsApp</span>
+            </span>
+          </div>
+          <div class="oi-topic">Quiere cambiar su plan</div>
+          <div class="oi-slot">
+            <div id="oi-take" class="oi-take">Tomar</div>
+            <div id="oi-vos" class="oi-vos">atendiendo: Vos</div>
+          </div>
+        </div>
+
+        <!-- rows that shift down when Marina inserts -->
+        <div id="oi-rows-shift" class="oi-rows-shift" data-layout-allow-overflow="true">
+          <div id="oi-row-carlos" class="oi-row">
+            <div class="oi-avatar" style="background: #e0e7ff; color: #4f46e5">CP</div>
+            <div class="oi-nameline">
+              <span class="oi-name">Carlos P.</span>
+              <span class="oi-chip-ch oi-chip-web">WEB</span>
+            </div>
+            <div class="oi-topic">Estado de su reclamo</div>
+            <div class="oi-status oi-status-blue">atendiendo: Sof&iacute;a</div>
+          </div>
+          <div id="oi-row-lucia" class="oi-row">
+            <div class="oi-avatar" style="background: #fce7f3; color: #bc2062">LM</div>
+            <div class="oi-nameline">
+              <span class="oi-name">Luc&iacute;a M.</span>
+              <span class="oi-chip-ch oi-chip-web">WEB</span>
+            </div>
+            <div class="oi-topic">Horarios de atenci&oacute;n</div>
+            <div class="oi-status oi-status-green">resuelta por el asistente</div>
+          </div>
+        </div>
+
+        <!-- toast -->
+        <div id="oi-toast" class="oi-toast">
+          <span class="oi-toast-bell">&#128276;</span>
+          <div class="oi-toast-text">
+            <div class="oi-toast-l1">Nueva derivaci&oacute;n</div>
+            <div class="oi-toast-l2">
+              <span>Marina G.</span>
+              <span class="oi-toast-dot"></span>
+              <span>(WhatsApp)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var tl = gsap.timeline({ paused: true });
+
+          // helper: fromTo with immediateRender:false always
+          function FT(target, from, to, pos) {
+            to.immediateRender = false;
+            tl.fromTo(target, from, to, pos);
+          }
+
+          // ---- live dot pulse: period 2s x 5 exact cycles (0..10s, closes the loop)
+          for (var c = 0; c < 5; c++) {
+            FT("#oi-live-dot", { opacity: 1 }, { opacity: 0.45, duration: 1, ease: "sine.inOut" }, c * 2);
+            FT("#oi-live-dot", { opacity: 0.45 }, { opacity: 1, duration: 1, ease: "sine.inOut" }, c * 2 + 1);
+          }
+
+          // ---- beat: toast-in (1.2 - 1.75)
+          FT("#oi-toast", { y: -90, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, ease: "back.out(1.4)" }, 1.2);
+
+          // ---- beat: row-insert (2.0 - 2.55)
+          FT(
+            "#oi-row-marina",
+            { autoAlpha: 0, y: -18, scale: 0.97 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.5)", transformOrigin: "top center" },
+            2.0
+          );
+          FT("#oi-rows-shift", { y: 0 }, { y: 88, duration: 0.5, ease: "back.out(1.2)" }, 2.0);
+
+          // ---- beat: insert-pulse (2.2 - 3.2), single pulse
+          FT("#oi-flash", { opacity: 0 }, { opacity: 0.55, duration: 0.35, ease: "power2.out" }, 2.2);
+          FT("#oi-flash", { opacity: 0.55 }, { opacity: 0, duration: 0.65, ease: "power2.inOut" }, 2.55);
+
+          // ---- beat: toast-out (3.2 - 3.6)
+          FT("#oi-toast", { y: 0, autoAlpha: 1 }, { y: -90, autoAlpha: 0, duration: 0.4, ease: "power2.in" }, 3.2);
+
+          // ---- beat: take-press (4.2 - 4.5)
+          FT("#oi-take", { scale: 1 }, { scale: 0.92, duration: 0.12, ease: "power2.in", transformOrigin: "center center" }, 4.2);
+          FT("#oi-take", { scale: 0.92 }, { scale: 1, duration: 0.18, ease: "back.out(2.5)", transformOrigin: "center center" }, 4.32);
+
+          // ---- beat: take-swap (4.5 - 4.85), 0.08s overlap
+          FT("#oi-take", { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: 0.9, duration: 0.2, ease: "power2.in", transformOrigin: "center center" }, 4.5);
+          FT("#oi-vos", { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.25, ease: "back.out(1.6)", transformOrigin: "center center" }, 4.62);
+
+          // tab counters crossfade at 4.55: (1)->(0) and (2)->(3)
+          FT("#oi-ctr1-a", { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -6, duration: 0.22, ease: "power2.in" }, 4.55);
+          FT("#oi-ctr1-b", { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, 4.55);
+          FT("#oi-ctr2-a", { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -6, duration: 0.22, ease: "power2.in" }, 4.55);
+          FT("#oi-ctr2-b", { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, 4.55);
+
+          // ---- beat: hold-breathe (5.2 - 8.2): left bar breathes, opacity only
+          FT("#oi-leftbar", { opacity: 0 }, { opacity: 0.9, duration: 0.5, ease: "power2.out" }, 5.2);
+          FT("#oi-leftbar", { opacity: 0.9 }, { opacity: 0.5, duration: 0.625, ease: "sine.inOut" }, 5.7);
+          FT("#oi-leftbar", { opacity: 0.5 }, { opacity: 0.9, duration: 0.625, ease: "sine.inOut" }, 6.325);
+          FT("#oi-leftbar", { opacity: 0.9 }, { opacity: 0.5, duration: 0.625, ease: "sine.inOut" }, 6.95);
+          FT("#oi-leftbar", { opacity: 0.5 }, { opacity: 0.9, duration: 0.625, ease: "sine.inOut" }, 7.575);
+
+          // ---- beat: reset-fade (8.2 - 9.4)
+          FT("#oi-row-marina", { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -8, duration: 0.6, ease: "power2.inOut" }, 8.2);
+          FT("#oi-rows-shift", { y: 88 }, { y: 0, duration: 0.8, ease: "power2.inOut" }, 8.35);
+
+          // counters back at 8.8: (0)->(1) and (3)->(2)
+          FT("#oi-ctr1-b", { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -6, duration: 0.22, ease: "power2.in" }, 8.8);
+          FT("#oi-ctr1-a", { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, 8.8);
+          FT("#oi-ctr2-b", { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -6, duration: 0.22, ease: "power2.in" }, 8.8);
+          FT("#oi-ctr2-a", { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, 8.8);
+
+          // ---- silent reset of Marina row internals while invisible (9.05)
+          tl.set("#oi-row-marina", { y: 0, scale: 1 }, 9.05);
+          tl.set("#oi-take", { autoAlpha: 1, scale: 1 }, 9.05);
+          tl.set("#oi-vos", { autoAlpha: 0, scale: 0.92 }, 9.05);
+          tl.set("#oi-leftbar", { opacity: 0 }, 9.05);
+          tl.set("#oi-flash", { opacity: 0 }, 9.05);
+
+          window.__timelines["operator-inbox"] = tl;
+          tl.seek(0);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

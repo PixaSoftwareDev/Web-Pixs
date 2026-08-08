@@ -1,26 +1,31 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { site } from "@/lib/site";
+import { site, whatsappUrl } from "@/lib/site";
+import { intellix } from "@/lib/intellix";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const links = [
-  { href: "#services", label: "Servicios" },
-  { href: "/intellix", label: "Intellix" },
-  { href: "#stack", label: "Stack" },
-  { href: "#process", label: "Proceso" },
-  { href: "#team", label: "Nosotros" },
-  { href: "#contact", label: "Contacto" },
+  { href: "#viaje", label: "Cómo funciona" },
+  { href: "#planes", label: "Planes" },
+  { href: "#equipo", label: "Equipo" },
+  { href: "/tecnologia", label: "Tecnología" },
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // Visible solo cerca del tope: al scrollear sale con animación y el dock inferior toma el relevo.
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32);
+    // Histéresis: oculta pasando 160px, reaparece recién volviendo bajo 100px
+    // (evita el parpadeo si el scroll oscila alrededor de un umbral único).
+    const onScroll = () =>
+      setVisible((v) => (v ? window.scrollY < 160 : window.scrollY < 100));
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -35,46 +40,65 @@ export default function Navbar() {
   }, [open]);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "backdrop-blur-md bg-bg/70 border-b border-line/10"
-          : "bg-transparent"
-      }`}
-    >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <header className="fixed inset-x-0 top-3 z-50 px-4 md:top-4">
+      <AnimatePresence>
+        {visible && (
+          <motion.nav
+            initial={{ opacity: 0, y: -24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -24 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-island mx-auto flex max-w-5xl items-center justify-between rounded-full py-2 pl-4 pr-2"
+          >
         <a
-          href="#"
+          href="#hero"
           aria-label={site.name}
-          className="group relative flex h-10 w-10 items-center justify-center"
+          className="flex items-center gap-2 transition-opacity hover:opacity-80"
         >
           <Image
-            src={site.logo.dark}
+            src={site.logo.icon}
             alt={`${site.name} logo`}
-            width={88}
-            height={88}
+            width={28}
+            height={28}
             priority
-            className="logo-on-dark absolute -inset-6 h-[88px] w-[88px] max-w-none object-contain transition-all duration-300 group-hover:scale-110 group-hover:[filter:drop-shadow(0_0_10px_rgb(var(--c-neon-cyan)/0.7))]"
+            className="h-7 w-7 object-contain"
           />
           <Image
-            src={site.logo.light}
-            alt={`${site.name} logo`}
-            width={88}
-            height={88}
+            src={site.logo.wordmark.dark}
+            alt={site.name}
+            width={1500}
+            height={152}
             priority
-            className="logo-on-light absolute -inset-6 h-[88px] w-[88px] max-w-none object-contain transition-all duration-300 group-hover:scale-110 group-hover:[filter:drop-shadow(0_0_10px_rgb(var(--c-neon-cyan)/0.6))]"
+            className="logo-on-dark h-2.5 w-auto object-contain md:h-3"
+          />
+          <Image
+            src={site.logo.wordmark.light}
+            alt={site.name}
+            width={1500}
+            height={152}
+            priority
+            className="logo-on-light h-2.5 w-auto object-contain md:h-3"
           />
         </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-7 md:flex">
           {links.map((l) => (
             <li key={l.href}>
-              <a
-                href={l.href}
-                className="font-mono text-xs uppercase tracking-widest text-ink-dim transition-colors hover:text-neon-cyan"
-              >
-                {l.label}
-              </a>
+              {l.href.startsWith("/") ? (
+                <Link
+                  href={l.href}
+                  className="text-sm font-medium text-ink-dim transition-colors hover:text-brand-blue"
+                >
+                  {l.label}
+                </Link>
+              ) : (
+                <a
+                  href={l.href}
+                  className="text-sm font-medium text-ink-dim transition-colors hover:text-brand-blue"
+                >
+                  {l.label}
+                </a>
+              )}
             </li>
           ))}
         </ul>
@@ -82,10 +106,20 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <a
-            href="#contact"
-            className="hidden rounded-md border border-neon-cyan/40 bg-neon-cyan/10 px-4 py-2 font-mono text-xs uppercase tracking-widest text-neon-cyan transition-all hover:bg-neon-cyan/20 hover:glow-cyan md:inline-block"
+            href="https://www.intellix.com.ar/login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden font-display text-sm font-semibold text-ink-dim transition-colors hover:text-ink md:inline-block"
           >
-            Hablemos
+            Ingresar
+          </a>
+          <a
+            href={whatsappUrl(intellix.whatsapp.demo)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-brand hidden rounded-full px-5 py-2.5 font-display text-sm font-semibold md:inline-block"
+          >
+            Probar gratis
           </a>
 
           {/* Botón hamburguesa — solo mobile */}
@@ -94,12 +128,14 @@ export default function Navbar() {
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-line/15 text-ink transition-colors hover:border-neon-cyan/40 hover:text-neon-cyan md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-line/15 text-ink transition-colors hover:border-brand-blue/40 hover:text-brand-blue md:hidden"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
-      </nav>
+          </motion.nav>
+        )}
+      </AnimatePresence>
 
       {/* Overlay de navegación mobile — pantalla completa */}
       <div
@@ -114,22 +150,51 @@ export default function Navbar() {
           type="button"
           onClick={() => setOpen(false)}
           aria-label="Cerrar menú"
-          className="absolute right-6 top-4 flex h-10 w-10 items-center justify-center rounded-md border border-line/15 text-ink transition-colors hover:border-neon-cyan/40 hover:text-neon-cyan"
+          className="absolute right-6 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-line/15 text-ink transition-colors hover:border-brand-blue/40 hover:text-brand-blue"
         >
           <X className="h-5 w-5" />
         </button>
 
         <nav className="flex flex-1 flex-col items-center justify-center gap-8">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="font-display text-3xl font-semibold tracking-tight text-ink transition-colors hover:text-neon-cyan"
-            >
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) =>
+            l.href.startsWith("/") ? (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="font-display text-3xl font-semibold tracking-tight text-ink transition-colors hover:text-brand-blue"
+              >
+                {l.label}
+              </Link>
+            ) : (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="font-display text-3xl font-semibold tracking-tight text-ink transition-colors hover:text-brand-blue"
+              >
+                {l.label}
+              </a>
+            ),
+          )}
+          <a
+            href="https://www.intellix.com.ar/login"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setOpen(false)}
+            className="font-display text-xl font-semibold text-ink-dim transition-colors hover:text-ink"
+          >
+            Ingresar
+          </a>
+          <a
+            href={whatsappUrl(intellix.whatsapp.demo)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setOpen(false)}
+            className="btn-brand mt-2 rounded-full px-8 py-3.5 font-display text-base font-semibold"
+          >
+            Probar gratis
+          </a>
         </nav>
       </div>
     </header>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <title>02 chat web</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-500.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-700.woff2") format("woff2");
+        }
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1440px;
+          height: 900px;
+          overflow: hidden;
+          background: #fcfcfd;
+          font-family: "Space Grotesk", system-ui, sans-serif;
+          color: #1e2434;
+        }
+        .c-glow {
+          position: absolute;
+          border-radius: 999px;
+          filter: blur(90px);
+          will-change: transform;
+        }
+        .c-glow-a {
+          top: -160px;
+          left: -120px;
+          width: 520px;
+          height: 520px;
+          background: rgba(47, 107, 240, 0.09);
+        }
+        .c-glow-b {
+          bottom: -200px;
+          right: -120px;
+          width: 560px;
+          height: 560px;
+          background: rgba(8, 145, 178, 0.08);
+        }
+
+        .c-card {
+          position: absolute;
+          left: 300px;
+          top: 116px;
+          width: 840px;
+          height: 560px;
+          background: #ffffff;
+          border: 1px solid rgba(30, 36, 52, 0.08);
+          border-radius: 22px;
+          box-shadow: 0 40px 80px -32px rgba(30, 36, 52, 0.28);
+          will-change: transform;
+          display: flex;
+          flex-direction: column;
+        }
+        .c-head {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 18px 24px;
+          border-bottom: 1px solid rgba(30, 36, 52, 0.07);
+        }
+        .c-ava {
+          width: 46px;
+          height: 46px;
+          border-radius: 999px;
+          background: #f1f3f8;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .c-ava img {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+        }
+        .c-head-name {
+          font-size: 20px;
+          font-weight: 700;
+        }
+        .c-head-status {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          font-size: 14px;
+          color: #656e82;
+          margin-top: 2px;
+        }
+        .c-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: #16a34a;
+        }
+        .c-msgs {
+          flex: 1;
+          padding: 26px 28px 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+        .c-bubble {
+          max-width: 560px;
+          padding: 14px 20px;
+          border-radius: 18px;
+          font-size: 21px;
+          line-height: 1.45;
+          font-weight: 500;
+          will-change: transform;
+        }
+        .c-user {
+          align-self: flex-end;
+          background: linear-gradient(115deg, #2f6bf0, #4c5fe8);
+          color: #ffffff;
+          border-bottom-right-radius: 6px;
+        }
+        .c-bot {
+          align-self: flex-start;
+          background: #f2f4f9;
+          color: #1e2434;
+          border-bottom-left-radius: 6px;
+        }
+        .c-slot {
+          display: grid;
+          justify-items: start;
+        }
+        .c-slot > * {
+          grid-area: 1 / 1;
+        }
+        .c-typing {
+          align-self: flex-start;
+          display: flex;
+          gap: 7px;
+          padding: 18px 22px;
+          background: #f2f4f9;
+          border-radius: 18px;
+          border-bottom-left-radius: 6px;
+          opacity: 0;
+        }
+        .c-typing span {
+          width: 9px;
+          height: 9px;
+          border-radius: 999px;
+          background: #a3adc2;
+        }
+        .c-source {
+          align-self: flex-start;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-left: 4px;
+          padding: 9px 16px;
+          border: 1px solid rgba(47, 107, 240, 0.35);
+          background: rgba(47, 107, 240, 0.06);
+          border-radius: 999px;
+          font-size: 15px;
+          font-weight: 700;
+          color: #2255c8;
+          opacity: 0;
+          will-change: transform;
+        }
+        .c-badge {
+          position: absolute;
+          right: -78px;
+          top: 292px;
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          padding: 12px 20px;
+          background: #ffffff;
+          border-radius: 999px;
+          box-shadow: 0 16px 40px -14px rgba(30, 36, 52, 0.3);
+          font-size: 17px;
+          font-weight: 700;
+          color: #1e2434;
+          opacity: 0;
+          will-change: transform;
+        }
+        .c-badge .c-dot {
+          background: #0891b2;
+        }
+        .c-input {
+          margin: 0 24px 22px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 15px 22px;
+          border: 1px solid rgba(30, 36, 52, 0.12);
+          border-radius: 999px;
+          font-size: 20px;
+          color: #1e2434;
+        }
+        .c-input .ph {
+          color: #707785;
+        }
+        .c-caret {
+          width: 2px;
+          height: 26px;
+          background: #2f6bf0;
+          margin-left: -6px;
+        }
+        .c-send {
+          margin-left: auto;
+          width: 44px;
+          height: 44px;
+          flex: none;
+          border-radius: 999px;
+          background: linear-gradient(115deg, #2f6bf0, #7c4dea);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .c-send svg {
+          width: 20px;
+          height: 20px;
+        }
+        .c-phrase {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 772px;
+          text-align: center;
+          font-size: 44px;
+          font-weight: 700;
+          letter-spacing: -0.01em;
+        }
+        .c-phrase .p-mask {
+          display: inline-block;
+          overflow: hidden;
+          padding-bottom: 0.12em;
+          margin-right: 0.26em;
+          vertical-align: bottom;
+        }
+        .c-phrase .p-mask:last-child {
+          margin-right: 0;
+        }
+        .c-phrase .p-word {
+          display: inline-block;
+          will-change: transform;
+        }
+        .c-phrase .p-accent {
+          background: linear-gradient(100deg, #2f6bf0, #7c4dea);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+      </style>
+
+      <div data-hf-id="hf-eu6k" id="root" data-composition-id="02-chat-web" data-width="1440" data-height="900">
+        <div data-hf-id="hf-lc8n" class="c-glow c-glow-a" id="cGlowA"></div>
+        <div data-hf-id="hf-wton" class="c-glow c-glow-b" id="cGlowB"></div>
+
+        <div data-hf-id="hf-f4n2" class="c-card" id="card">
+          <div data-hf-id="hf-cx0q" class="c-head">
+            <div data-hf-id="hf-bbgi" class="c-ava"><img data-hf-id="hf-2rc0" src="assets/icon.png" alt=""></div>
+            <div data-hf-id="hf-yeow">
+              <div data-hf-id="hf-xcit" class="c-head-name">PixsBot</div>
+              <div data-hf-id="hf-2cg7" class="c-head-status"><span data-hf-id="hf-vjvm" class="c-dot"></span> En línea</div>
+            </div>
+          </div>
+          <div data-hf-id="hf-7q4e" class="c-msgs">
+            <div data-hf-id="hf-el5y" class="c-bubble c-user" id="mUser" style="opacity: 0">
+              ¿Hacen envíos al interior? ¿Cuánto demoran?
+            </div>
+            <div data-hf-id="hf-wkg0" class="c-slot">
+              <div data-hf-id="hf-rjeq" class="c-typing" id="typing">
+                <span data-hf-id="hf-nnvn" id="td1"></span><span data-hf-id="hf-ezzs" id="td2"></span><span data-hf-id="hf-frnl" id="td3"></span>
+              </div>
+              <div data-hf-id="hf-1lzr" class="c-bubble c-bot" id="mBot1" style="opacity: 0">
+                ¡Sí! Hacemos envíos a todo el país 🚚
+              </div>
+            </div>
+            <div data-hf-id="hf-7dh8" class="c-bubble c-bot" id="mBot2" style="opacity: 0">
+              Al interior demoran de 3 a 5 días hábiles, y desde $80.000 el envío es gratis.
+            </div>
+            <div data-hf-id="hf-gz6b" class="c-source" id="source">
+              <svg data-hf-id="hf-574o" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2f6bf0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path data-hf-id="hf-e4lr" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline data-hf-id="hf-5bqq" points="14 2 14 8 20 8" />
+              </svg>
+              Fuente: politica-envios.pdf
+            </div>
+          </div>
+          <div data-hf-id="hf-cz20" class="c-input">
+            <span data-hf-id="hf-jk7q" id="typed"></span><span data-hf-id="hf-5jp5" class="c-caret" id="caret"></span>
+            <span data-hf-id="hf-4cca" class="ph" id="ph" style="display: none">Escribí un mensaje…</span>
+            <div data-hf-id="hf-wydq" class="c-send" id="send">
+              <svg data-hf-id="hf-4sdx" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line data-hf-id="hf-6b22" x1="22" y1="2" x2="11" y2="13" />
+                <polygon data-hf-id="hf-od3h" points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            </div>
+          </div>
+          <div data-hf-id="hf-b65c" class="c-badge" id="badge"><span data-hf-id="hf-0dvq" class="c-dot"></span> Respondió en 2,5 s</div>
+        </div>
+
+        <div data-hf-id="hf-ka9a" class="c-phrase" id="phrase">
+          <span data-hf-id="hf-vjbs" class="p-mask"><span data-hf-id="hf-ss4r" class="p-word pw">Responde</span></span>
+          <span data-hf-id="hf-yjn4" class="p-mask"><span data-hf-id="hf-xnki" class="p-word pw">desde</span></span>
+          <span data-hf-id="hf-xcq1" class="p-mask"><span data-hf-id="hf-v58a" class="p-word pw p-accent">tus</span></span>
+          <span data-hf-id="hf-xr12" class="p-mask"><span data-hf-id="hf-vbd9" class="p-word pw p-accent">documentos.</span></span>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          const Q = "¿Hacen envíos al interior? ¿Cuánto demoran?";
+
+          // Glows ambiente
+          tl.fromTo("#cGlowA", { x: 0, y: 0 }, { x: 46, y: 26, duration: 6, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+          tl.fromTo("#cGlowB", { x: 0, y: 0 }, { x: -40, y: -22, duration: 6, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+
+          // Card entra
+          tl.fromTo("#card", { opacity: 0, scale: 0.94, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.1);
+
+          // Tipeo en el input (secuencia discreta, seek-safe)
+          const typing = { n: 0 };
+          tl.to(typing, {
+            n: Q.length,
+            duration: 2.1,
+            ease: "none",
+            onUpdate: function () {
+              const el = document.getElementById("typed");
+              if (el) el.textContent = Q.slice(0, Math.round(typing.n));
+            },
+          }, 0.9);
+          // Caret parpadea (finito)
+          tl.fromTo("#caret", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(1)", repeat: 7, yoyo: true }, 0.9);
+
+          // Enviar: dip del botón + burbuja del usuario + input se limpia
+          tl.fromTo("#send", { scale: 1 }, { scale: 0.85, duration: 0.1, ease: "power2.in" }, 3.15);
+          tl.to("#send", { scale: 1, duration: 0.25, ease: "back.out(3)" }, 3.25);
+          tl.set("#typed", { textContent: "" }, 3.3);
+          tl.set("#caret", { opacity: 0 }, 3.3);
+          tl.set("#ph", { display: "inline" }, 3.3);
+          tl.fromTo("#mUser", { opacity: 0, y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 3.3);
+
+          // "Escribiendo…" — dots
+          tl.fromTo("#typing", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 3.9);
+          for (let i = 1; i <= 3; i++) {
+            tl.fromTo(
+              "#td" + i,
+              { y: 0, opacity: 0.4 },
+              { y: -5, opacity: 1, duration: 0.32, ease: "sine.inOut", repeat: 3, yoyo: true },
+              4.0 + i * 0.13
+            );
+          }
+          tl.to("#typing", { opacity: 0, duration: 0.18 }, 5.35);
+
+          // Respuesta en dos bloques
+          tl.fromTo("#mBot1", { opacity: 0, y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 5.6);
+          tl.fromTo("#mBot2", { opacity: 0, y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 6.35);
+
+          // Chip de fuente + badge de velocidad
+          tl.fromTo("#source", { opacity: 0, y: 12, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 7.2);
+          tl.fromTo("#badge", { opacity: 0, x: -14, scale: 0.9 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 7.7);
+
+          // Frase de cierre de la escena
+          tl.fromTo(".pw", { yPercent: 115 }, { yPercent: 0, duration: 0.6, ease: "power4.out", stagger: 0.08 }, 8.5);
+
+          // Micro-drift de la card para que el hold respire
+          tl.fromTo("#card", { y: 0 }, { y: -6, duration: 1.6, ease: "sine.inOut", repeat: 1, yoyo: true, immediateRender: false }, 9.0);
+
+          window.__timelines["02-chat-web"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

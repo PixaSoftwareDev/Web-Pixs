@@ -1,0 +1,147 @@
+{
+  "category": "webpage",
+  "duration_s": 10,
+  "fps": 30,
+  "canvas": { "w": 1440, "h": 760, "aspect": "~1.9:1" },
+  "style": "Recreación pixel-fiel del panel de operador de Intellix — SaaS admin limpio: fondo #fafafa, sidebar rail angosta blanca, tarjetas blancas redondeadas (radius 12-16) con borde sutil #e5e7eb, tipografía system-ui, acentos índigo/violeta #6d5ef0, chips de estado suaves. Energía calma de 'producto real funcionando'; nada de estética cyber. Referencia visual obligatoria: media/capturas/admin-metricas-resumen.jpg",
+  "palette": ["#fafafa", "#ffffff", "#f3f4f6", "#e5e7eb", "#111827", "#374151", "#6b7280", "#9ca3af", "#6d5ef0", "#efedfd", "#c7bffb", "#1d4ed8", "#eff6ff", "#dbeafe", "#047857", "#ecfdf5", "#d1fae5", "#22c55e", "#25d366", "#dcfce7"],
+  "font": "system-ui",
+  "beats": [1.2, 2.0, 3.2, 4.2, 8.2],
+  "export": "mp4",
+
+  "asset_needs": [],
+
+  "block": null,
+  "customize": {},
+
+  "content": {
+    "mode": "recreation",
+    "url": "intellix.com.ar/operador (se embebe en un marco de navegador en la landing — el video es solo el contenido de la página)",
+    "capture": "none — recreación DOM/CSS desde cero calcando el lenguaje visual de C:/Users/Alejo Maros/desktop/desarollos/web-pixs/media/capturas/admin-metricas-resumen.jpg",
+    "loop": {
+      "perfect": true,
+      "note": "Frame 0 === frame 299: solo las filas de Carlos y Lucía visibles, tabs 'En espera (1)' / 'En atención (2)', sin toast, fila de Marina en opacity 0, wrapper de filas en translateY 0. Todo estado animado vuelve EXACTO a su valor inicial. El pulso del punto 'en vivo' usa un período que divide 10s (2s × 5 ciclos, keyframes explícitos) para que también cierre en loop."
+    },
+
+    "layout": {
+      "page_bg": "#fafafa",
+      "sidebar_rail": {
+        "rect": { "x": 0, "y": 0, "w": 64, "h": 760 },
+        "bg": "#ffffff",
+        "border_right": "1px solid #e5e7eb",
+        "icons": {
+          "desc": "5 iconos SVG stroke 1.8px, 20px, apilados desde arriba con gap 12, primer icono y:24; abajo (y:712) un gear. El icono activo (inbox, primero) va dentro de una pill 40×40 radius 10 bg #efedfd color #6d5ef0; el resto color #9ca3af.",
+          "list": ["inbox (activo)", "file-text", "users", "bar-chart", "settings (abajo)"]
+        },
+        "static": true
+      },
+      "content_area": { "x": 112, "w": 1280, "note": "margen izquierdo 48px desde el rail (64+48=112), margen derecho 48px (1392 = borde derecho útil)" },
+
+      "header": {
+        "title": { "text": "Bandeja · Atención", "font": "600 18px system-ui", "color": "#111827", "pos": { "x": 112, "y": 34 }, "note": "el '·' en #9ca3af" },
+        "live_chip": {
+          "rect": { "right": 1392, "y": 30, "h": 28, "pad": "0 12px", "radius": 999 },
+          "bg": "#ecfdf5", "border": "1px solid #d1fae5",
+          "dot": { "d": 8, "color": "#22c55e", "pulse": "opacity 1→0.45→1, sine.inOut, período 2s, 5 ciclos keyframeados en el timeline maestro (cierra en loop)" },
+          "label": { "text": "en vivo", "font": "500 13px system-ui", "color": "#047857", "gap": 7 }
+        }
+      },
+
+      "tabs": {
+        "row_y": 84, "h": 34, "gap": 8, "x": 112, "radius": 999, "font": "500 13.5px system-ui", "pad": "0 14px",
+        "active": { "text": "En espera (1)", "bg": "#efedfd", "color": "#6d5ef0", "font_weight": 600 },
+        "rest": [
+          { "text": "En atención (2)", "bg": "#ffffff", "border": "1px solid #e5e7eb", "color": "#6b7280" },
+          { "text": "Activas", "bg": "#ffffff", "border": "1px solid #e5e7eb", "color": "#6b7280" }
+        ],
+        "counters": {
+          "desc": "Los números '(1)'/'(0)' y '(2)'/'(3)' son DOS spans superpuestos (position absolute) dentro de cada pill; el cambio es un crossfade con micro-slide: saliente to({opacity:0, y:-6}, 0.22, power2.in), entrante from({opacity:0, y:6}, 0.22, power2.out). El ancho de la pill NO cambia (los pares 1/0 y 2/3 tienen el mismo ancho de dígito con font-variant-numeric: tabular-nums)."
+        }
+      },
+
+      "list": {
+        "x": 112, "w": 1280, "row_h": 76, "gap": 12, "first_row_y": 142, "radius": 14,
+        "row_bg": "#ffffff", "row_border": "1px solid #e5e7eb", "row_shadow": "0 1px 2px rgba(17,24,39,0.04)",
+        "row_anatomy": {
+          "avatar": { "d": 44, "x_pad": 20, "font": "600 15px system-ui", "shape": "círculo, iniciales" },
+          "name": { "font": "600 15.5px system-ui", "color": "#111827", "x": 84, "baseline": "línea superior, y_offset 20" },
+          "channel_chip": { "pos": "inline a la derecha del nombre, gap 10", "h": 22, "radius": 6, "pad": "0 8px", "font": "600 13px system-ui" },
+          "topic": { "font": "400 13.5px system-ui", "color": "#6b7280", "x": 84, "y_offset": 44 },
+          "status_chip": { "pos": "derecha, right_pad 20, centrado vertical", "h": 30, "radius": 999, "pad": "0 12px", "font": "500 13px system-ui" }
+        },
+        "rows": [
+          {
+            "id": "marina", "initial_state": "opacity 0, presente en el DOM desde frame 0 en la posición y:142 (slot superior)",
+            "avatar": { "initials": "MG", "bg": "#ede9fe", "color": "#6d5ef0" },
+            "name": "Marina G.",
+            "channel_chip": { "kind": "whatsapp", "bg": "#dcfce7", "color": "#15803d", "content": "glifo WhatsApp SVG 14px #25d366 + texto 'WhatsApp' 13px" },
+            "topic": "Quiere cambiar su plan",
+            "status_states": {
+              "A_button": { "kind": "button", "text": "Tomar", "bg": "#6d5ef0", "color": "#ffffff", "font": "600 13.5px system-ui", "w": 84, "h": 34, "radius": 10, "shadow": "0 2px 8px rgba(109,94,240,0.30)" },
+              "B_chip": { "kind": "chip", "text": "atendiendo: Vos", "bg": "#eff6ff", "border": "1px solid #dbeafe", "color": "#1d4ed8", "initial": "opacity 0, superpuesto en la misma posición que el botón (alineado a la derecha)" }
+            },
+            "highlight_layers": {
+              "bg_flash": "capa absoluta full-row bg #efedfd radius 14, opacity 0 en reposo (pulso de inserción)",
+              "left_bar": "barra 3px × row_h, radius 2, bg #6d5ef0, pegada al borde izquierdo interior (x_pad 0), opacity 0 en reposo (respiración del hold)"
+            }
+          },
+          {
+            "id": "carlos",
+            "avatar": { "initials": "CP", "bg": "#e0e7ff", "color": "#4f46e5" },
+            "name": "Carlos P.",
+            "channel_chip": { "kind": "web", "text": "WEB", "bg": "#f3f4f6", "color": "#6b7280" },
+            "topic": "Estado de su reclamo",
+            "status_chip": { "text": "atendiendo: Sofía", "bg": "#eff6ff", "border": "1px solid #dbeafe", "color": "#1d4ed8" }
+          },
+          {
+            "id": "lucia",
+            "avatar": { "initials": "LM", "bg": "#fce7f3", "color": "#db2777" },
+            "name": "Lucía M.",
+            "channel_chip": { "kind": "web", "text": "WEB", "bg": "#f3f4f6", "color": "#6b7280" },
+            "topic": "Horarios de atención",
+            "status_chip": { "text": "resuelta por el asistente", "bg": "#ecfdf5", "border": "1px solid #d1fae5", "color": "#047857" }
+          }
+        ],
+        "stack_mechanics": "Carlos y Lucía viven en un wrapper .rows-shift. En reposo: Carlos y:142, Lucía y:230 (76+12=88 de paso). La inserción de Marina NO anima height: el wrapper hace translateY 0→88 y la fila de Marina (ya posicionada en y:142) hace fade/pop in. En el reset, el wrapper vuelve translateY 88→0."
+      },
+
+      "toast": {
+        "rect": { "right": 1392, "y": 30, "w": 396, "h": 56, "radius": 14 },
+        "note": "entra por encima del live_chip (el chip queda tapado mientras el toast está visible — z-index toast > chip); alineado al borde derecho del contenido",
+        "bg": "#ffffff", "border": "1.5px solid #c7bffb", "shadow": "0 8px 24px rgba(109,94,240,0.18)",
+        "content": {
+          "bell": { "glyph": "🔔 (emoji nativo) 18px", "x_pad": 16 },
+          "line1": { "text": "Nueva derivación", "font": "600 14px system-ui", "color": "#111827" },
+          "line2": { "text": "Marina G. (WhatsApp)", "font": "400 13px system-ui", "color": "#6b7280", "note": "'(WhatsApp)' con un punto verde 6px #25d366 delante, gap 5" }
+        },
+        "initial_state": "opacity 0, y:-90"
+      }
+    },
+
+    "timeline": [
+      { "t": [0.0, 1.2], "beat": "rest", "action": "Reposo: filas Carlos y Lucía visibles, tabs 'En espera (1)' / 'En atención (2)', Marina opacity 0, toast fuera. Único movimiento vivo: el pulso keyframeado del punto verde 'en vivo' (constante durante TODO el video, período 2s)." },
+      { "t": [1.2, 1.75], "beat": "toast-in", "action": "Toast entra desde arriba a la derecha: from({y:-90, opacity:0}, dur 0.55, ease back.out(1.4)). Beat 1.2s." },
+      { "t": [2.0, 2.55], "beat": "row-insert", "action": "Fila de Marina se inserta arriba: from({y:-18, scale:0.97, opacity:0}, dur 0.45, ease back.out(1.5), transformOrigin 'top center'). SIMULTÁNEO el wrapper .rows-shift baja: translateY 0→88, dur 0.5, ease back.out(1.2) (spring suave, un solo mini-overshoot). El botón [Tomar] entra con la fila (estado A). Beat 2.0s." },
+      { "t": [2.2, 3.2], "beat": "insert-pulse", "action": "Highlight violeta pulsa UNA vez sobre la fila de Marina: bg_flash opacity 0→0.55 (0.35s, power2.out) → 0 (0.65s, power2.inOut). No se repite." },
+      { "t": [3.2, 3.6], "beat": "toast-out", "action": "Toast sale: to({y:-90, opacity:0}, dur 0.4, ease power2.in). El live_chip vuelve a quedar visible. Beat 3.2s." },
+      { "t": [4.2, 4.5], "beat": "take-press", "action": "El botón [Tomar] se presiona solo: to({scale:0.92}, 0.12, power2.in) → to({scale:1}, 0.18, back.out(2.5)). transformOrigin center. Beat 4.2s." },
+      { "t": [4.5, 4.85], "beat": "take-swap", "action": "Crossfade botón→chip en el mismo lugar: botón to({opacity:0, scale:0.9}, 0.2, power2.in); chip 'atendiendo: Vos' from({opacity:0, scale:0.92}, 0.25, back.out(1.6)), con 0.08s de solapamiento. SIMULTÁNEO (a 4.55s) los contadores de tabs crossfadean: '(1)'→'(0)' y '(2)'→'(3)' según tabs.counters." },
+      { "t": [5.2, 8.2], "beat": "hold-breathe", "action": "Hold de lectura 3s. La left_bar violeta de Marina respira: opacity 0→0.9 (0.5s al inicio del hold) y luego 0.9→0.5→0.9 sine.inOut, 2 ciclos completos de 1.25s, cerrando en 0.9 justo antes del reset. Solo opacity — la barra no cambia de tamaño. Nada más se mueve (salvo el pulso 'en vivo')." },
+      { "t": [8.2, 9.4], "beat": "reset-fade", "action": "Retorno al frame 0: (a) left_bar y fila completa de Marina fade_out to({opacity:0, y:-8}, 0.6, power2.inOut) — se lleva consigo el chip 'Vos'; (b) wrapper .rows-shift vuelve translateY 88→0, dur 0.8, power2.inOut, solapado (arranca en 8.35s) para que Carlos/Lucía suban suavemente mientras Marina se desvanece; (c) a 8.8s los contadores crossfadean de vuelta '(0)'→'(1)' y '(3)'→'(2)'; (d) al final del fade, la fila de Marina resetea sus props internas (botón opacity 1 / chip opacity 0, y:0, scale:1) con set() instantáneo mientras está invisible, dejándola lista para el próximo ciclo. Beat 8.2s." },
+      { "t": [9.4, 10.0], "beat": "rest-out", "action": "Reposo final 0.6s idéntico al inicio. Frame 299 === frame 0 → loop sin costura." }
+    ],
+
+    "motion_rules": [
+      "SOLO transform + opacity. La inserción de la fila se resuelve con el wrapper .rows-shift en translateY — nunca animar height/top/margin.",
+      "Determinista: timeline GSAP pausado y registrado en window.__timelines, seekeado por frame (contrato HF). Nada de repeat:-1 libre — el pulso del punto 'en vivo', la respiración de la left_bar y el pulso de inserción son keyframes explícitos dentro del timeline maestro.",
+      "Todos los nodos existen en el DOM desde el frame 0 con sus estados iniciales (opacity/transform) — sin creación dinámica, para que el seek a cualquier frame sea exacto.",
+      "Loop perfecto: todo tween tiene su inverso o su reset antes de 10s; el pulso 'en vivo' usa período 2s × 5 ciclos exactos.",
+      "Texto mínimo 13px (chips y topic 13–13.5px, nombres 15.5px, título 18px) — el video se ve a ~560px de ancho; tabular-nums en los contadores para que el swap no mueva el layout.",
+      "Iconos (inbox, WhatsApp, gear, etc.) como SVG inline stroke — sin requests externos. El 🔔 del toast como emoji nativo.",
+      "Los dos estados del slot de estado de Marina (botón / chip) están superpuestos en position absolute alineados a la derecha, para que el crossfade no reacomode nada.",
+      "Sombra y borde de tarjetas estáticos (no animar box-shadow); el 'glow' de inserción es la capa bg_flash con opacity."
+    ]
+  },
+
+  "shot_brief": "El viewer ve la bandeja real del operador de Intellix trabajando sola: sobre el panel blanco en reposo cae un toast violeta de notificación arriba a la derecha — 'Nueva derivación · Marina G. (WhatsApp)' — y un instante después la conversación nueva se inserta arriba de la lista con un pop elástico y un destello violeta que pulsa una vez, empujando a las otras filas hacia abajo con un spring suave; el toast se retira, el botón violeta [Tomar] se presiona solo y muta en el chip azul 'atendiendo: Vos' mientras los contadores de tabs pasan de (1)/(2) a (0)/(3); la fila tomada respira con su barra violeta durante tres segundos de lectura y luego todo se desvanece con elegancia de vuelta al estado inicial exacto — loop de 10s imperceptible. Motivo dominante único: la derivación que entra y es tomada (toast → inserción spring → press → swap de estado), con el resto del panel quieto como un producto real."
+}

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <title>05 panel</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-500.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-700.woff2") format("woff2");
+        }
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1440px;
+          height: 900px;
+          overflow: hidden;
+          background: #fcfcfd;
+          font-family: "Space Grotesk", system-ui, sans-serif;
+          color: #1e2434;
+        }
+        .p-glow {
+          position: absolute;
+          border-radius: 999px;
+          filter: blur(90px);
+          will-change: transform;
+        }
+        .p-glow-a {
+          top: -160px;
+          right: -140px;
+          width: 560px;
+          height: 560px;
+          background: rgba(8, 145, 178, 0.09);
+        }
+        .p-glow-b {
+          bottom: -200px;
+          left: -120px;
+          width: 520px;
+          height: 520px;
+          background: rgba(47, 107, 240, 0.08);
+        }
+        .p-wrap {
+          position: absolute;
+          left: 160px;
+          top: 100px;
+          width: 1120px;
+          will-change: transform;
+        }
+        .p-title-row {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          margin-bottom: 26px;
+        }
+        .p-title-row img {
+          width: 34px;
+          height: 34px;
+          object-fit: contain;
+        }
+        .p-title {
+          font-size: 25px;
+          font-weight: 700;
+        }
+        .p-title span {
+          color: #656e82;
+          font-weight: 500;
+        }
+        .p-cards {
+          display: flex;
+          gap: 20px;
+        }
+        .p-card {
+          flex: 1;
+          background: #ffffff;
+          border: 1px solid rgba(30, 36, 52, 0.08);
+          border-radius: 20px;
+          box-shadow: 0 24px 56px -26px rgba(30, 36, 52, 0.22);
+          padding: 26px 28px;
+          will-change: transform;
+        }
+        .p-label {
+          font-size: 16px;
+          font-weight: 500;
+          color: #656e82;
+        }
+        .p-num {
+          margin-top: 10px;
+          font-size: 62px;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          font-variant-numeric: tabular-nums;
+          line-height: 1;
+        }
+        .p-num .unit {
+          font-size: 30px;
+          color: #656e82;
+          font-weight: 500;
+        }
+        .p-delta {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 14px;
+          padding: 5px 12px;
+          border-radius: 999px;
+          font-size: 14px;
+          font-weight: 700;
+          background: rgba(17, 128, 58, 0.1);
+          color: #0f7434;
+          opacity: 0;
+        }
+        .p-bottom {
+          display: flex;
+          gap: 20px;
+          margin-top: 20px;
+        }
+        .p-chart-card {
+          flex: 1.4;
+          background: #ffffff;
+          border: 1px solid rgba(30, 36, 52, 0.08);
+          border-radius: 20px;
+          box-shadow: 0 24px 56px -26px rgba(30, 36, 52, 0.22);
+          padding: 24px 28px;
+          will-change: transform;
+        }
+        .p-bars {
+          display: flex;
+          align-items: flex-end;
+          gap: 16px;
+          height: 150px;
+          margin-top: 20px;
+        }
+        .p-bar {
+          flex: 1;
+          border-radius: 8px 8px 4px 4px;
+          background: linear-gradient(180deg, #2f6bf0, #7c4dea);
+          transform-origin: bottom;
+          will-change: transform;
+        }
+        .p-days {
+          display: flex;
+          gap: 16px;
+          margin-top: 10px;
+        }
+        .p-days span {
+          flex: 1;
+          text-align: center;
+          font-size: 13px;
+          color: #6f7584;
+        }
+        .p-doc-card {
+          flex: 1;
+          background: #ffffff;
+          border: 1px solid rgba(30, 36, 52, 0.08);
+          border-radius: 20px;
+          box-shadow: 0 24px 56px -26px rgba(30, 36, 52, 0.22);
+          padding: 24px 28px;
+          will-change: transform;
+        }
+        .p-doc {
+          display: flex;
+          align-items: center;
+          gap: 13px;
+          margin-top: 18px;
+        }
+        .p-doc-ico {
+          width: 44px;
+          height: 44px;
+          flex: none;
+          border-radius: 12px;
+          background: rgba(47, 107, 240, 0.09);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .p-doc-name {
+          font-size: 16.5px;
+          font-weight: 700;
+        }
+        .p-doc-sub {
+          font-size: 13.5px;
+          color: #656e82;
+          margin-top: 2px;
+        }
+        .p-check {
+          margin-left: auto;
+          width: 30px;
+          height: 30px;
+          flex: none;
+          border-radius: 999px;
+          background: rgba(22, 163, 74, 0.12);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+        }
+        .p-track {
+          margin-top: 16px;
+          height: 8px;
+          border-radius: 999px;
+          background: #eef0f6;
+          overflow: hidden;
+        }
+        .p-fill {
+          width: 100%;
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #2f6bf0, #7c4dea);
+          transform-origin: left;
+          will-change: transform;
+        }
+        .p-doc-status {
+          margin-top: 10px;
+          font-size: 14px;
+          font-weight: 500;
+          color: #656e82;
+        }
+        .p-phrase {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 786px;
+          text-align: center;
+          font-size: 42px;
+          font-weight: 700;
+          letter-spacing: -0.01em;
+        }
+        .p-mask {
+          display: inline-block;
+          overflow: hidden;
+          padding-bottom: 0.12em;
+          margin-right: 0.24em;
+          vertical-align: bottom;
+        }
+        .p-word {
+          display: inline-block;
+          will-change: transform;
+        }
+        .p-cyan {
+          background: linear-gradient(100deg, #0891b2, #2f6bf0);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+      </style>
+
+      <div data-hf-id="hf-kq66" id="root" data-composition-id="05-panel" data-width="1440" data-height="900">
+        <div data-hf-id="hf-o9k0" class="p-glow p-glow-a" id="pGlowA"></div>
+        <div data-hf-id="hf-2wn8" class="p-glow p-glow-b" id="pGlowB"></div>
+
+        <div data-hf-id="hf-8bxh" class="p-wrap" id="pWrap">
+          <div data-hf-id="hf-vcf9" class="p-title-row" id="pTitle" style="opacity: 0">
+            <img data-hf-id="hf-2rc0" src="assets/icon.png" alt="">
+            <div data-hf-id="hf-xma1" class="p-title">Panel de Intellix <span data-hf-id="hf-6han">· métricas en producción</span></div>
+          </div>
+
+          <div data-hf-id="hf-5fhu" class="p-cards">
+            <div data-hf-id="hf-dkzy" class="p-card" id="pc1" style="opacity: 0">
+              <div data-hf-id="hf-87d9" class="p-label">Consultas este mes</div>
+              <div data-hf-id="hf-72lb" class="p-num"><span data-hf-id="hf-mz5j" id="n1">0</span></div>
+              <div data-hf-id="hf-1n4s" class="p-delta" id="d1">▲ Semana récord</div>
+            </div>
+            <div data-hf-id="hf-6x3n" class="p-card" id="pc2" style="opacity: 0">
+              <div data-hf-id="hf-quei" class="p-label">Resueltas por el bot</div>
+              <div data-hf-id="hf-fbz3" class="p-num"><span data-hf-id="hf-jem2" id="n2">0</span> <span data-hf-id="hf-n209" class="unit">de 29</span></div>
+              <div data-hf-id="hf-ml5s" class="p-delta" id="d2">✓ 100% sin espera</div>
+            </div>
+            <div data-hf-id="hf-hdow" class="p-card" id="pc3" style="opacity: 0">
+              <div data-hf-id="hf-vxbe" class="p-label">Tiempo de respuesta</div>
+              <div data-hf-id="hf-exo2" class="p-num"><span data-hf-id="hf-yxqh" id="n3">0,0</span> <span data-hf-id="hf-n1ro" class="unit">seg</span></div>
+              <div data-hf-id="hf-5k4s" class="p-delta" id="d3">⚡ Promedio del mes</div>
+            </div>
+          </div>
+
+          <div data-hf-id="hf-29x4" class="p-bottom">
+            <div data-hf-id="hf-2za7" class="p-chart-card" id="pChart" style="opacity: 0">
+              <div data-hf-id="hf-oycx" class="p-label">Actividad de la semana</div>
+              <div data-hf-id="hf-8bvf" class="p-bars">
+                <div data-hf-id="hf-9ig9" class="p-bar bar" style="height: 42%"></div>
+                <div data-hf-id="hf-lxxa" class="p-bar bar" style="height: 58%"></div>
+                <div data-hf-id="hf-td9i" class="p-bar bar" style="height: 47%"></div>
+                <div data-hf-id="hf-2fzk" class="p-bar bar" style="height: 74%"></div>
+                <div data-hf-id="hf-d90z" class="p-bar bar" style="height: 62%"></div>
+                <div data-hf-id="hf-zefv" class="p-bar bar" style="height: 88%"></div>
+                <div data-hf-id="hf-cp0g" class="p-bar bar" style="height: 100%"></div>
+              </div>
+              <div data-hf-id="hf-ck3k" class="p-days">
+                <span data-hf-id="hf-tg8o">Lun</span><span data-hf-id="hf-sx6f">Mar</span><span data-hf-id="hf-1wt6">Mié</span><span data-hf-id="hf-hpjf">Jue</span><span data-hf-id="hf-98sj">Vie</span><span data-hf-id="hf-4j91">Sáb</span><span data-hf-id="hf-kkpz">Dom</span>
+              </div>
+            </div>
+
+            <div data-hf-id="hf-hm0j" class="p-doc-card" id="pDoc" style="opacity: 0">
+              <div data-hf-id="hf-9y5k" class="p-label">Base de conocimiento</div>
+              <div data-hf-id="hf-ckex" class="p-doc">
+                <div data-hf-id="hf-m5sp" class="p-doc-ico">
+                  <svg data-hf-id="hf-q2ze" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f6bf0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path data-hf-id="hf-e4lr" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline data-hf-id="hf-5bqq" points="14 2 14 8 20 8" />
+                  </svg>
+                </div>
+                <div data-hf-id="hf-yeow">
+                  <div data-hf-id="hf-vwu9" class="p-doc-name">politica-envios.pdf</div>
+                  <div data-hf-id="hf-f5dy" class="p-doc-sub">Subido recién</div>
+                </div>
+                <div data-hf-id="hf-venh" class="p-check" id="pCheck">
+                  <svg data-hf-id="hf-yw33" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline data-hf-id="hf-mlxs" points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+              </div>
+              <div data-hf-id="hf-mepe" class="p-track"><div data-hf-id="hf-plyr" class="p-fill" id="pFill"></div></div>
+              <div data-hf-id="hf-mtdw" class="p-doc-status" id="pStatus">Procesando…</div>
+            </div>
+          </div>
+        </div>
+
+        <div data-hf-id="hf-k0se" class="p-phrase">
+          <span data-hf-id="hf-vjbs" class="p-mask"><span data-hf-id="hf-batj" class="p-word pw">Todo</span></span>
+          <span data-hf-id="hf-yjn4" class="p-mask"><span data-hf-id="hf-ej99" class="p-word pw">bajo</span></span>
+          <span data-hf-id="hf-xcq1" class="p-mask"><span data-hf-id="hf-tkqq" class="p-word pw p-cyan">tu</span></span>
+          <span data-hf-id="hf-xr12" class="p-mask"><span data-hf-id="hf-2cj4" class="p-word pw p-cyan">control.</span></span>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#pGlowA", { x: 0 }, { x: -50, duration: 5, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+          tl.fromTo("#pGlowB", { x: 0 }, { x: 44, duration: 5, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+
+          // Título + cards en cascada
+          tl.fromTo("#pTitle", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.2);
+          tl.fromTo("#pc1", { opacity: 0, y: 34, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 0.5);
+          tl.fromTo("#pc2", { opacity: 0, y: 34, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 0.65);
+          tl.fromTo("#pc3", { opacity: 0, y: 34, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 0.8);
+
+          // Count-ups (proxies deterministas)
+          const c1 = { v: 0 };
+          tl.to(c1, {
+            v: 29,
+            duration: 1.4,
+            ease: "power2.out",
+            onUpdate: function () {
+              const el = document.getElementById("n1");
+              if (el) el.textContent = String(Math.round(c1.v));
+            },
+          }, 1.0);
+          const c2 = { v: 0 };
+          tl.to(c2, {
+            v: 29,
+            duration: 1.4,
+            ease: "power2.out",
+            onUpdate: function () {
+              const el = document.getElementById("n2");
+              if (el) el.textContent = String(Math.round(c2.v));
+            },
+          }, 1.15);
+          const c3 = { v: 0 };
+          tl.to(c3, {
+            v: 2.5,
+            duration: 1.2,
+            ease: "power2.out",
+            onUpdate: function () {
+              const el = document.getElementById("n3");
+              if (el) el.textContent = c3.v.toFixed(1).replace(".", ",");
+            },
+          }, 1.3);
+
+          // Deltas
+          tl.fromTo("#d1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 2.5);
+          tl.fromTo("#d2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 2.65);
+          tl.fromTo("#d3", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 2.8);
+
+          // Gráfico + doc
+          tl.fromTo("#pChart", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 3.1);
+          tl.fromTo(".bar", { scaleY: 0 }, { scaleY: 1, duration: 0.7, ease: "power3.out", stagger: 0.07 }, 3.4);
+          tl.fromTo("#pDoc", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 3.3);
+          tl.fromTo("#pFill", { scaleX: 0 }, { scaleX: 1, duration: 1.8, ease: "power1.inOut" }, 3.8);
+          tl.fromTo("#pCheck", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 5.7);
+          tl.set("#pStatus", { textContent: "Listo: el bot ya responde con este documento" }, 5.8);
+
+          // Frase
+          tl.fromTo(".pw", { yPercent: 115 }, { yPercent: 0, duration: 0.6, ease: "power4.out", stagger: 0.08 }, 6.6);
+
+          // Push-in leve continuo
+          tl.fromTo("#pWrap", { scale: 1 }, { scale: 1.02, duration: 9.5, ease: "sine.inOut", immediateRender: false }, 0.3);
+
+          window.__timelines["05-panel"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

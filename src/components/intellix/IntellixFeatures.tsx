@@ -5,9 +5,9 @@ import {
   Palette,
   Users,
   LayoutDashboard,
-  Globe,
   SearchCheck,
-  TrendingUp,
+  Cable,
+  ScrollText,
   DatabaseBackup,
   MessageCircle,
   ShieldCheck,
@@ -24,9 +24,9 @@ const iconMap: Record<string, LucideIcon> = {
   Palette,
   Users,
   LayoutDashboard,
-  Globe,
   SearchCheck,
-  TrendingUp,
+  Cable,
+  ScrollText,
   DatabaseBackup,
   MessageCircle,
   ShieldCheck,
@@ -48,7 +48,7 @@ export default function IntellixFeatures() {
           y={24}
           stagger={0.05}
         >
-          {intellix.features.map((f) => {
+          {intellix.tech.features.map((f) => {
             const Icon = iconMap[f.icon] ?? Check;
             return (
               <div

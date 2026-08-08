@@ -32,16 +32,22 @@ export default function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Reduced motion: mostrar todo de una, sin animar (GSAP ignora la media query CSS).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(el.children, { opacity: 1, y: 0, filter: "none" });
+      return;
+    }
     const ctx = gsap.context(() => {
       gsap.fromTo(
         el.children,
-        { y, opacity: 0 },
+        { y, opacity: 0, filter: "blur(8px)" },
         {
           y: 0,
           opacity: 1,
-          duration: 0.7,
+          filter: "blur(0px)",
+          duration: 0.8,
           stagger,
-          ease: "power2.out",
+          ease: "power3.out",
           scrollTrigger: { trigger: el, start: "top 82%", once: true },
         },
       );

@@ -17,7 +17,7 @@ export default function IntellixMetrics() {
           y={28}
           stagger={0.06}
         >
-          {intellix.metrics.map((m) => (
+          {intellix.tech.metrics.map((m) => (
             <div
               key={m.label}
               className="rounded-xl border border-line/10 bg-bg/60 p-6 backdrop-blur"

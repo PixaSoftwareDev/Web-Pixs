@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <title>01 gancho</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-500.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/space-grotesk-700.woff2") format("woff2");
+        }
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1440px;
+          height: 900px;
+          overflow: hidden;
+          background: #fcfcfd;
+          font-family: "Space Grotesk", system-ui, sans-serif;
+          color: #1e2434;
+        }
+        .g-glow {
+          position: absolute;
+          border-radius: 999px;
+          filter: blur(90px);
+          will-change: transform;
+        }
+        .g-glow-a {
+          top: -180px;
+          right: -120px;
+          width: 560px;
+          height: 560px;
+          background: rgba(124, 77, 234, 0.1);
+        }
+        .g-glow-b {
+          bottom: -200px;
+          left: -100px;
+          width: 520px;
+          height: 520px;
+          background: rgba(47, 107, 240, 0.09);
+        }
+        .g-stage {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .g-beat {
+          position: absolute;
+          width: 1200px;
+          text-align: center;
+        }
+        .g-line {
+          font-size: 92px;
+          font-weight: 700;
+          line-height: 1.12;
+          letter-spacing: -0.02em;
+        }
+        .g-word-mask {
+          display: inline-block;
+          overflow: hidden;
+          padding-bottom: 0.1em;
+          margin-right: 0.26em;
+          vertical-align: bottom;
+        }
+        .g-word-mask:last-child {
+          margin-right: 0;
+        }
+        .g-word {
+          display: inline-block;
+          will-change: transform;
+        }
+        .g-accent {
+          background: linear-gradient(100deg, #2f6bf0, #7c4dea);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+        .g-clock {
+          margin: 0 auto 36px;
+          width: 74px;
+          height: 74px;
+        }
+        .g-q {
+          font-size: 104px;
+        }
+        .g-sub {
+          margin-top: 28px;
+          font-size: 26px;
+          font-weight: 500;
+          color: #656e82;
+        }
+      </style>
+
+      <div data-hf-id="hf-vm1w" id="root" data-composition-id="01-gancho" data-width="1440" data-height="900">
+        <div data-hf-id="hf-69om" class="g-glow g-glow-a" id="glowA"></div>
+        <div data-hf-id="hf-jz54" class="g-glow g-glow-b" id="glowB"></div>
+
+        <div data-hf-id="hf-vxq2" class="g-stage">
+          <!-- Beat 1 -->
+          <div data-hf-id="hf-4slz" class="g-beat" id="beat1">
+            <div data-hf-id="hf-lamm" class="g-line">
+              <span data-hf-id="hf-87ja" class="g-word-mask"><span data-hf-id="hf-8dis" class="g-word b1w">Tu</span></span>
+              <span data-hf-id="hf-4o16" class="g-word-mask"><span data-hf-id="hf-wniv" class="g-word b1w">cliente</span></span>
+              <span data-hf-id="hf-52c7" class="g-word-mask"><span data-hf-id="hf-txqp" class="g-word b1w">pregunta</span></span>
+            </div>
+            <div data-hf-id="hf-cb2q" class="g-line">
+              <span data-hf-id="hf-5gn8" class="g-word-mask"><span data-hf-id="hf-smgq" class="g-word b1w g-accent">a</span></span>
+              <span data-hf-id="hf-5uy9" class="g-word-mask"><span data-hf-id="hf-cflc" class="g-word b1w g-accent">cualquier</span></span>
+              <span data-hf-id="hf-699a" class="g-word-mask"><span data-hf-id="hf-idoz" class="g-word b1w g-accent">hora.</span></span>
+            </div>
+          </div>
+
+          <!-- Beat 2 -->
+          <div data-hf-id="hf-4pa7" class="g-beat" id="beat2" style="opacity: 0">
+            <div data-hf-id="hf-homj" class="g-line g-q">
+              <span data-hf-id="hf-6nkb" class="g-word-mask"><span data-hf-id="hf-tqm7" class="g-word b2w">¿Quién</span></span>
+              <span data-hf-id="hf-71vc" class="g-word-mask"><span data-hf-id="hf-kvk9" class="g-word b2w">le</span></span>
+              <span data-hf-id="hf-7g6d" class="g-word-mask"><span data-hf-id="hf-ngop" class="g-word b2w g-accent">responde?</span></span>
+            </div>
+            <div data-hf-id="hf-h46q" class="g-sub" id="sub2">De día, de noche, los feriados.</div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+
+          // Glows: respiración ambiente, finita
+          tl.fromTo("#glowA", { x: 0, y: 0, scale: 1 }, { x: -50, y: 30, scale: 1.1, duration: 3.5, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+          tl.fromTo("#glowB", { x: 0, y: 0, scale: 1 }, { x: 40, y: -24, scale: 1.08, duration: 3.5, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+
+          // Beat 1: cascada de palabras enmascaradas
+          tl.fromTo(".b1w", { yPercent: 112 }, { yPercent: 0, duration: 0.6, ease: "power4.out", stagger: 0.08 }, 0.25);
+
+          // Beat 1 sale hacia arriba
+          tl.to("#beat1", { opacity: 0, y: -70, scale: 0.97, duration: 0.5, ease: "power2.in" }, 3.0);
+
+          // Beat 2: reloj + pregunta
+          tl.fromTo("#beat2", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.5);
+          tl.fromTo(".b2w", { yPercent: 112 }, { yPercent: 0, duration: 0.62, ease: "power4.out", stagger: 0.09 }, 3.7);
+          tl.fromTo("#sub2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 4.5);
+
+          window.__timelines["01-gancho"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

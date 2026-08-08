@@ -13,7 +13,7 @@ export default function IntellixStack() {
         </h2>
 
         <Reveal className="mt-12 space-y-4" y={28}>
-          {intellix.stack.map((cat) => (
+          {intellix.tech.stack.map((cat) => (
             <div
               key={cat.group}
               className="grid grid-cols-1 gap-4 rounded-xl border border-line/10 bg-bg-soft/50 p-6 backdrop-blur md:grid-cols-4"

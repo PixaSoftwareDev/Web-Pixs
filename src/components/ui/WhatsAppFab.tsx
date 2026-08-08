@@ -18,7 +18,7 @@ export default function WhatsAppFab() {
 
   return (
     <a
-      href={whatsappUrl("Hola Pixs! Tengo un proyecto en mente.")}
+      href={whatsappUrl("Hola! Quiero saber más sobre Intellix.")}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Hablemos por WhatsApp"

@@ -1,0 +1,140 @@
+{
+  "category": "webpage",
+  "duration_s": 12,
+  "fps": 30,
+  "canvas": { "w": 1440, "h": 900, "aspect": "16:10" },
+  "style": "Recreación pixel-fiel de la página de chat de Intellix (PixsBot) en producción — SaaS limpio, canvas blanco, acentos violeta degradé, sombras suaves, tipografía system-ui. Energía calma y 'producto real funcionando'; nada de estética cyber aquí: el video ES el producto. Referencia visual obligatoria: media/capturas/intellix-chat-demo.gif",
+  "palette": ["#ffffff", "#fafafa", "#f4f4f5", "#27272a", "#18181b", "#71717a", "#a1a1aa", "#a855f7", "#8b3df2", "#7c3aed", "#e9d5ff", "#22c55e"],
+  "font": "system-ui",
+  "beats": [1.9, 3.55, 6.1, 7.75, 10.5],
+  "export": "mp4",
+
+  "asset_needs": [],
+
+  "block": null,
+  "customize": {},
+
+  "content": {
+    "mode": "recreation",
+    "url": null,
+    "capture": "none — recreación DOM/CSS fiel; fuente de verdad visual: C:/Users/Alejo Maros/desktop/desarollos/web-pixs/media/capturas/intellix-chat-demo.gif",
+    "loop": {
+      "perfect": true,
+      "note": "El frame 0 y el frame 359 deben ser idénticos: layout completo con SOLO el mensaje 1 del bot visible y el input vacío con placeholder. Todo estado animado vuelve exactamente a su valor inicial antes del final."
+    },
+
+    "layout": {
+      "canvas_bg": "#ffffff",
+      "sidebar": {
+        "rect": { "x": 0, "y": 0, "w": 260, "h": 900 },
+        "bg": "#ffffff",
+        "padding": "44px 32px",
+        "title": { "text": "¡Hola!", "font": "700 40px system-ui", "color": "#18181b", "pos": { "x": 32, "y": 44 } },
+        "paragraph": {
+          "text": "Estás en el chat de Intellix. Escribinos tu consulta y PixsBot te responde al instante.",
+          "bold_words": ["Intellix"],
+          "font": "400 15px/1.6 system-ui",
+          "color": "#71717a",
+          "pos": { "x": 32, "y": 108 },
+          "max_w": 196
+        },
+        "status": {
+          "dot": { "d": 8, "color": "#22c55e" },
+          "label": { "text": "En línea", "font": "400 13px system-ui", "color": "#71717a" },
+          "pos": { "x": 32, "y": 856 },
+          "gap": 8
+        }
+      },
+      "main_panel": {
+        "rect": { "x": 280, "y": 12, "w": 1146, "h": 876 },
+        "bg": "#ffffff",
+        "radius": 24,
+        "border": "1px solid #f0f0f2"
+      },
+      "bot_pill": {
+        "desc": "Pastilla flotante blanca arriba a la derecha del panel principal",
+        "rect": { "x": 1130, "y": 34, "w": 160, "h": 60 },
+        "bg": "#ffffff",
+        "radius": 16,
+        "shadow": "0 4px 18px rgba(0,0,0,0.10)",
+        "avatar": { "d": 40, "gradient": "linear-gradient(135deg,#a855f7,#7c3aed)", "icon": "robot (bot head, blanco, ~20px, inline SVG)", "status_dot": { "d": 10, "color": "#22c55e", "ring": "2px #ffffff", "pos": "bottom-right del avatar" } },
+        "name": { "text": "PixsBot", "font": "700 15px system-ui", "color": "#18181b" },
+        "status": { "text": "En línea", "font": "400 12px system-ui", "color": "#71717a", "dot": { "d": 6, "color": "#22c55e" } }
+      },
+      "chat_column": {
+        "desc": "Columna de mensajes anclada ABAJO del área principal (justify-content: flex-end). Los mensajes nuevos empujan el stack hacia arriba solo con translateY.",
+        "rect": { "x": 500, "bottom_anchor_y": 806, "w": 720 },
+        "gap": 14,
+        "align": "bot: izquierda con avatar / usuario: derecha"
+      },
+      "bubble_bot": {
+        "bg": "#f4f4f5",
+        "color": "#27272a",
+        "font": "400 16.5px/1.5 system-ui",
+        "padding": "12px 16px",
+        "radius": "18px 18px 18px 6px",
+        "max_w": 470,
+        "avatar": { "d": 34, "gradient": "linear-gradient(135deg,#a855f7,#7c3aed)", "icon": "robot blanco ~16px", "status_dot": { "d": 8, "color": "#22c55e", "ring": "2px #ffffff" }, "pos": "izquierda de la burbuja, alineado a la base", "gap": 10 }
+      },
+      "bubble_user": {
+        "bg": "linear-gradient(135deg,#a855f7,#8b3df2)",
+        "color": "#ffffff",
+        "font": "400 16.5px/1.5 system-ui",
+        "padding": "12px 16px",
+        "radius": "18px 18px 6px 18px",
+        "max_w": 430,
+        "shadow": "0 2px 10px rgba(139,61,242,0.22)"
+      },
+      "typing_indicator": {
+        "desc": "Burbuja gris del bot con 3 puntos",
+        "bubble": { "bg": "#f4f4f5", "radius": "18px 18px 18px 6px", "w": 78, "h": 44, "avatar": "igual que bubble_bot" },
+        "dots": { "d": 8, "color": "#a1a1aa", "gap": 6, "bounce": "y: 0→-5→0, sine.inOut, dur 0.5s c/u, stagger 0.14s, repite mientras esté visible (determinista: keyframes fijos en el timeline, no repeat:-1 desincronizado)" }
+      },
+      "input_bar": {
+        "rect": { "x": 500, "y": 824, "w": 720, "h": 52 },
+        "bg": "#ffffff",
+        "radius": 999,
+        "border": "1.5px solid #e9d5ff",
+        "clip_icon": { "glyph": "paperclip", "size": 20, "color": "#a1a1aa", "x_pad": 18 },
+        "placeholder": { "text": "Escribí un mensaje...", "font": "400 15px system-ui", "color": "#a1a1aa" },
+        "typed_text": { "font": "400 15px system-ui", "color": "#27272a", "caret": "1.5px × 18px #a855f7, blink 530ms por keyframes del timeline" },
+        "send_button": { "d": 40, "gradient": "linear-gradient(135deg,#a855f7,#7c3aed)", "icon": "send/paper-plane blanco 18px", "inset_right": 6 }
+      }
+    },
+
+    "messages": [
+      { "id": "m1", "from": "bot", "text": "Hola! Soy tu asistente virtual de Pixs 👋 ¿Decime en qué puedo ayudarte?" },
+      { "id": "m2", "from": "user", "text": "Hola! ¿Qué servicios ofrecen?" },
+      { "id": "m3", "from": "bot", "text": "Pixs ofrece seis servicios: desarrollo web, apps mobile, MVPs, integraciones y APIs, soluciones de IA y e-commerce." },
+      { "id": "m4", "from": "user", "text": "¿Y cómo puedo contactarlos?" },
+      { "id": "m5", "from": "bot", "text": "Podés escribirnos por WhatsApp, email o LinkedIn. Y si querés, te paso con alguien del equipo ahora mismo. 👋" }
+    ],
+
+    "timeline": [
+      { "t": [0.0, 0.6], "beat": "rest", "action": "Estado inicial en reposo: solo m1 visible sobre el ancla inferior, input vacío con placeholder, caret ausente. Idéntico al frame final." },
+      { "t": [0.6, 1.7], "beat": "type-q1", "action": "Typewriter en el input: texto de m2 aparece letra a letra (29 chars, steps deterministas, ~26 cps), placeholder se desvanece en 0.15s al primer carácter, caret visible parpadeando por keyframes. El botón send sube a opacidad/escala activa (scale 1→1.06→1, 0.2s) al completarse." },
+      { "t": [1.7, 2.1], "beat": "send-q1", "action": "Envío: texto del input desaparece (opacity 0, 0.12s), botón send hace micro-pulse (scale 1.15→1, back.out(2)), burbuja m2 hace pop spring desde la zona del input: from({scale:0.7, y:26, opacity:0}, dur 0.4, ease back.out(1.8), transformOrigin 'bottom right'). El stack (m1) sube gap+altura con translateY, 0.35s power2.out. Beat 1.9s." },
+      { "t": [2.2, 3.4], "beat": "typing-1", "action": "Typing indicator del bot entra con scale_grow (0.3s, origin bottom-left); 3 puntos rebotan con keyframes fijos (2 ciclos completos). Stack sube para hacerle lugar (translateY 0.3s)." },
+      { "t": [3.4, 3.85], "beat": "reply-1", "action": "Indicator sale (opacity 0 + scale 0.9, 0.18s); en su lugar la burbuja m3 aparece con pop suave: from({scale:0.85, y:14, opacity:0}, dur 0.45, ease back.out(1.4), origin 'bottom left'). El stack se reacomoda con translateY (la burbuja m3 es más alta que el indicator). Beat 3.55s." },
+      { "t": [3.85, 4.9], "beat": "read-1", "action": "Hold de lectura. Nada se mueve (opcional: hold_breath imperceptible NO — mantener quieto para look de producto)." },
+      { "t": [4.9, 5.95], "beat": "type-q2", "action": "Typewriter de m4 en el input (27 chars, ~26 cps), mismas reglas que type-q1." },
+      { "t": [5.95, 6.35], "beat": "send-q2", "action": "Mismo patrón de envío: input se limpia, send pulse, burbuja m4 pop spring back.out(1.8) origin 'bottom right', stack sube 0.35s power2.out. Beat 6.1s." },
+      { "t": [6.45, 7.6], "beat": "typing-2", "action": "Typing indicator otra vez (scale_grow in, 2 ciclos de rebote de puntos, keyframes fijos)." },
+      { "t": [7.6, 8.05], "beat": "reply-2", "action": "Indicator sale; burbuja m5 pop suave back.out(1.4) origin 'bottom left'; stack se reacomoda. Beat 7.75s." },
+      { "t": [8.05, 10.4], "beat": "read-final", "action": "Hold de lectura final ~2.35s. Conversación completa visible (m1–m5), input en reposo." },
+      { "t": [10.4, 11.3], "beat": "reset-fade", "action": "Fade elegante de reinicio: m2, m3, m4, m5 hacen fade_out con y:-10 y stagger 0.09s (de arriba hacia abajo: m2 primero), dur 0.5s c/u, ease power2.in. SIMULTÁNEO: el translateY del stack vuelve a 0 con power2.inOut 0.8s, de modo que m1 baja suavemente a su posición de reposo original. Beat 10.5s." },
+      { "t": [11.3, 12.0], "beat": "rest-out", "action": "Reposo final: solo m1, input con placeholder, caret ausente. Frame 359 === frame 0 → loop perfecto." }
+    ],
+
+    "motion_rules": [
+      "SOLO transform + opacity. El anclaje inferior del stack se resuelve con un wrapper translateY animado — nunca animar height/top/margin.",
+      "Determinista: timeline GSAP pausado y seekeado por frame (contrato HF); nada de repeat:-1 libre — los rebotes del typing indicator y el blink del caret son keyframes explícitos dentro del timeline maestro.",
+      "El typewriter se implementa por conteo de caracteres con steps() (snap por frame), no por width en px.",
+      "Las burbujas ya existen en el DOM desde el frame 0 con sus estados iniciales (opacity 0 / scale) — sin creación dinámica de nodos, para que el seek a cualquier frame sea exacto.",
+      "Emojis (👋) renderizados como texto nativo dentro de la burbuja, mismo tamaño de fuente.",
+      "Tamaños generosos: mensajes 16.5px, título sidebar 40px — el video se ve a ~800px de ancho en la web, todo debe leerse nítido."
+    ]
+  },
+
+  "shot_brief": "El viewer ve la página real del chat de Intellix funcionando sola dentro de una ventana de navegador: PixsBot saluda, un usuario invisible tipea su pregunta letra a letra en la barra violeta, el mensaje salta como burbuja degradé con un pop elástico, el bot 'piensa' con tres puntos rebotando y responde; el ciclo se repite con una segunda pregunta, la conversación completa respira dos segundos y media, y luego los mensajes nuevos se desvanecen hacia arriba dejando solo el saludo inicial — loop perfecto e imperceptible. Motivo dominante único: el ritmo pregunta-respuesta del chat (typewriter → pop spring → typing dots → pop suave), con el stack de mensajes empujando siempre hacia arriba desde su ancla inferior."
+}

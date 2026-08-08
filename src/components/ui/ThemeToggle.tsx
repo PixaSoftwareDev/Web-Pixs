@@ -14,13 +14,13 @@ export default function ThemeToggle() {
       aria-label={isDark ? "Activar tema claro" : "Activar tema oscuro"}
       aria-pressed={!isDark}
       title={isDark ? "Cambiar a claro" : "Cambiar a oscuro"}
-      className="group relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan transition-all hover:border-neon-cyan/60 hover:bg-neon-cyan/15 hover:glow-cyan"
+      className="group relative inline-flex h-7 w-7 items-center justify-center rounded-full text-ink-dim/70 transition-colors hover:text-ink"
     >
       {/* Sun (visible en dark, para invitar a pasar a light) */}
       <Sun
         size={16}
         strokeWidth={1.75}
-        className={`absolute transition-all duration-300 ${
+        className={`absolute transition-[transform,opacity] duration-300 ${
           mounted && isDark
             ? "rotate-0 scale-100 opacity-100"
             : "-rotate-90 scale-50 opacity-0"
@@ -30,7 +30,7 @@ export default function ThemeToggle() {
       <Moon
         size={16}
         strokeWidth={1.75}
-        className={`absolute transition-all duration-300 ${
+        className={`absolute transition-[transform,opacity] duration-300 ${
           mounted && !isDark
             ? "rotate-0 scale-100 opacity-100"
             : "rotate-90 scale-50 opacity-0"

@@ -18,7 +18,7 @@ export default function IntellixDeliverables() {
           y={22}
           stagger={0.05}
         >
-          {intellix.deliverables.map((d) => (
+          {intellix.tech.deliverables.map((d) => (
             <div
               key={d}
               className="flex items-start gap-3 rounded-lg border border-line/10 bg-bg-soft/50 p-4 backdrop-blur"
