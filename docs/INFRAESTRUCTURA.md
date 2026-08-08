@@ -352,6 +352,44 @@ catch-all sin tocar nada más.
         location /superadmin          { return 301 https://app.intellix.com.ar$request_uri; }
 ```
 
+#### 🚨 Tres cosas productivas cuelgan del dominio raíz
+
+Relevado el 2026-08-08. **Las tres se rompen si el `A` del raíz se mueve sin más**, y
+ninguna falla de forma ruidosa — se descubren por un usuario que se queja.
+
+**1. El webhook de WhatsApp** — el más grave.
+
+```
+PUBLIC_BASE_URL=https://intellix.com.ar      (.env del VPS)
+→ https://intellix.com.ar/api/v1/channels/whatsapp/webhook   (channels.py:37)
+```
+
+Esa URL **está registrada en Meta**. Si el raíz deja de resolver al VPS, Meta entrega los
+mensajes en el vacío y **el canal de WhatsApp de la mutual deja de recibir**.
+Requiere cambiar la variable **y actualizar el webhook en el panel de Meta**.
+
+**2. Los links de recuperación de contraseña.**
+
+```
+APP_BASE_URL=https://intellix.com.ar         (.env del VPS)
+→ https://intellix.com.ar/reset-password?token=…   (auth.py:571)
+```
+
+El mail llega bien y el link "funciona", pero aterriza en la landing. Nadie puede
+recuperar su cuenta. Afecta también a las invitaciones de alta.
+
+**3. Los widgets embebidos en sitios de clientes** — ver abajo.
+
+**Antes del Bloque 3 hay que:**
+
+- [ ] `APP_BASE_URL` → `https://app.intellix.com.ar` (+ restart del backend)
+- [ ] `PUBLIC_BASE_URL` → `https://app.intellix.com.ar` (+ restart del backend)
+- [ ] **Actualizar el webhook en el panel de Meta** ← lo hace Alejo, no se puede automatizar
+- [ ] Resolver el tema de los widgets de clientes (abajo)
+
+Las dos variables se pueden cambiar **ya**, sin esperar: `app.intellix.com.ar` ya responde,
+así que apuntar ahí funciona desde hoy y deja de ser una bomba de tiempo.
+
 #### 🚨 Los widgets de clientes viven en el dominio raíz
 
 Hay **tres tenants con widget habilitado**: `galo`, `intellix`, `mutualyf` (verificado en
