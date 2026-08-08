@@ -233,7 +233,7 @@ Validado al cerrar: `app`, `intellix.com.ar`, `www` y `dev` responden 200 en `/l
 `/chat`; `/health` y el widget OK en ambos hosts; los cuatro registros DNS de Resend
 intactos (DKIM presente, 218 chars).
 
-### Bloque 1 — Correo en Ferozo (hosting #4729877, ya pago)
+### Bloque 1 — Correo en Ferozo ✅ **FUNCIONANDO 2026-08-08**
 
 ⚠️ **Se ejecuta FUSIONADO con el Bloque 3, en una única ventana.**
 
@@ -277,9 +277,16 @@ El correo igual queda operativo antes de publicar, que era la condición.
 - [x] `DKIM` de Ferozo presente en `mail._domainkey`; `_dmarc` quedó único en `p=none`
 - [x] Servidor de correo respondiendo: puertos 25 / 465 / 587 / 993 abiertos,
       banner `220-c277.dattaweb.com ESMTP Server`
-- [ ] **Probar recepción y envío reales** ← configurado ≠ probado
-- [ ] Alias → `hola@`: `info@`, `contacto@`
-- [ ] Configurar las casillas por **IMAP con SSL** (nunca POP), datos en el propio panel
+- [x] **Recepción y envío probados de punta a punta (2026-08-08).** Gmail → `hola@`
+      llega a la bandeja; `hola@` → Gmail llega a Recibidos, **no a spam**
+- [x] Alias → `hola@`: `info@`, `contacto@`
+- [ ] Configurar las casillas en los dispositivos (opcional, cuando haga falta):
+
+```
+Usuario:   <casilla>@intellix.com.ar
+Entrante:  c2770977.ferozo.com   IMAP 993 SSL   (NO usar POP3 995)
+Saliente:  c2770977.ferozo.com   SMTP 465 SSL
+```
 
 #### Incidente 2026-08-08 — DonWeb reescribió la zona
 
