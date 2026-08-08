@@ -57,22 +57,6 @@ export const intellix = {
     },
   },
 
-  // Sección "Probalo ahora" — usa el widget real embebido en el sitio.
-  tryIt: {
-    eyebrow: "Demo en vivo",
-    title: "No te lo contamos: probalo",
-    description:
-      "Este mismo asistente que ves en la esquina de la pantalla es Intellix funcionando con nuestra propia documentación. Preguntale lo que quieras sobre el producto — precios, cómo se instala, qué pasa cuando no sabe algo.",
-    cta: "Abrir el asistente",
-    suggestions: [
-      "¿Qué es Intellix y para qué sirve?",
-      "¿Cómo se instala en mi página web?",
-      "¿Qué pasa si el asistente no sabe la respuesta?",
-      "¿Puedo atender WhatsApp con Intellix?",
-    ],
-    note: "Así se ve el widget en tu sitio: con tu logo, tus colores y el nombre que elijas.",
-  },
-
   // "El viaje de una consulta" — la experiencia scroll-driven que abre la página.
   // El scroll del visitante reproduce el recorrido real de una pregunta.
   // El viaje ahora cuenta la historia del DUEÑO (el hero ya muestra la conversación):

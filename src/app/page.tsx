@@ -18,7 +18,8 @@ import IntellixCTA from "@/components/intellix/IntellixCTA";
  * → objeción "¿inventa?" (Trust) → objeción "¿pierdo control?" (Control)
  * → dónde vive (Channels) → cuánto (Pricing) → sin riesgo (Launch)
  * → cercanía (Team) → cierre (CTA).
- * "Probalo" (TryIt) está fuera hasta reactivar el widget embebido.
+ * El producto se muestra con el video real del widget en el Hero: la landing
+ * no embebe el widget (decisión de producto, 2026-08-08).
  */
 export default function Home() {
   return (

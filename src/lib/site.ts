@@ -9,8 +9,8 @@ export const site = {
   description:
     "Intellix convierte los documentos de tu empresa en un asistente que responde consultas de clientes y empleados al instante, 24/7 — y deriva a tu equipo cuando hace falta una persona.",
   url: "https://www.intellix.com.ar",
-  // TODO(Alejo): confirmar casilla definitiva de la marca Intellix.
-  email: "hola@pixs.dev",
+  // Casilla comercial de la marca (Ferozo). ventas@ y soporte@ existen pero no van en la web.
+  email: "hola@intellix.com.ar",
   location: "Argentina",
   // Firma discreta en el footer.
   byline: "Un producto de Pixs",
@@ -34,6 +34,18 @@ export const site = {
   socials: {
     linkedin: "https://www.linkedin.com/company/pixstech/",
     github: "https://github.com/pixs",
+  },
+  /**
+   * La app del producto (login, paneles, API y widget). Vive en su propio
+   * subdominio: el dominio raíz queda para esta landing.
+   *
+   * Antes esto apuntaba a `www.intellix.com.ar`, que es donde la app vivía
+   * históricamente. Ese host va a pasar a servir la landing, así que apuntar
+   * acá es lo único que sobrevive a la mudanza. Ver docs/INFRAESTRUCTURA.md.
+   */
+  app: {
+    url: "https://app.intellix.com.ar",
+    login: "https://app.intellix.com.ar/login",
   },
 } as const;
 

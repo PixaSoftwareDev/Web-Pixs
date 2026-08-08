@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
-// import WhatsAppFab from "@/components/ui/WhatsAppFab"; // temporalmente desactivado para probar widget Intellix
+import WhatsAppFab from "@/components/ui/WhatsAppFab";
 import MotionProvider from "@/components/ui/MotionProvider";
 
 const spaceGrotesk = Space_Grotesk({
@@ -69,20 +68,7 @@ export default function RootLayout({
         <div className="relative z-10">
           <MotionProvider>{children}</MotionProvider>
         </div>
-        {/* Temporalmente comentado para probar el widget de Intellix (evitar dos widgets) */}
-        {/* <WhatsAppFab /> */}
-        {/* Widget de Intellix — desactivado de momento (la burbuja tapaba el dock flotante).
-            Para reactivarlo, descomentar este Script. Ojo: la sección "Probalo" (TryIt)
-            depende de esta burbuja (#ia-w-btn) para abrir el chat.
-        <Script
-          src="https://dev.intellix.com.ar/widget/widget.js"
-          strategy="afterInteractive"
-          data-api-url="https://dev.intellix.com.ar"
-          data-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOiJpbnRlbGxpeCIsInNjb3BlIjoid2lkZ2V0IiwiaWF0IjoxNzg0OTg5NDkzLCJleHAiOjE3OTI3NjU0OTN9.gmiL9vNgeKOfXpfih1VIlnX_kcgWna1lK4v459lUd5s"
-          data-title="Intellix"
-          data-placeholder="Hacé tu consulta..."
-        />
-        */}
+        <WhatsAppFab />
       </body>
     </html>
   );

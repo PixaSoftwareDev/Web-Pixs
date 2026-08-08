@@ -23,7 +23,7 @@ Landing de venta para **Intellix**, la plataforma SaaS de IA conversacional del 
 | Estilos | Tailwind CSS |
 | Animación / scroll | GSAP + ScrollTrigger (`Reveal`) · framer-motion (layout, AnimatePresence, micro-interacciones — permite portar componentes de 21st.dev/Aceternity) |
 | Iconos | lucide-react |
-| Demo en vivo | Widget real de Intellix embebido en `layout.tsx` (script de intellix.com.ar) |
+| Demo del producto | Video real del widget en el Hero (`/media/hero-widget-loop.mp4`). **El widget embebido se eliminó de la landing** — decisión de producto, 2026-08-08 |
 | Deploy | Vercel (recomendado) |
 
 ## 3. Estética — cálida, luminosa y humana
@@ -49,7 +49,7 @@ Tema **claro por defecto** (oscuro opcional con el toggle). Los acentos salen de
 1. `Navbar` — logo Intellix, anclas, CTA "Pedir demo" (WhatsApp).
 2. `Hero` — dolor universal + mockup de conversación animado (con cita de fuente y chip de derivación).
 3. `HowItWorks` — 3 pasos en lenguaje cliente (`#como-funciona`).
-4. `TryIt` — demo real: abre el widget embebido vía click en `#ia-w-btn` (`#probalo`).
+4. ~~`TryIt`~~ — **fuera de la home**. Dependía del widget embebido, que se eliminó. El componente sigue en `sections/` pero no está montado.
 5. `Scenarios` — 4 mini-historias con ejemplo de pregunta/respuesta (`#escenarios`).
 6. `Trust` — "diseñado para no inventar": citas, honestidad, contradicciones, aislamiento (`#confianza`).
 7. `Channels` — widget web + WhatsApp oficial + panel de operadores (`#canales`).
@@ -65,16 +65,17 @@ Tema **claro por defecto** (oscuro opcional con el toggle). Los acentos salen de
 ```
 src/
 ├── app/
-│   ├── layout.tsx          <- metadata Intellix + script del widget (token JWT: ¡expira, regenerar del panel!)
+│   ├── layout.tsx          <- metadata Intellix + WhatsAppFab (el widget embebido se eliminó)
 │   ├── page.tsx            <- home de venta
 │   ├── tecnologia/page.tsx <- ficha técnica
 │   └── intellix/page.tsx   <- redirect a /
 ├── components/
 │   ├── sections/           <- secciones de la home (Hero, TryIt, Scenarios, Trust, ...)
 │   ├── intellix/           <- componentes de /tecnologia + Reveal + IntellixCTA (compartido)
-│   └── ui/                 <- Navbar, Footer, ThemeToggle, Preloader, WhatsAppFab (desmontado)
+│   └── ui/                 <- Navbar, Footer, ThemeToggle, Preloader, WhatsAppFab (activo)
 └── lib/
     ├── site.ts             <- marca Intellix: logos, WhatsApp, email, byline Pixs
+    │                          + site.app (la app vive en app.intellix.com.ar)
     ├── intellix.ts         <- TODO el copy de la landing + ficha técnica (intellix.tech.*)
     ├── content.ts          <- team
     └── theme.ts            <- tema claro default; clave "intellix-web-theme"
@@ -94,10 +95,24 @@ npm run type-check
 
 - **Producto**: Intellix — https://www.intellix.com.ar
 - **Firma**: "Un producto de Pixs" (solo footer)
-- **Email**: hola@pixs.dev *(pendiente: confirmar casilla propia de Intellix)*
+- **Email**: hola@intellix.com.ar *(la casilla todavía NO existe — ver `docs/INFRAESTRUCTURA.md`, Bloque 1)*
 - **WhatsApp**: 5492477509003 — los mensajes precargados viven en `intellix.whatsapp`
 
-## 8. Reglas para Claude (al trabajar en este proyecto)
+## 8. Infraestructura y publicación
+
+**Antes de tocar dominios, DNS, deploy o correo: leer `docs/INFRAESTRUCTURA.md`.**
+
+Lo esencial: `intellix.com.ar` **hoy sirve la app productiva** que usan Josué y la mutual
+(VPS `200.58.109.110`, repo `..\mutualyf`). Esta landing todavía no está publicada.
+
+El plan acordado es mover la app a `app.intellix.com.ar` y dejar el dominio raíz para la
+landing, con redirects `301` para que nadie tenga que cambiar su link. El doc tiene el
+detalle, los bloques de trabajo y el rollback de cada uno.
+
+⚠️ **No configurar `intellix.com.ar` en el hosting Ferozo**: reescribe el registro `A` y
+tira abajo la app.
+
+## 9. Reglas para Claude (al trabajar en este proyecto)
 
 - **No instales librerías** sin avisar primero qué y para qué.
 - **No agregues frameworks de UI** (shadcn, MUI, etc.). Tailwind + componentes propios.

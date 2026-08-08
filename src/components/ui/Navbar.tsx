@@ -106,7 +106,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <a
-            href="https://www.intellix.com.ar/login"
+            href={site.app.login}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden font-display text-sm font-semibold text-ink-dim transition-colors hover:text-ink md:inline-block"
@@ -178,7 +178,7 @@ export default function Navbar() {
             ),
           )}
           <a
-            href="https://www.intellix.com.ar/login"
+            href={site.app.login}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
