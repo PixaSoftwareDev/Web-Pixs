@@ -308,6 +308,37 @@ responder**. El TTL en 900 fue lo que dio el margen.
 
 **Si hay que repetir esto en otro dominio: el respaldo previo de la zona no es opcional.**
 
+##### 🚨 Lo que casi se me pasa: los registros `AAAA` (IPv6)
+
+Ferozo **creó registros `AAAA` que la zona original no tenía**, apuntando al hosting:
+
+```
+AAAA intellix.com.ar → 2800:6c0:2::c:277     ← el hosting, NO el VPS
+```
+
+`www` no tenía `AAAA` propio pero lo heredaba por su `CNAME` al raíz.
+
+Efecto: **cualquier cliente que resolviera por IPv6 iba al servidor equivocado.**
+Verificado sobre el webhook de WhatsApp:
+
+```
+IPv4 (VPS)            → 200    funciona
+IPv6 (hosting Ferozo) → 000    conexión muerta
+```
+
+Meta prefiere IPv6. Intentaba entregar, caía en el vacío, y tras varios fallos desactivó
+la suscripción del webhook. **Ese fue el corte del WhatsApp de la mutual.**
+
+Costó verlo porque todas las pruebas iniciales —`curl`, `Invoke-WebRequest`,
+`verificar.ps1`— salían por IPv4 y daban `200`. **Un chequeo que solo mira IPv4 puede dar
+todo verde con el servicio caído.**
+
+Registro del raíz eliminado. Los `AAAA` de `mail`, `autoconfig`, `autodiscover` y `ftp`
+**se dejan**: son del correo y el hosting sí es su destino correcto.
+
+**Regla para la próxima: después de tocar una zona, verificar `A` y `AAAA`.** Un `AAAA`
+huérfano es invisible a las pruebas normales y rompe solo a los clientes con IPv6.
+
 > El `SPF` del raíz es independiente del de Resend, que vive en `send.intellix.com.ar` y
 > no se toca.
 

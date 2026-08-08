@@ -38,6 +38,17 @@ foreach ($d in @("intellix.com.ar", "www.intellix.com.ar", "app.intellix.com.ar"
     Check $d $ip $VPS
 }
 
+# IPv6: un AAAA apuntando a otro lado rompe SOLO a los clientes que resuelven por IPv6
+# (Meta entre ellos) y es invisible para cualquier prueba que salga por IPv4.
+# Paso el 2026-08-08: Ferozo creo un AAAA al hosting y tiro el webhook de WhatsApp
+# mientras todos los chequeos daban verde. Ninguno de estos hosts debe tener AAAA.
+Write-Host "`n=== IPv6: ninguno de estos debe tener AAAA ===" -ForegroundColor Cyan
+foreach ($d in @("intellix.com.ar", "www.intellix.com.ar", "app.intellix.com.ar", "dev.intellix.com.ar")) {
+    $v6 = (Resolve-DnsName $d -Type AAAA -Server $NS | Where-Object { $_.Type -eq 'AAAA' }).IPAddress
+    if ($v6) { $script:fail++; "FALLA {0,-38} AAAA -> {1}" -f $d, $v6 }
+    else     { "OK    {0,-38} sin AAAA" -f $d }
+}
+
 Write-Host "`n=== RESEND: el correo de la app (reset de contrasena, OTP) ===" -ForegroundColor Cyan
 Write-Host "Si algo de esto falla, la gente no puede recuperar su contrasena." -ForegroundColor Yellow
 
