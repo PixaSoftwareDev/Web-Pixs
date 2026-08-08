@@ -129,16 +129,38 @@ existe es el MX de `send.intellix.com.ar` (Resend) para transaccionales del prod
 
 ## 2. Decisión de arquitectura
 
-**Patrón elegido: subdominio dedicado para la app.**
+**La app se muda a un subdominio. La landing viene al raíz. El registro `A` del raíz
+NUNCA se mueve.**
 
 ```
-intellix.com.ar  +  www   →  Landing (este repo)         →  Vercel
-app.intellix.com.ar       →  App productiva              →  VPS 200.58.109.110
-dev.intellix.com.ar       →  Staging de la app           →  VPS (ya existe)
+intellix.com.ar  +  www   →  VPS 200.58.109.110 (nginx), como hoy
+    /                     →  Landing (este repo), archivos estáticos
+    /api/                 →  backend   ← webhook de WhatsApp, widgets de clientes
+    /widget/              →  widget.js ← widgets de clientes
+    /login /admin ...     →  301 → app.intellix.com.ar
+app.intellix.com.ar       →  App productiva              →  VPS (Bloque 0, ✅ hecho)
+dev.intellix.com.ar       →  Staging de la app           →  VPS (ya existía)
 send.intellix.com.ar      →  Resend transaccional        →  sin cambios
 mail.intellix.com.ar      →  Correo de la marca          →  Ferozo 200.58.111.113
 MX del raíz               →  mail.intellix.com.ar
 ```
+
+**Por qué el raíz no se mueve.** Tres servicios productivos cuelgan de ese registro y
+están fijados en sistemas de terceros: el webhook de WhatsApp vive en el panel de Meta
+**de la mutual** (no tenemos acceso), y los widgets están embebidos en sitios de clientes.
+Cuando una URL está clavada por alguien que no controlás, lo profesional es no moverla y
+adaptar lo demás.
+
+Se evaluó publicar la landing en **Vercel** y se descartó: obligaba a mover el `A` del
+raíz, lo que exigía o bien rewrites de Vercel proxeando hacia el VPS —metiendo a Vercel en
+el camino del webhook productivo de un cliente— o bien pedirle a la mutual que modificara
+su configuración en Meta. Se pierden los preview deploys; se gana no depender de terceros.
+
+**La landing es 100% estática** (`output: "export"` en `next.config.mjs`): `next build`
+escribe HTML plano en `out/` y nginx lo sirve como archivos. No hay proceso Node, así que
+**la landing no puede caerse** — no hay servidor que crashee ni contenedor que no levante.
+El único punto de contacto con la app es nginx, que ya está protegido por el `nginx -t`
+de `deploy.sh`.
 
 El correo en Ferozo conviviendo con la web en Vercel **ya está probado en esta misma
 cuenta**: `handicapp.com.ar` resuelve a `216.198.79.1` (Vercel) mientras
@@ -326,9 +348,17 @@ Nada de esto se ve en producción. Es donde va la mayor parte del tiempo.
 - [ ] Deploy a Vercel con dominio de preview (`*.vercel.app`). **Sin dominio propio aún**
 - [ ] Revisión visual completa
 
-### Bloque 3 — El switch (día de semana, ~20 min de trabajo)
+### Bloque 3 — Publicar la landing
 
-El único bloque con impacto visible. **Nunca un viernes ni un fin de semana.**
+Antes era "el switch", el bloque peligroso: implicaba mover el `A` del raíz y esperar
+propagación, con los usuarios de la mutual dependiendo de ese registro.
+
+**Ya no.** Al dejar la landing en el mismo VPS, no se toca ningún DNS: es un cambio de
+nginx más subir archivos, con `nginx -t` antes y rollback en segundos. Lo único visible
+para los usuarios es el re-login que provocan los `301`.
+
+Sigue conviniendo hacerlo con poca gente conectada, pero dejó de ser una operación
+de riesgo.
 
 #### Los `301` — listos para pegar
 
@@ -425,16 +455,47 @@ Sin resolver esto, el Bloque 3 rompe los widgets de clientes en producción.
 Por eso la mudanza es solo de navegación: las personas van al host nuevo, las
 integraciones siguen donde están.
 
-- [x] ~~24–48 hs antes: bajar el TTL~~ — hecho 2026-08-08, quedó en `900`
-- [ ] Avisar a la mutual: "les va a pedir la contraseña una vez"
-- [ ] nginx del VPS: agregar los `301` del raíz hacia `app.intellix.com.ar` para
-      `/login`, `/admin`, `/operator`, `/superadmin`, `/chat`, `/forgot-password`,
-      `/reset-password`, `/auth`
-- [ ] Apuntar `A` de raíz y `www` a Vercel
-- [ ] Limpiar el conflicto: **`www` tiene hoy un `A` y un `CNAME` a la vez**, lo cual es
-      inválido según el estándar DNS. Dejar uno solo
-- [ ] Verificar: landing en el raíz, `/login` redirige y entra, correo sigue llegando
-- [ ] Restaurar el TTL a un valor normal
+#### Pasos
+
+**No se toca ningún registro DNS.** Todo el cambio es nginx + subir archivos.
+
+- [x] ~~Bajar el TTL~~ — hecho 2026-08-08, quedó en `900` (sigue sirviendo de red)
+- [ ] `APP_BASE_URL` y `PUBLIC_BASE_URL` → `https://app.intellix.com.ar` + restart backend
+- [ ] `npm run build` → subir `out/` a `/var/www/landing` en el VPS
+- [ ] nginx, en el `server` 443 del raíz, **en este orden** (nginx elige el `location`
+      más específico, pero el orden ayuda a leerlo):
+
+```nginx
+        location /api/      { … }   # sin cambios — webhook de WhatsApp, widgets
+        location /uploads/  { … }   # sin cambios
+        location /health    { … }   # sin cambios
+        location /metrics   { … }   # sin cambios
+
+        # ⚠️ NUEVO y OBLIGATORIO: hoy /widget/ lo sirve el `location /` por proxy
+        # al frontend. Al pasar `/` a archivos estáticos, sin esto los widgets de
+        # los clientes dejan de cargar.
+        location /widget/ {
+            set $frontend_host frontend:3000;
+            proxy_pass       http://$frontend_host;
+            proxy_set_header Host $host;
+        }
+
+        # los 301 de navegación (ver arriba)
+
+        # la landing, reemplazando el proxy al frontend
+        location / {
+            root /var/www/landing;
+            try_files $uri $uri.html $uri/index.html /404.html;
+        }
+```
+
+- [ ] `nginx -t` y deploy
+- [ ] Verificar con `docs/verificar.ps1` **y además**: la landing carga en `/`,
+      `/login` redirige y entra, `/widget/widget.js` responde 200,
+      `/api/v1/channels/whatsapp/webhook` responde, un reset de contraseña real llega
+- [ ] Limpiar el conflicto: **`www` tiene un `A` y un `CNAME` a la vez**, lo cual es
+      inválido. Dejar solo el `A`
+- [ ] Avisar a la mutual (opcional): "les va a pedir la contraseña una vez"
 
 ### Bloque 4 — Cierre
 
@@ -473,7 +534,8 @@ Nombrados a propósito: son los que **se espera** que aparezcan, no sorpresas.
 | 1 | Todos los usuarios se re-loguean | **100%** | Bajo | Costo aceptado. Avisar antes |
 | 2 | DonWeb pisa el `A` del raíz al configurar el hosting | Alta | Alto **solo si el Bloque 0 no está hecho** | Bloque 0 primero — desactiva el problema |
 | 3 | Se pierde el DKIM de Resend → OTP a spam | Media | **Alto y silencioso** | Copiar el valor completo antes; verificar y probar un OTP después |
-| 4 | Imprevisto en el switch del Bloque 3 | Media | Medio | TTL a 300 con 48 hs de anticipación |
+| 4 | Al publicar la landing, `/widget/` deja de servirse | **Alta si se olvida** | Alto | `location /widget/` explícito — hoy lo cubre el `location /` que vamos a reemplazar |
+| 5 | Imprevisto al publicar la landing | Media | **Bajo** | Ya no hay DNS de por medio: `nginx -t` + rollback en segundos |
 
 El riesgo 3 es el más traicionero: **no falla ruidosamente**. Nadie ve un error; los mails
 simplemente empiezan a caer en spam. Por eso la verificación con un OTP real es
@@ -492,9 +554,10 @@ segundos o minutos.
 | 0 | Quitar el `server` block y `nginx -s reload` | segundos |
 | 1 | Quitar los `MX` de la zona | minutos (TTL) |
 | 2 | Nada que revertir, es local | — |
-| 3 | Volver el `A` al VPS | **el TTL vigente** — por eso se baja antes |
+| 3 | Revertir el `location /` en nginx y recargar | segundos |
 
-El Bloque 3 es el único con riesgo real. Todo el resto es reversible al instante.
+**Ningún bloque mueve un registro `A`.** Todo es reversible en segundos o minutos. El TTL
+en 900 queda igual como red de seguridad por si alguna vez hay que tocar DNS.
 
 ---
 

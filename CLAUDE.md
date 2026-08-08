@@ -105,12 +105,17 @@ npm run type-check
 Lo esencial: `intellix.com.ar` **hoy sirve la app productiva** que usan Josué y la mutual
 (VPS `200.58.109.110`, repo `..\mutualyf`). Esta landing todavía no está publicada.
 
-El plan acordado es mover la app a `app.intellix.com.ar` y dejar el dominio raíz para la
-landing, con redirects `301` para que nadie tenga que cambiar su link. El doc tiene el
-detalle, los bloques de trabajo y el rollback de cada uno.
+La app ya se mudó a `app.intellix.com.ar` (hecho). La landing va al **dominio raíz, en el
+mismo VPS**, servida por nginx como archivos estáticos (`output: "export"`), con `301`
+para que nadie tenga que cambiar su link.
 
-⚠️ **No configurar `intellix.com.ar` en el hosting Ferozo**: reescribe el registro `A` y
-tira abajo la app.
+⚠️ **El registro `A` del raíz no se mueve.** De ese dominio cuelgan el webhook de WhatsApp
+(registrado en el panel de Meta **de la mutual**, sin acceso nuestro) y los widgets
+embebidos en sitios de clientes. Por eso la landing no va a Vercel.
+
+⚠️ **No configurar `intellix.com.ar` en el hosting Ferozo** sin leer el doc: reescribe la
+zona DNS y puede llevarse el DKIM de Resend, con lo que dejan de llegar los mails de
+recuperación de contraseña y los OTP.
 
 ## 9. Reglas para Claude (al trabajar en este proyecto)
 
