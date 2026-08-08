@@ -494,7 +494,22 @@ integraciones siguen donde están.
 **No se toca ningún registro DNS.** Todo el cambio es nginx + subir archivos.
 
 - [x] ~~Bajar el TTL~~ — hecho 2026-08-08, quedó en `900` (sigue sirviendo de red)
-- [x] `APP_BASE_URL` y `PUBLIC_BASE_URL` → `https://app.intellix.com.ar` (hecho 2026-08-08)
+- [ ] ~~`APP_BASE_URL` y `PUBLIC_BASE_URL` → `app.intellix.com.ar`~~ **REVERTIDO — no hacer**
+
+> 🚫 **`PUBLIC_BASE_URL` debe quedarse en `https://intellix.com.ar`. No cambiarla nunca.**
+>
+> Arma la URL del webhook que el panel muestra para pegar en Meta:
+> `https://intellix.com.ar/api/v1/channels/whatsapp/webhook`. Esa URL está cargada en el
+> panel de Meta **de la mutual**, al que no tenemos acceso. Si el valor cambia, el panel
+> muestra una URL distinta a la registrada y hay que pedirle a un tercero que la
+> actualice.
+>
+> No hay riesgo en dejarla así: el raíz nunca se mueve del VPS y `/api/` sigue yendo al
+> backend aun con la landing publicada. **La URL del webhook es válida para siempre.**
+>
+> `APP_BASE_URL` puede quedarse igual: `intellix.com.ar/reset-password` va a redirigir por
+> `301` a `app.intellix.com.ar/reset-password` una vez publicada la landing. Cambiarla
+> ahorra un salto, pero no es necesario y no justifica tocar producción.
 
 > ⚠️ **`docker compose restart` NO relee el `.env`.** Reinicia el proceso con la config que
 > el contenedor ya tenía: se ve `healthy` pero sigue con los valores viejos. Hay que
