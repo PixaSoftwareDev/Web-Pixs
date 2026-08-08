@@ -494,7 +494,13 @@ integraciones siguen donde están.
 **No se toca ningún registro DNS.** Todo el cambio es nginx + subir archivos.
 
 - [x] ~~Bajar el TTL~~ — hecho 2026-08-08, quedó en `900` (sigue sirviendo de red)
-- [ ] `APP_BASE_URL` y `PUBLIC_BASE_URL` → `https://app.intellix.com.ar` + restart backend
+- [x] `APP_BASE_URL` y `PUBLIC_BASE_URL` → `https://app.intellix.com.ar` (hecho 2026-08-08)
+
+> ⚠️ **`docker compose restart` NO relee el `.env`.** Reinicia el proceso con la config que
+> el contenedor ya tenía: se ve `healthy` pero sigue con los valores viejos. Hay que
+> **recrear**: `docker compose … up -d --no-deps --force-recreate backend celery_worker
+> celery_beat`, y verificar con `docker exec ia_backend printenv APP_BASE_URL`.
+> Backup del original en el VPS: `.env.bak.antes-app-subdomain`.
 - [ ] `npm run build` → subir `out/` a `/var/www/landing` en el VPS
 - [ ] nginx, en el `server` 443 del raíz, **en este orden** (nginx elige el `location`
       más específico, pero el orden ayuda a leerlo):
