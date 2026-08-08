@@ -259,20 +259,47 @@ El correo igual queda operativo antes de publicar, que era la condición.
       Los caches viejos tardan hasta 4 hs en expirar — recién después el TTL nuevo rige
       en todos los resolvers.
 - [x] **Respaldo del DKIM y demás registros de Resend** en `docs/dns-backup-resend.txt`
-- [ ] Hosting #4729877 → Dominios configurados → Configurar → `intellix.com.ar`
-- [ ] **Verificar el `A` del raíz inmediatamente después.** Si DonWeb lo apuntó al hosting
-      (`200.58.111.113`), devolverlo a donde corresponda según en qué punto del plan estemos
-- [ ] Correos → Crear cuenta (el selector ya debería ofrecer `intellix.com.ar`):
+- [x] Hosting #4729877 → Dominios configurados → Configurar → `intellix.com.ar`
+- [x] **Verificar el `A` del raíz inmediatamente después** ⚠️ **PASÓ**: DonWeb reescribió
+      la zona entera. Ver "Incidente 2026-08-08" abajo
+- [x] Correos → Crear cuenta:
       - `hola@intellix.com.ar` — comercial, la que va en la web
       - `ventas@intellix.com.ar` — Enzo
       - `soporte@intellix.com.ar` — incidencias
+
+> ⚠️ **El plan admite solo 5 casillas y ya están las 5** (las 4 de Intellix +
+> `info@handicapp.com.ar`). Para sumar otra hay que ampliar el plan o liberar una.
+- [x] **`noreply@intellix.com.ar`** (sin guión — es el `EMAIL_FROM` real de Resend)
+- [x] Verificar `MX` → `mail.intellix.com.ar` (prio 0) + `mx1` (prio 20), resolviendo a
+      `200.58.111.113`
+- [x] `SPF` del raíz → `v=spf1 include:comp.hostmar.com include:amazonses.com ~all`
+      (Ferozo lo cargó con `-all` y sin Resend; corregido)
+- [x] `DKIM` de Ferozo presente en `mail._domainkey`; `_dmarc` quedó único en `p=none`
+- [x] Servidor de correo respondiendo: puertos 25 / 465 / 587 / 993 abiertos,
+      banner `220-c277.dattaweb.com ESMTP Server`
+- [ ] **Probar recepción y envío reales** ← configurado ≠ probado
 - [ ] Alias → `hola@`: `info@`, `contacto@`
-- [ ] **`noreply@intellix.com.ar`** (sin guión — es el `EMAIL_FROM` real de Resend)
-- [ ] Verificar `MX` → `mail.intellix.com.ar`, y que ese host resuelva a `200.58.111.113`
-- [ ] Verificar `SPF` del raíz (el panel suele cargarlo solo)
-- [ ] Activar `DKIM` si el panel lo ofrece; el `_dmarc` ya existe en `p=none`
-- [ ] Probar recepción **y** envío (que no caiga en spam)
 - [ ] Configurar las casillas por **IMAP con SSL** (nunca POP), datos en el propio panel
+
+#### Incidente 2026-08-08 — DonWeb reescribió la zona
+
+Al configurar el dominio en el hosting, DonWeb **reescribió la zona DNS completa**. No es
+que agregue registros: los reemplaza.
+
+| Registro | Qué pasó |
+|---|---|
+| `A intellix.com.ar` | **Pisado** → `200.58.111.113` |
+| `A app` / `A dev` | **Borrados** |
+| `MX send` (Resend) | **Borrado** |
+| `TXT resend._domainkey` | ✅ Sobrevivió |
+| `TXT send` (SPF) | ✅ Sobrevivió |
+| `_dmarc` | **Duplicado** — dos registros que se concatenaban e invalidaban la política |
+| `SPF` del raíz | Creado por Ferozo con `-all` y **sin** Resend |
+
+Todo se reparó en el momento, antes de que expiraran los cachés: **la app nunca dejó de
+responder**. El TTL en 900 fue lo que dio el margen.
+
+**Si hay que repetir esto en otro dominio: el respaldo previo de la zona no es opcional.**
 
 > El `SPF` del raíz es independiente del de Resend, que vive en `send.intellix.com.ar` y
 > no se toca.
