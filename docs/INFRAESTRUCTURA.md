@@ -339,6 +339,15 @@ Registro del raíz eliminado. Los `AAAA` de `mail`, `autoconfig`, `autodiscover`
 **Regla para la próxima: después de tocar una zona, verificar `A` y `AAAA`.** Un `AAAA`
 huérfano es invisible a las pruebas normales y rompe solo a los clientes con IPv6.
 
+**✅ Resuelto.** Apenas se borró el registro, Meta reanudó las entregas sola — no hizo
+falta reactivar nada en su panel. Confirmado en la base: conversación de WhatsApp el
+`2026-08-09 04:04`, con selección de área y cierre por inactividad. La anterior era del
+`2026-08-06`, o sea que el corte duró lo que duró el `AAAA` mal apuntado.
+
+Lección: el diagnóstico apuntaba a "hay que reactivar la suscripción en el panel de Meta",
+que era un callejón sin salida porque ese panel es de un tercero. La causa real estaba en
+nuestra zona DNS, en un tipo de registro que ninguna de las verificaciones miraba.
+
 > El `SPF` del raíz es independiente del de Resend, que vive en `send.intellix.com.ar` y
 > no se toca.
 
