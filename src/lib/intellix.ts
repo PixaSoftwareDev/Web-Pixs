@@ -104,31 +104,6 @@ export const intellix = {
     bridge: "¿Te suena? Mirá estos casos",
   },
 
-  // Cómo funciona, en 3 pasos de lenguaje cliente.
-  steps: [
-    {
-      step: "1",
-      title: "Subís tus documentos",
-      description:
-        "Manuales, políticas, listas de precios, reglamentos, preguntas frecuentes. Word, PDF o texto — los subís desde un panel simple y listo.",
-      icon: "FileUp",
-    },
-    {
-      step: "2",
-      title: "Intellix responde con tus fuentes",
-      description:
-        "Cada respuesta sale de tus documentos y muestra de dónde salió. Si la respuesta no está en tu información, lo dice con honestidad — no inventa.",
-      icon: "MessageCircle",
-    },
-    {
-      step: "3",
-      title: "Tu equipo entra cuando hace falta",
-      description:
-        "Si la consulta necesita una persona, Intellix se la pasa a tu equipo con toda la conversación y los datos del cliente. Nadie repite su problema dos veces.",
-      icon: "Users",
-    },
-  ],
-
   // Escenarios: mini-historias donde el visitante se ve reflejado.
   scenarios: [
     {
@@ -433,12 +408,6 @@ export const intellix = {
       "Te armamos una prueba personalizada en 48 horas con tu propia documentación, sin compromiso.",
     primaryCta: "Quiero mi prueba de 48 hs",
     secondaryCta: "Hablar con nosotros",
-  },
-
-  // Versión corta (metadata / OG).
-  short: {
-    description:
-      "Intellix convierte los documentos de tu empresa en un asistente que responde al instante en tu web y tu WhatsApp, y deriva a tu equipo cuando hace falta una persona.",
   },
 
   // Mensajes pre-cargados para los CTA por WhatsApp.

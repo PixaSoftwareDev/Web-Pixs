@@ -47,18 +47,24 @@ Tema **claro por defecto** (oscuro opcional con el toggle). Los acentos salen de
 **`/` (la landing de venta)** — orden de secciones:
 
 1. `Navbar` — logo Intellix, anclas, CTA "Pedir demo" (WhatsApp).
-2. `Hero` — dolor universal + mockup de conversación animado (con cita de fuente y chip de derivación).
-3. `HowItWorks` — 3 pasos en lenguaje cliente (`#como-funciona`).
-4. ~~`TryIt`~~ — **fuera de la home**. Dependía del widget embebido, que se eliminó. El componente sigue en `sections/` pero no está montado.
-5. `Scenarios` — 4 mini-historias con ejemplo de pregunta/respuesta (`#escenarios`).
-6. `Trust` — "diseñado para no inventar": citas, honestidad, contradicciones, aislamiento (`#confianza`).
-7. `Channels` — widget web + WhatsApp oficial + panel de operadores (`#canales`).
-8. `Launch` — puesta en marcha en 48 hs (`#empezar`).
+2. `Hero` — promesa + el producto en video (`/media/hero-widget-loop.mp4`).
+3. `Journey` — cómo funciona, contado con el scroll. **La sección más pesada (478 líneas).**
+4. `Scenarios` — 4 mini-historias con ejemplo de pregunta/respuesta (`#escenarios`).
+5. `Trust` — "diseñado para no inventar": citas, honestidad, contradicciones (`#confianza`).
+6. `Control` — "¿pierdo el control?": paneles de operador y admin + canales (`#control`).
+7. `Calculator` — cuánto tiempo/plata se ahorra.
+8. `Pricing` — planes.
 9. `Team` — los 3 founders (`#equipo`).
-10. `IntellixCTA` — cierre con CTAs a WhatsApp.
-11. `Footer` — navegación + contacto + "Un producto de Pixs".
+10. `Faq` — últimas dudas.
+11. `IntellixCTA` — cierre con CTAs a WhatsApp (compartido con `/tecnologia`).
+12. `Footer` + `BottomDock`.
 
-**`/tecnologia`** — ficha técnica para el visitante de sistemas (features, stack, métricas, entregables). **`/intellix`** — redirect a `/` (compatibilidad).
+> ⚠️ **Esta lista tiene que coincidir con el JSX de `page.tsx`.** Hasta el 2026-08-09
+> describía secciones que ya no existían (`HowItWorks`, `TryIt`, `Channels`, `Launch`) y
+> omitía la mitad de las reales — con lo cual nadie sabía qué componía la página. Si
+> agregás o sacás una sección, actualizá acá y el comentario de `page.tsx`.
+
+**`/tecnologia`** — ficha técnica para el visitante de sistemas (features, stack, métricas, entregables). Linkeada desde Navbar y Footer. Usa 5 componentes propios en `components/intellix/` y el copy de `intellix.tech.*`. **`/intellix`** — redirect a `/` (compatibilidad).
 
 ## 5. Dónde vive cada cosa
 

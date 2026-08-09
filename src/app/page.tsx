@@ -13,13 +13,25 @@ import Faq from "@/components/sections/Faq";
 import IntellixCTA from "@/components/intellix/IntellixCTA";
 
 /*
- * Historia de venta, en orden:
- * promesa (Hero) → identificación (Escenarios) → solución (HowItWorks)
- * → objeción "¿inventa?" (Trust) → objeción "¿pierdo control?" (Control)
- * → dónde vive (Channels) → cuánto (Pricing) → sin riesgo (Launch)
- * → cercanía (Team) → cierre (CTA).
+ * Historia de venta, en el orden en que se renderiza abajo:
+ *
+ *   Hero        promesa + el producto en video
+ *   Journey     cómo funciona, contado con el scroll
+ *   Scenarios   identificación: "esto me pasa a mí"
+ *   Trust       objeción "¿inventa cosas?"
+ *   Control     objeción "¿pierdo el control?" (+ canales)
+ *   Calculator  cuánto tiempo/plata se ahorra
+ *   Pricing     cuánto cuesta
+ *   Team        cercanía: quiénes somos
+ *   Faq         últimas dudas
+ *   CTA         cierre
+ *
  * El producto se muestra con el video real del widget en el Hero: la landing
  * no embebe el widget (decisión de producto, 2026-08-08).
+ *
+ * Mantener este comentario en sync con el JSX. Hasta el 2026-08-09 describía
+ * secciones que ya no existían (HowItWorks, Channels, Launch) y no mencionaba
+ * la mitad de las que sí — por eso nadie sabía qué componía la página.
  */
 export default function Home() {
   return (
