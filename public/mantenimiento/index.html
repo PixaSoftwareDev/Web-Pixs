@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Intellix — estamos trabajando en la web</title>
+    <meta name="description" content="Estamos rehaciendo el sitio de Intellix. Mientras tanto, escribinos por WhatsApp o por mail." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="https://res.cloudinary.com/dukv3ov6t/image/upload/c_pad,w_400,h_400,b_transparent/v1780009417/IMG_0131_df525n.png" />
+    <style>
+      @font-face {
+        font-family: "General Sans";
+        src: url("./fonts/GeneralSans-Light.woff2") format("woff2");
+        font-weight: 300; font-display: swap;
+      }
+      @font-face {
+        font-family: "General Sans";
+        src: url("./fonts/GeneralSans-Medium.woff2") format("woff2");
+        font-weight: 500; font-display: swap;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        min-height: 100svh; display: flex; align-items: center; justify-content: center;
+        padding: 32px; background: #0f0f0f; color: #fff;
+        font-family: "General Sans", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .halo {
+        position: fixed; inset: -30%; pointer-events: none;
+        background:
+          radial-gradient(38% 32% at 30% 26%, rgba(96, 216, 240, 0.16), transparent 72%),
+          radial-gradient(36% 32% at 72% 74%, rgba(132, 88, 248, 0.15), transparent 74%);
+      }
+      main { position: relative; width: 100%; max-width: 560px; }
+      .logo { height: 34px; width: auto; }
+      h1 {
+        margin-top: 44px; font-size: clamp(34px, 7vw, 52px); font-weight: 500;
+        line-height: 1.02; letter-spacing: -0.03em;
+      }
+      p {
+        margin-top: 20px; max-width: 460px; font-size: clamp(16px, 2.4vw, 19px);
+        font-weight: 300; line-height: 1.5; letter-spacing: -0.01em; color: rgba(255, 255, 255, 0.6);
+      }
+      .acciones { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; }
+      a {
+        display: inline-flex; align-items: center; padding: 14px 26px; border-radius: 999px;
+        font-size: 15px; font-weight: 500; letter-spacing: -0.01em; text-decoration: none;
+        transition: background-color .2s ease, border-color .2s ease;
+      }
+      .primario { background: #fff; color: #0f0f0f; }
+      .primario:hover { background: rgba(255, 255, 255, 0.86); }
+      .secundario { border: 1px solid rgba(255, 255, 255, 0.18); color: #fff; }
+      .secundario:hover { border-color: rgba(255, 255, 255, 0.38); background: rgba(255, 255, 255, 0.05); }
+      footer { margin-top: 56px; font-size: 14px; color: rgba(255, 255, 255, 0.4); }
+    </style>
+  </head>
+  <body>
+    <div class="halo"></div>
+    <main>
+      <img
+        class="logo"
+        src="https://res.cloudinary.com/dukv3ov6t/image/upload/e_trim/c_lpad,w_1500,h_470,b_transparent/v1780009423/INTELLIX_BLACk_1_eka1bo.png"
+        alt="Intellix"
+      />
+      <h1>Estamos rehaciendo la web.</h1>
+      <p>
+        Volvemos en unos días con el sitio nuevo. El servicio sigue funcionando
+        con normalidad: si nos querés escribir, estamos del otro lado.
+      </p>
+      <div class="acciones">
+        <a class="primario" href="https://wa.me/5492477509003?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20Intellix." target="_blank" rel="noopener noreferrer">Escribinos por WhatsApp</a>
+        <a class="secundario" href="mailto:hola@intellix.com.ar">hola@intellix.com.ar</a>
+      </div>
+      <footer>Intellix · Pergamino, Buenos Aires</footer>
+    </main>
+  </body>
+</html>
