@@ -1,9 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    {
-      "source": "/((?!mantenimiento/).*)",
-      "destination": "/mantenimiento/index.html"
-    }
+  "redirects": [
+    { "source": "/", "destination": "/mantenimiento", "permanent": false },
+    { "source": "/intellix", "destination": "/mantenimiento", "permanent": false },
+    { "source": "/tecnologia", "destination": "/mantenimiento", "permanent": false }
   ]
 }
